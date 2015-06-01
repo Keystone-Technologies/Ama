@@ -1,0 +1,6 @@
+% layout 'ama', title => 'Edit question';
+<h2>Edit question</h2>
+%= include 'questions/_form', caption => 'Update', target => 'update_question'
+%= form_for remove_question => {id => $question->{id}} => begin
+  %= submit_button 'Remove'
+% end

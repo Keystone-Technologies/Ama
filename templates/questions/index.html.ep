@@ -1,0 +1,8 @@
+% layout 'ama', title => 'Ask Me Anything';
+% for my $question (@$questions) {
+  <p>
+    <h2><%= link_to $question->{title} => show_question => {id => $question->{id}} %></h2>
+    %= $question->{body}
+  </p>
+% }
+%= link_to 'New question' => 'create_question'

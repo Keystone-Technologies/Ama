@@ -1,0 +1,11 @@
+%= form_for $target => begin
+  %= label_for title => 'Title'
+  <br>
+  %= text_field title => $question->{title}
+  <br>
+  %= label_for body => 'Body'
+  <br>
+  %= text_area body => $question->{body}
+  <br>
+  %= submit_button $caption
+% end
