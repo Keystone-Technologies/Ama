@@ -2,6 +2,7 @@
 <html>
   <head>
     <title><%= title %></title>
+    %= asset 'ama.js'
     <style>
       a, body { color: #2a2a2a }
       body { font: 0.9em 'Helvetica Neue', Helvetica, sans-serif }
@@ -13,7 +14,7 @@
     </style>
   </head>
   <body>
-    <h1><%= link_to 'Ama' => 'questions' %></h1>
+    <h1><%= link_to 'Ama' => 'q' %></h1>
     %= content
   </body>
 </html>

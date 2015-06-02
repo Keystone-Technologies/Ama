@@ -1,4 +1,3 @@
-% layout 'ama', title => $question->{title};
-<h2><%= $question->{title} %></h2>
-<p><%= $question->{body} %></p>
+% layout 'ama', title => 'Question: '.$question->{id};
+<h2><%= $question->{question} %></h2>
 %= link_to 'Edit' => edit_question => {id => $question->{id}}

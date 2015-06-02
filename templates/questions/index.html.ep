@@ -1,8 +1,36 @@
 % layout 'ama', title => 'Ask Me Anything';
 % for my $question (@$questions) {
   <p>
-    <h2><%= link_to $question->{title} => show_question => {id => $question->{id}} %></h2>
-    %= $question->{body}
+    <h2><%= link_to $question->{question} => show_question => {id => $question->{id}} %></h2>
+    Up: <span id="up_<%= $question->{id} %>" class="vote_up"><%= $question->{votes_up} %></span>
+    <script>
+      $(document).ready(function(){
+        console.log("up <%= $question->{id} %>");
+        $("#up_<%= $question->{id} %>").click(function(){
+          console.log("up <%= $question->{id} %>");
+          $.post("<%= url_for 'cast_vote', {entry_type=>'questions', entry_id=>$question->{id}, vote=>'up'} %>", function(data){
+            console.log("new up "+data.votes_up);
+            $("#up_<%= $question->{id} %>").html(data.votes_up);
+            $("#down_<%= $question->{id} %>").html(data.votes_down);
+          });
+        });
+      });
+    </script>
+    Down: <span id="down_<%= $question->{id} %>" class="vote_down"><%= $question->{votes_down} %></span>
+    <script>
+      $(document).ready(function(){
+        console.log("down <%= $question->{id} %>");
+        $("#down_<%= $question->{id} %>").click(function(){
+          console.log("down <%= $question->{id} %>");
+          $.post("<%= url_for 'cast_vote', {entry_type=>'questions', entry_id=>$question->{id}, vote=>'down'} %>", function(data){
+            console.log("new down "+data.votes_down);
+            $("#up_<%= $question->{id} %>").html(data.votes_up);
+            $("#down_<%= $question->{id} %>").html(data.votes_down);
+          });
+        });
+      });
+    </script>
+    <%= link_to 'Show Comments' => comments => {question_id => $question->{id}} %>
   </p>
 % }
 %= link_to 'New question' => 'create_question'
