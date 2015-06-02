@@ -1,0 +1,23 @@
+% layout 'ama', title => 'Ask Me Anything';
+% for my $question (@$questions) {
+  <p>
+    <h2><%= link_to $question->{question} => show_question => {id => $question->{id}} %></h2>
+    <%= link_to 'Remove' => remove_question => {id => $question->{id}} %>
+    Up: <%= link_to $question->{votes}->{up} => cast_vote => {entry_type => 'questions', entry_id => $question->{id}, vote => 'up'} %>
+    Down: <%= link_to $question->{votes}->{down} => cast_vote => {entry_type => 'questions', entry_id => $question->{id}, vote => 'down'} %>
+    % foreach my $comment (@{$question->{comments}}) {
+      <%= link_to $comment->{comment} => show_comment => {question_id => $question->{id}, id => $comment->{id}} %>
+      <%= link_to 'Remove' => remove_comment => {question_id => $question->{id}, id => $comment->{id}} %>
+      Up: <%= link_to $comment->{votes}->{up} => cast_vote => {entry_type => 'comments', entry_id => $comment->{id}, vote => 'up'} %>
+      Down: <%= link_to $comment->{votes}->{down} => cast_vote => {entry_type => 'comments', entry_id => $comment->{id}, vote => 'down'} %>
+      Answer:
+      % if ( $comment->{answer} ) {
+        by <%= $comment->{answer} %> on <%= $comment->{answered} %><br />
+      % } else {
+        <%= link_to 'Mark as answer' => mark_comment_as_answer => {question_id => $question->{id}, id => $comment->{id}} %>
+      %}
+    % }
+    %= link_to 'Add comment' => 'create_comment'
+  </p>
+% }
+%= link_to 'New question' => 'create_question'

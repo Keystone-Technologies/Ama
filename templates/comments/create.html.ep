@@ -1,0 +1,3 @@
+% layout 'ama', title => 'New question';
+<h2>New question</h2>
+%= include 'questions/_form', caption => 'Create', target => 'store_question'
