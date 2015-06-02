@@ -1,8 +1,13 @@
 % layout 'ama', title => 'Ask Me Anything';
+<style>
+  .answered { background-color: lightgray }
+</style>
 % for my $question (@$questions) {
-  <p>
+  <div class="<%= $question->{answer} ? 'answered' : 'unanswered' %>">
     <h2><%= link_to $question->{question} => show_question => {id => $question->{id}} %></h2>
+    <%= $question->{created} %><br />
     Up: <span id="up_<%= $question->{id} %>" class="vote_up"><%= $question->{votes_up} %></span>
+    % unless ( $question->{answer} ) {
     <script>
       $(document).ready(function(){
         console.log("up <%= $question->{id} %>");
@@ -12,11 +17,13 @@
             console.log("new up "+data.votes_up);
             $("#up_<%= $question->{id} %>").html(data.votes_up);
             $("#down_<%= $question->{id} %>").html(data.votes_down);
-          });
+          }, 'json');
         });
       });
     </script>
+    % }
     Down: <span id="down_<%= $question->{id} %>" class="vote_down"><%= $question->{votes_down} %></span>
+    % unless ( $question->{answer} ) {
     <script>
       $(document).ready(function(){
         console.log("down <%= $question->{id} %>");
@@ -26,11 +33,18 @@
             console.log("new down "+data.votes_down);
             $("#up_<%= $question->{id} %>").html(data.votes_up);
             $("#down_<%= $question->{id} %>").html(data.votes_down);
-          });
+          }, 'json');
         });
       });
     </script>
+    % }
+    % if ( $question->{answer} ) {
+      <h3 class="answer">
+        <%= $question->{answer} %>
+      </h3>
+      <%= $question->{answered} %><br />
+    % }
     <%= link_to 'Show Comments' => comments => {question_id => $question->{id}} %>
-  </p>
+  </div>
 % }
 %= link_to 'New question' => 'create_question'
