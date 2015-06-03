@@ -3,6 +3,12 @@ use Mojo::Base -base;
 
 has 'pg';
 
+sub mine {
+  my ($self, $entry_type, $username) = @_;
+  my $sql = 'select count(*) as flags from flags where entry_type = ? and username = ?';
+  return $self->pg->db->query($sql, $entry_type, $username)->hash;
+}
+
 sub count {
   my ($self, $entry_type, $entry_id) = @_;
   my $sql = 'select count(*) as flags from flags where entry_type = ? and entry_id = ?';

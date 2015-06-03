@@ -31,7 +31,6 @@ sub startup {
   my $r = $self->routes;
 
   $r->get('/' => sub { shift->redirect_to('questions') });
-  #$r->get('/questions/mine')->to('questions#mine')->name('my_questions'); # Display all questions
   $r->get('/questions')->to('questions#index')->name('questions'); # Display all questions
   $r->get('/questions/create')->to('questions#create')->name('create_question'); # Display empty form
   $r->post('/questions')->to('questions#store')->name('store_question'); # Insert into DB and redirect to show_question
@@ -40,7 +39,6 @@ sub startup {
   $r->put('/questions/:id')->to('questions#update')->name('update_question'); # Update DB and redirect to show_question
   $r->delete('/questions/:id')->to('questions#remove')->name('remove_question'); # Delete from DB and redirect to questions
 
-  #$r->get('/comments/mine')->to('comments#mine')->name('my_comments');
   $r->get('/comments/:question_id')->to('comments#index')->name('comments');
   $r->get('/comments/:question_id/create')->to('comments#create')->name('create_comment');
   $r->post('/comments/:question_id')->to('comments#store')->name('store_comment');
@@ -51,16 +49,16 @@ sub startup {
   $r->put('/comments/:question_id/:id')->to('comments#update')->name('update_comment');
   $r->delete('/comments/:question_id/:id')->to('comments#remove')->name('remove_comment');
 
-  my $api = $r->under('/api'); # Require Ajax
+  my $api = $r->under('/api'); # Require Ajax (need to do)
 
-  #$api->get('/votes/:entry_type/mine')->to('votes#mine')->name('my_votes');
-  $api->get('/votes/:entry_type/:entry_id')->to('votes#count')->name('count_votes');
-  $api->post('/votes/:entry_type/:entry_id/:vote', [vote => [qw(up down)]])->to('votes#cast')->name('cast_vote');
+  #$api->get('/:entry_type/votes')->to('votes#mine')->name('my_votes');
+  $api->get('/:entry_type/vote/:entry_id')->to('votes#count')->name('count_votes');
+  $api->post('/:entry_type/vote/:entry_id/:vote', [vote => [qw(up down)]])->to('votes#cast')->name('cast_vote');
 
-  #$api->get('/flags/:entry_type/mine')->to('flags#mine')->name('my_flags');
-  $api->get('/flags/:entry_type/:entry_id')->to('flags#count')->name('count_flags');
-  $api->post('/flags/:entry_type/:entry_id')->to('flags#raise')->name('raise_flag');
-  $api->delete('/flags/:entry_type/:entry_id')->to('flags#remove')->name('remove_flag');
+  #$api->get('/:entry_type/flags')->to('flags#mine')->name('my_flags');
+  $api->get('/:entry_type/flag/:entry_id')->to('flags#count')->name('count_flags');
+  $api->post('/:entry_type/flag/:entry_id')->to('flags#raise')->name('raise_flag');
+  $api->delete('/:entry_type/flag/:entry_id')->to('flags#remove')->name('remove_flag');
 }
 
 1;
