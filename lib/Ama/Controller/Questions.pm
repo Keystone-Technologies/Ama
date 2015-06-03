@@ -51,6 +51,7 @@ sub store {
   my $self = shift;
 
   my $validation = $self->_validation;
+  warn $self->dumper($validation->output);
   return $self->respond_to(
     json => {json => {id => undef}},
     any => sub { $self->render(action => 'create', question => {}) },

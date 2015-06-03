@@ -1,0 +1,11 @@
+https://docs.c9.io/v1.0/docs/setting-up-postgresql
+
+http://stackoverflow.com/questions/17443379/psql-fatal-peer-authentication-failed-for-user-dev
+edit /etc/postgres/postgres.conf for localhost connection
+edit /etc/postgres/pq_hba.conf for local all all peer -> md5
+
+sudo -u postgres psql -s dn_name
+createdb test
+create database "test"
+\l, \d+ \du \dn \list ...
+\password user_name

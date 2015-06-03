@@ -14,7 +14,7 @@
     </style>
   </head>
   <body>
-    <h1><%= link_to 'Ama' => 'q' %></h1>
+    <h1><%= link_to 'Ama' => 'questions' %></h1>
     %= content
   </body>
 </html>
