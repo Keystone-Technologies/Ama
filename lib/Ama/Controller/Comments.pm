@@ -21,7 +21,8 @@ sub edit {
 
 sub index {
   my $self = shift;
-  $self->stash(questions => $self->comments->all);
+  my $question_id = $self->param('question_id');
+  $self->stash(comments => $self->comments->all($question_id));
   $self->respond_to(
     json => {json => $self->stash('comments')},
     any => {},
@@ -85,11 +86,9 @@ sub answer {
   my $self = shift;
 
   my $id = $self->param('id');
+  my $answer = $self->param('answer');
   my $username = $self->session->{username};
-  $self->respond_to(
-    json => {json => {ok => $self->comments->answer($id, $username)}},
-    any => sub { $self->redirect_to('questions') },
-  );
+  $self->render(json => {ok => $self->comments->answer($id, $answer, $username)});
 }
 
 sub _validation {

@@ -6,23 +6,17 @@ sub count {
 
   my $entry_type = $self->param('entry_type');
   my $entry_id = $self->param('entry_id');
-  $self->respond_to(
-    json => {json => $self->votes->count($entry_type, $entry_id)},
-    any => sub { $self->redirect_to('questions') },
-  );
+  $self->render(json => $self->votes->count($entry_type, $entry_id));
 }
 
-sub vote {
+sub cast {
   my $self = shift;
 
   my $entry_type = $self->param('entry_type');
   my $entry_id = $self->param('entry_id');
   my $vote = $self->param('vote');
   my $username = $self->session->{username};
-  $self->respond_to(
-    json => {json => $self->votes->vote($entry_type, $entry_id, $vote, $username)},
-    any => sub { $self->redirect_to('questions') },
-  );
+  $self->render(json => $self->votes->cast($entry_type, $entry_id, $vote, $username));
 }
 
 1;

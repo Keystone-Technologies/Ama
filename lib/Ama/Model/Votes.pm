@@ -9,7 +9,7 @@ sub count {
   return $self->pg->db->query($sql, $entry_type, $entry_id)->hash;
 }
 
-sub vote {
+sub cast {
   my ($self, $entry_type, $entry_id, $vote, $username) = @_;
   my $votes = $self->pg->db->query('select count(*) as votes from votes where entry_type = ? and entry_id = ? and username = ?', $entry_type, $entry_id, $username)->hash->{votes};
   if ( !$votes ) {
