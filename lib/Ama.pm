@@ -51,11 +51,11 @@ sub startup {
 
   my $api = $r->under('/api'); # Require Ajax (need to do)
 
-  #$api->get('/:entry_type/votes')->to('votes#mine')->name('my_votes');
+  $api->get('/:entry_type/votes')->to('votes#mine')->name('my_votes');
   $api->get('/:entry_type/vote/:entry_id')->to('votes#count')->name('count_votes');
   $api->post('/:entry_type/vote/:entry_id/:vote', [vote => [qw(up down)]])->to('votes#cast')->name('cast_vote');
 
-  #$api->get('/:entry_type/flags')->to('flags#mine')->name('my_flags');
+  $api->get('/:entry_type/flags')->to('flags#mine')->name('my_flags');
   $api->get('/:entry_type/flag/:entry_id')->to('flags#count')->name('count_flags');
   $api->post('/:entry_type/flag/:entry_id')->to('flags#raise')->name('raise_flag');
   $api->delete('/:entry_type/flag/:entry_id')->to('flags#remove')->name('remove_flag');
