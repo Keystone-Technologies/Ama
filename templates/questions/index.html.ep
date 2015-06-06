@@ -13,7 +13,8 @@
         console.log("up <%= $question->{id} %>");
         $("#up_<%= $question->{id} %>").click(function(){
           console.log("up <%= $question->{id} %>");
-          $.post("<%= url_for 'cast_vote', {entry_type=>'questions', entry_id=>$question->{id}, vote=>'up'} %>", function(data){
+          $.post("<%= url_for 'cast_vote', {entry_type=>'questions', \
+          entry_id=>$question->{id}, vote=>'up'} %>", function(data){
             console.log("new up "+data.votes_up);
             $("#up_<%= $question->{id} %>").html(data.votes_up);
             $("#down_<%= $question->{id} %>").html(data.votes_down);
@@ -29,7 +30,8 @@
         console.log("down <%= $question->{id} %>");
         $("#down_<%= $question->{id} %>").click(function(){
           console.log("down <%= $question->{id} %>");
-          $.post("<%= url_for 'cast_vote', {entry_type=>'questions', entry_id=>$question->{id}, vote=>'down'} %>", function(data){
+          $.post("<%= url_for 'cast_vote', {entry_type=>'questions', \
+          entry_id=>$question->{id}, vote=>'down'} %>", function(data){
             console.log("new down "+data.votes_down);
             $("#up_<%= $question->{id} %>").html(data.votes_up);
             $("#down_<%= $question->{id} %>").html(data.votes_down);
@@ -37,6 +39,28 @@
         });
       });
     </script>
+    <div id="reply_<%= $question->{id}%>">Reply</div>
+        <script>
+            $(document).ready(function(){
+                $("#reply_<%= $question->{id} %>").click(function(){
+                    if ($("#commentform_<%= $question->{id} %>").length > 0){
+                        $("#reply_<%= $question->{id} %>").html('Reply');
+                        $("#commentform_<%= $question->{id} %>").remove();
+                    }
+                    else {
+                        $("#reply_<%= $question->{id} %>").html('- Hide');
+                        $("#reply_<%= $question->{id} %>").after(
+                            "<form id='commentform_<%= $question->{id} %>'\
+                            action='/comments/<%= $question->{id} %>' \
+                            method='POST'><label for='comment'>Comment</label>\
+                            <br><textarea name='comment'></textarea>\
+                            <input type='hidden' name='question_id'\
+                            value='<%= $question->{id} %>'><br>\
+                            <input type='submit' value='Post'></form>");
+                    }
+                });
+            });
+        </script>
     % }
     % if ( $question->{answer} ) {
       <h3 class="answer">
@@ -44,7 +68,69 @@
       </h3>
       <%= $question->{answered} %><br />
     % }
-    <%= link_to 'Show Comments' => comments => {question_id => $question->{id}} %>
+    <span id="showcomments_<%= $question->{id}%>">Show Comments</span>
+    <div id="commentcontainer_<%= $question->{id} %>">
+    <script>
+      $(document).ready(function(){
+        var shown = false;
+        var loaded = false;
+        $("#showcomments_<%= $question->{id} %>").click(function(){
+            if (shown){
+                $("#commentcontainer_<%= $question->{id} %>").toggle(false);
+                $("#showcomments_<%= $question->{id} %>").html("Show Comments");
+                shown = false;
+            }
+            else {
+                if (!loaded){  //Load comments for question via post request
+                    var HTMLstring = "";
+                    console.log('Loading data');
+                    $.get("<%= url_for 'comments', {question_id => $question->{id}} %>", function(data){
+                    console.log('Data loaded');
+                    $.each(data, function(i, v){
+                        HTMLstring = HTMLstring + (
+                            "<span><a>Mark as Answer</a>\
+                            </span><span><a href='/comments/" + v.question_id + "/" + v.id + "/edit'>Edit</a></span>\
+                            <span><a id='delete_" + v.id + "'>Delete</a></span><span class='comment' id='comment_" + v.id + "'>\
+                            <a href='/comments/" + v.question_id + "/" + v.id + "'>" + v.comment + "</a>" + "</span><br>");
+                        $("#commentcontainer_<%= $question->{id} %>").html(HTMLstring); 
+                        $("#delete_" + v.id).click(function(){
+                            //implement comment delete function
+                        });
+                    });
+                    }, 'json');
+                    loaded = true;
+                }
+                shown = true;
+                $("#commentcontainer_<%= $question->{id} %>").toggle(true);
+                $("#showcomments_<%= $question->{id} %>").html("Hide Comments");
+                console.log('Comments displayed');
+                }
+           });
+      });
+      </script>
+    </div>
   </div>
 % }
-%= link_to 'New question' => 'create_question'
+<div id="newquestion">+ New Question</div>
+<script>
+$(document).ready(function(){
+    var formshown = false;
+    $("#newquestion").click(function(){
+        if (formshown){
+            $("#newquestion").html('+ New Question');
+            $("#newquestionform").remove();
+            formshown = false;
+        }
+        else {
+            $("#newquestion").html('- Hide');
+            $("#newquestion").after(
+                "<form id='newquestionform' action='/questions' method='POST'>\
+                <label for='question'>Question</label><br>\
+                <textarea name='question' required></textarea><br>\
+                <input type='submit' value='Create'></form>");
+            formshown = true;
+        }
+    });
+});
+</script>
+

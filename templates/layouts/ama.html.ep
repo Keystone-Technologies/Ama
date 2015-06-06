@@ -10,7 +10,12 @@
       input.field-with-error, textarea.field-with-error {
         border: 4px solid #f00;
       }
-      textarea { height: 300px }
+      textarea {
+        height: 100px;
+      }
+      span {
+        margin-right: 5px;
+      }
     </style>
   </head>
   <body>
