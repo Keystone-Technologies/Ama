@@ -5,7 +5,7 @@ has 'pg';
 
 sub add {
   my ($self, $comment, $username) = @_;
-  my $sql = 'insert into comments (question_id, comment, $username) values (?, ?, ?) returning id';
+  my $sql = 'insert into comments (question_id, comment, username) values (?, ?, ?) returning id';
   return $self->pg->db->query($sql, $comment->{question_id}, $comment->{comment}, $username)->hash->{id};
 }
 

@@ -1,5 +1,6 @@
 % layout 'ama', title => 'Ask Me Anything';
 % for my $comment (@$comments) {
+      <%= link_to 'test' => show_comment => $comment->{question_id}, id => $comment->{id}} %>
   <p>
     <h2><%= link_to $comment->{comment} => show_comment => {id => $comment->{id}} %></h2>
     <%= link_to 'Remove' => remove_comment => {id => $comment->{id}} %>

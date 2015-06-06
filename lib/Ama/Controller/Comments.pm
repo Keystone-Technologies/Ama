@@ -40,7 +40,7 @@ sub remove {
 
 sub show {
   my $self = shift;
-  $self->stash(comment => $self->comments->find($self->param('id')));
+  $self->stash(comments => $self->comment->find($self->param('id')));
   $self->respond_to(
     json => {json => $self->stash('comment')},
     any => {},
@@ -95,8 +95,8 @@ sub _validation {
   my $self = shift;
 
   my $validation = $self->validation;
-  $validation->required('question_id');
   $validation->required('comment');
+  $validation->required('question_id');
 
   return $validation;
 }
