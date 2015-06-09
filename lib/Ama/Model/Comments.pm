@@ -36,16 +36,17 @@ sub remove { shift->pg->db->query('delete from comments where id = ?', shift) }
 
 sub save {
   my ($self, $id, $comment) = @_;
+  warn Data::Dumper::Dumper($comment);
   my $sql = 'update comments set comment = ?, modified = now() where id = ?';
   $self->pg->db->query($sql, $comment->{comment}, $id);
 }
 
 sub answer {
   my ($self, $id, $answer, $username) = @_;
-  $self->pg->db->query('update comments set answered_by=null,answered=null where id = ?', $id);
+  $self->pg->db->query('update comments set answered=null where id = ?', $id);
   if ( $answer ) {
-    my $sql = 'update comments set answered_by = ?, answered = now() where id = ?';
-    $self->pg->db->query($sql, $username, $id);
+    my $sql = 'update comments set answered = now() where id = ?';
+    $self->pg->db->query($sql, $id);
   }
 }
 

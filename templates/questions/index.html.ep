@@ -85,18 +85,35 @@
                     var HTMLstring = "";
                     console.log('Loading data');
                     $.get("<%= url_for 'comments', {question_id => $question->{id}} %>", function(data){
-                    console.log('Data loaded');
-                    $.each(data, function(i, v){
-                        HTMLstring = HTMLstring + (
-                            "<span><a>Mark as Answer</a>\
-                            </span><span><a href='/comments/" + v.question_id + "/" + v.id + "/edit'>Edit</a></span>\
-                            <span><a id='delete_" + v.id + "'>Delete</a></span><span class='comment' id='comment_" + v.id + "'>\
-                            <a href='/comments/" + v.question_id + "/" + v.id + "'>" + v.comment + "</a>" + "</span><br>");
-                        $("#commentcontainer_<%= $question->{id} %>").html(HTMLstring); 
-                        $("#delete_" + v.id).click(function(){
-                            //implement comment delete function
+                        console.log('Data loaded');
+                        $.each(data, function(i, v){
+                            HTMLstring = HTMLstring + (
+                                "<div id='comment_" + v.id + "'><span id='markanswer_" + v.id + "' \
+                                class='markanswerbutton'>Mark as Answer</span>\
+                                <span id='delete_" + v.id + "' question_id='" + v.question_id + "' class='deletebutton'>\
+                                Delete</span><span class='commenttext' id='comment_" + v.id + "'>\
+                                <a href='/comments/" + v.question_id + "/" + v.id + "/edit'>\
+                                " + v.comment + "</a>" + "</span></div>");
+                                $("#commentcontainer_<%= $question->{id} %>").html(HTMLstring); 
                         });
-                    });
+                        $(".deletebutton").each(function(){
+                            var id = $(this).attr("id");
+                            var question_id = $(this).attr("question_id");
+                            $("#" + id).click(function(){
+                                idobject = /(\d+)/.exec(id);
+                                id = idobject[1];
+                                console.log(id);
+                                console.log(question_id);
+                                $.ajax({
+                                    url: "/comments/" + question_id + "/" + id, type: 'DELETE',
+                                });
+                                console.log('Deleted comment #' + id);
+                                $("#comment_" + id).remove();
+                            });
+                        });
+                            //$(".markanswerbutton").click(function() {
+                                //$.post("/comments/" + v.question_id + "/" + v.id + "/answer");
+                           // });
                     }, 'json');
                     loaded = true;
                 }
