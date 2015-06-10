@@ -59,24 +59,24 @@ sub store {
 
   $self->respond_to(
     json => {json => {id => $id}},
-    any => sub { $self->redirect_to('show_comment', id => $id) },
+    any => sub { $self->redirect_to('questions')},
   );
 }   
 
 sub update {
   my $self = shift;
+  warn $self->dumper($self->req->params->to_hash);
   $self->stash(comment => ($self->param('comment')));
-  #my $validation = $self->_validation;
-  #return $self->respond_to(
-  #  json => {json => {id => $self->res->json->{'comment'}}},
-   # any => sub { $self->render(action => 'edit', comment => {}) },
-  #) if $validation->has_error;
+  my $validation = $self->_validation;
+  return $self->respond_to(
+  json => {json => {id => $self->res->json->{'comment'}}},
+   any => sub { $self->render(action => 'edit', comment => {}) },
+  ) if $validation->has_error;
 
   my $id = $self->param('id');
-  $id = $self->comments->save($id, $self->req->json);
-
+  $id = $self->comments->save($id, $validation->output);
   $self->respond_to(
-    json => {json => {id => $id ? 1 : 0}},
+    json => {json => {id => $id}},
     any => sub { 
       $self->redirect_to('questions');
     },

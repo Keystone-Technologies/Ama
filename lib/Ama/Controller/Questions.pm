@@ -34,7 +34,6 @@ sub remove {
   my $ok = $self->questions->remove($self->param('id'));
   $self->respond_to(
     json => {json => {ok => $ok}},
-    any => sub { $self->redirect_to('questions') },
   );
 }
 
@@ -61,7 +60,7 @@ sub store {
 
   $self->respond_to(
     json => {json => {id => $id}},
-    any => sub { $self->redirect_to('show_question', id => $id) },
+    any => sub { $self->redirect_to('questions') },
   );
 }
 
@@ -70,8 +69,7 @@ sub update {
 
   my $validation = $self->_validation;
   return $self->respond_to(
-    json => {json => {id => undef}},
-    any => sub { $self->render(action => 'edit', question => {}) },
+    json => {json => {id => undef}}
   ) if $validation->has_error;
 
   my $id = $self->param('id');

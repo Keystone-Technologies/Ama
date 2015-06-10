@@ -1,153 +1,328 @@
-% layout 'ama', title => 'Ask Me Anything';
-<style>
-  .answered { background-color: lightgray }
-</style>
-% for my $question (@$questions) {
-  <div class="<%= $question->{answer} ? 'answered' : 'unanswered' %>">
-    <h2><%= link_to $question->{question} => show_question => {id => $question->{id}} %></h2>
-    <%= $question->{created} %><br />
-    Up: <span id="up_<%= $question->{id} %>" class="vote_up"><%= $question->{votes_up} %></span>
-    % unless ( $question->{answer} ) {
-    <script>
-      $(document).ready(function(){
-        console.log("up <%= $question->{id} %>");
-        $("#up_<%= $question->{id} %>").click(function(){
-          console.log("up <%= $question->{id} %>");
-          $.post("<%= url_for 'cast_vote', {entry_type=>'questions', \
-          entry_id=>$question->{id}, vote=>'up'} %>", function(data){
-            console.log("new up "+data.votes_up);
-            $("#up_<%= $question->{id} %>").html(data.votes_up);
-            $("#down_<%= $question->{id} %>").html(data.votes_down);
-          }, 'json');
-        });
-      });
-    </script>
-    % }
-    Down: <span id="down_<%= $question->{id} %>" class="vote_down"><%= $question->{votes_down} %></span>
-    % unless ( $question->{answer} ) {
-    <script>
-      $(document).ready(function(){
-        console.log("down <%= $question->{id} %>");
-        $("#down_<%= $question->{id} %>").click(function(){
-          console.log("down <%= $question->{id} %>");
-          $.post("<%= url_for 'cast_vote', {entry_type=>'questions', \
-          entry_id=>$question->{id}, vote=>'down'} %>", function(data){
-            console.log("new down "+data.votes_down);
-            $("#up_<%= $question->{id} %>").html(data.votes_up);
-            $("#down_<%= $question->{id} %>").html(data.votes_down);
-          }, 'json');
-        });
-      });
-    </script>
-    <div id="reply_<%= $question->{id}%>">Reply</div>
-        <script>
-            $(document).ready(function(){
-                $("#reply_<%= $question->{id} %>").click(function(){
-                    if ($("#commentform_<%= $question->{id} %>").length > 0){
-                        $("#reply_<%= $question->{id} %>").html('Reply');
-                        $("#commentform_<%= $question->{id} %>").remove();
-                    }
-                    else {
-                        $("#reply_<%= $question->{id} %>").html('- Hide');
-                        $("#reply_<%= $question->{id} %>").after(
-                            "<form id='commentform_<%= $question->{id} %>'\
-                            action='/comments/<%= $question->{id} %>' \
-                            method='POST'><label for='comment'>Comment</label>\
-                            <br><textarea name='comment'></textarea>\
-                            <input type='hidden' name='question_id'\
-                            value='<%= $question->{id} %>'><br>\
-                            <input type='submit' value='Post'></form>");
-                    }
-                });
-            });
-        </script>
-    % }
-    % if ( $question->{answer} ) {
-      <h3 class="answer">
-        <%= $question->{answer} %>
-      </h3>
-      <%= $question->{answered} %><br />
-    % }
-    <span id="showcomments_<%= $question->{id}%>">Show Comments</span>
-    <div id="commentcontainer_<%= $question->{id} %>">
-    <script>
-      $(document).ready(function(){
-        var shown = false;
-        var loaded = false;
-        $("#showcomments_<%= $question->{id} %>").click(function(){
-            if (shown){
-                $("#commentcontainer_<%= $question->{id} %>").toggle(false);
-                $("#showcomments_<%= $question->{id} %>").html("Show Comments");
-                shown = false;
-            }
-            else {
-                if (!loaded){  //Load comments for question via post request
-                    var HTMLstring = "";
-                    console.log('Loading data');
-                    $.get("<%= url_for 'comments', {question_id => $question->{id}} %>", function(data){
-                        console.log('Data loaded');
-                        $.each(data, function(i, v){
-                            HTMLstring = HTMLstring + (
-                                "<div id='comment_" + v.id + "'><span id='markanswer_" + v.id + "' \
-                                class='markanswerbutton'>Mark as Answer</span>\
-                                <span id='delete_" + v.id + "' question_id='" + v.question_id + "' class='deletebutton'>\
-                                Delete</span><span class='commenttext' id='comment_" + v.id + "'>\
-                                <a href='/comments/" + v.question_id + "/" + v.id + "/edit'>\
-                                " + v.comment + "</a>" + "</span></div>");
-                                $("#commentcontainer_<%= $question->{id} %>").html(HTMLstring); 
-                        });
-                        $(".deletebutton").each(function(){
-                            var id = $(this).attr("id");
-                            var question_id = $(this).attr("question_id");
-                            $("#" + id).click(function(){
-                                idobject = /(\d+)/.exec(id);
-                                id = idobject[1];
-                                console.log(id);
-                                console.log(question_id);
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/../../css/style.css">
+        <link href='https://fonts.googleapis.com/css?family=Noto+Sans:400,700' rel='stylesheet' type='text/css'>
+        <script language="javascript" type="text/javascript" src="/../../js/scripts.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>    
+    </head>
+    <title>Keystone Moderator</title>
+<body>
+    <div id="newquestion">
+        <h3 id="newquestionbutton">+ New Question</h3>
+    </div>
+    <div class="header" id="bar">
+        <input class="header" id="logo" type="image" src="/../../img/logo.png">
+    </div>
+    <div id="content">
+        % for my $question (@$questions) {
+            % warn dumper $question ;
+            % if (!$question->{answer}) {
+            
+                <div id="question_<%= $question->{id} %>" class="question<%= $question->{answer} ? 'answered' : 'unanswered' %>container">
+                    <div class="questioninfocontainer">
+                        <div class="votecontainer">
+                            <div class="vote">
+                                <img id="up_<%= $question->{id} %>" class="vote_up" src="/../../img/uparrow.png" onmouseover="arrowhover(this.id, this.className, 'over');" onmouseout="arrowhover(this.id, this.className, 'out');">
+                                <div class="count">
+                                    <p id="count_<%= $question->{id} %>" class="countnumber"><%= $question->{votes} %></p>
+                                </div>
+                                % unless ( $question->{answer} ) {
+                                    <script>
+                                        $(document).ready(function(){
+                                            var clicked = false;
+                                            console.log("up <%= $question->{id} %>");
+                                            $("#up_<%= $question->{id} %>").click(function(){
+                                                $(this).attr("onmouseout", "");
+                                                $(this).attr("onmouseover", "");
+                                                $(this).attr("src", "/../../img/clickeduparrow.png");
+                                                $("#down_<%= $question->{id}%>").attr("onmouseout", "arrowhover(this.id, this.className, 'out');");
+                                                $("#down_<%= $question->{id}%>").attr("onmouseover", "arrowhover(this.id, this.className, 'over');");
+                                                $("#down_<%= $question->{id}%>").attr("src", "/../../img/downarrow.png");
+                                                $.post("<%= url_for 'cast_vote', {entry_type=>'questions', \
+                                                entry_id=>$question->{id}, vote=>'up'} %>", function(data){
+                                                $("#count_<%= $question->{id} %>").html(data.votes);
+                                                }, 'json');
+                                            });
+                                        });
+                                    </script>
+                                % }
+                                <img id="down_<%= $question->{id} %>" class="vote_down" src="/../../img/downarrow.png" onmouseover="arrowhover(this.id, this.className, 'over');" onmouseout="arrowhover(this.id, this.className, 'out');">
+                                % unless ( $question->{answer} ) {
+                                    <script>
+                                        $(document).ready(function(){
+                                            console.log("down <%= $question->{id} %>");
+                                            $("#down_<%= $question->{id} %>").click(function(){
+                                                $(this).attr("onmouseout", "");
+                                                $(this).attr("onmouseover", "");
+                                                $(this).attr("src", "/../../img/clickeddownarrow.png");
+                                                $("#up_<%= $question->{id}%>").attr("onmouseout", "arrowhover(this.id, this.className, 'out');");
+                                                $("#up_<%= $question->{id}%>").attr("onmouseover", "arrowhover(this.id, this.className, 'over');");
+                                                $("#up_<%= $question->{id}%>").attr("src", "/../../img/uparrow.png");
+                                                $.post("<%= url_for 'cast_vote', {entry_type=>'questions', \
+                                                entry_id=>$question->{id}, vote=>'down'} %>", function(data){
+                                                console.log(data);
+                                                $("#count_<%= $question->{id} %>").html(data.votes);
+                                                }, 'json');
+                                            });
+                                        });
+                                    </script>
+                                % }
+                            </div>
+                            <div class="questionbuttoncontainer">
+                                <div class="deletecontainer">
+                                    <img id="deletequestion_<%= $question->{id} %>" class="deletequestionbutton" src="/../../img/trash.png" data-toggle='tooltip' title='Delete question'>
+                                </div>
+                                <div id="flagcontainer_<%= $question->{id} %>" class="flagcontainer">
+                                    <img id="flag_<%= $question->{id} %>" class="flag" src="/../../img/flag.png" data-toggle='tooltip' title='Flag question'>
+                                </div>
+                                <script>
+                                    $(document).ready(function(){
+                                        $("#flagcontainer_<%= $question->{id} %>").click(function(){
+                                            $.post("/api/question/flag/<%= $question->{id} %>");
+                                        });
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                        <div id="questiontime_<%= $question->{created} %>" class="questiontime">
+                            <h4><%= $question->{created} %></h4>
+                        </div>
+                    </div>
+                    <script>
+                        $(document).ready(function(){
+                            $("#deletequestion_<%= $question->{id} %>").click(function(){
                                 $.ajax({
-                                    url: "/comments/" + question_id + "/" + id, type: 'DELETE',
+                                    url: "/questions/<%= $question->{id} %>", type: 'DELETE'
                                 });
-                                console.log('Deleted comment #' + id);
-                                $("#comment_" + id).remove();
+                                console.log('Deleted question # <%= $question->{id} %>');
+                                $("#question_<%= $question->{id} %>").remove();
                             });
                         });
-                            //$(".markanswerbutton").click(function() {
-                                //$.post("/comments/" + v.question_id + "/" + v.id + "/answer");
-                           // });
-                    }, 'json');
-                    loaded = true;
-                }
-                shown = true;
-                $("#commentcontainer_<%= $question->{id} %>").toggle(true);
-                $("#showcomments_<%= $question->{id} %>").html("Hide Comments");
-                console.log('Comments displayed');
-                }
-           });
-      });
-      </script>
-    </div>
-  </div>
-% }
-<div id="newquestion">+ New Question</div>
-<script>
-$(document).ready(function(){
-    var formshown = false;
-    $("#newquestion").click(function(){
-        if (formshown){
-            $("#newquestion").html('+ New Question');
-            $("#newquestionform").remove();
-            formshown = false;
-        }
-        else {
-            $("#newquestion").html('- Hide');
-            $("#newquestion").after(
-                "<form id='newquestionform' action='/questions' method='POST'>\
-                <label for='question'>Question</label><br>\
-                <textarea name='question' required></textarea><br>\
-                <input type='submit' value='Create'></form>");
-            formshown = true;
-        }
-    });
-});
-</script>
-
+                    </script>
+                    <div class="question">
+                        <h1 class="questiontitle"><%= $question->{question} %></h1>
+                        <div id="<%= $question->{id} %>" class="infobar">
+                            <h4 id="showcomments_<%= $question->{id}%>" class="info">Show Comments</h4>
+                            <h4 id="reply_<%= $question->{id}%>" class ="info">Reply</h4>
+                        </div>
+                    </div>
+                    <script>
+                        $(document).ready(function(){
+                            $(".replyformcontainer").toggle(false);
+                            $("#reply_<%= $question->{id} %>").click(function(){
+                                if ($("#reply_<%= $question->{id} %>").html() == '- Hide'){
+                                    $("#reply_<%= $question->{id} %>").html('Reply');
+                                    $("#replyformcontainer_<%= $question->{id} %>").toggle(false);
+                                }
+                                else {
+                                    $("#reply_<%= $question->{id} %>").html('- Hide');
+                                    $("#replyformcontainer_<%= $question->{id} %>").toggle(true);
+                                }
+                            });
+                            $("#submit_<%= $question->{id} %>").click(function(){
+                                $("#replyformcontainer_<%= $question->{id} %>").toggle(false);
+                            });
+                        });
+                    </script>
+                </div>
+                <div id="commentcontainer_<%= $question->{id} %>" class="commentcontainer">
+                </div>
+                <div id="replyformcontainer_<%= $question->{id} %>" class="replyformcontainer">
+                    <form id='commentform_<%= $question->{id} %>' action='/comments/<%= $question->{id} %>' method='POST'>
+                        <label class='commentlabel' for='comment'>Comment</label>
+                        <br><textarea name='comment' required></textarea>
+                        <input type='hidden' name='question_id' value='<%= $question->{id} %>'>
+                        <br><input id="submit_<%= $question->{id}%>" class="postbutton" type='submit' value='Post'>
+                    </form>
+                </div>
+                <script>
+                    $(document).ready(function(){
+                        var shown = false;
+                        var loaded = false;
+                        $("#showcomments_<%= $question->{id} %>").click(function(){
+                            if (shown){
+                                $("#commentcontainer_<%= $question->{id} %>").toggle(false);
+                                $("#showcomments_<%= $question->{id} %>").html("Show Comments");
+                                shown = false;
+                            }
+                            else {
+                                if (!loaded){  //Load comments for question via post request
+                                    var HTMLstring = "";
+                                    console.log('Loading comment data');
+                                    $.get("<%= url_for 'comments', {question_id => $question->{id}} %>", function(data){
+                                        console.log('Comment data loaded');
+                                        $.each(data, function(i, v){
+                                            HTMLstring = HTMLstring + (
+                                                "<div id='comment_" + v.id + "' class='comment'>\
+                                                <span id='commentvotecount_" + v.id + "' class='commentvotecount'>" + v.votes + "</span><div class='commentvotecontainer'>\
+                                                <img id='commentup_" + v.id + "' class='commentup' src='/../../img/smalluparrow.png'>\
+                                                <img id='commentdown_" + v.id + "' class='commentdown' src='/../../img/smalldownarrow.png'></div>\
+                                                <span id='commenttime_" + v.id + "' class='commenttime' ><h4>" + v.created + "</h4></span><img id='markanswer_" + v.id + "' \
+                                                class='markanswerbutton' question_id='" + v.question_id + "' src='/../../img/checkmark.png' data-toggle='tooltip' title='Mark as answer'>\
+                                                <img id='delete_" + v.id + "' question_id='" + v.question_id + "' class='deletecommentbutton' src='/../../img/trash.png' data-toggle='tooltip' title='Delete comment'>\
+                                                <img id='flag_" + v.id + "' question_id='" + v.question_id + "' class='flagcommentbutton' src='/../../img/flag.png' data-toggle='tooltip' title='Flag comment'>\
+                                                <span class='commenttext' id='commenttext_" + v.id + "' question_id='" + v.question_id + "' data-toggle='tooltip' title='Click to edit'>\
+                                                " + v.comment + "</span></div>");
+                                                $("#commentcontainer_<%= $question->{id} %>").html(HTMLstring); 
+                                        });
+                                        $(".commentup").each(function(){
+                                            
+                                            $(this).mouseout(function(){
+                                                $(this).attr('src','/../../img/smalluparrow.png');
+                                            });
+                                            $(this).mouseover(function(){
+                                                $(this).attr('src','/../../img/clickedsmalluparrow.png');
+                                            });
+                                            $(this).click(function(){
+                                                var commentid = $(this).attr("id");
+                                                idobject = /(\d+)/.exec(commentid);
+                                                id = idobject[1];
+                                                console.log(id);
+                                                $(this).attr('src','/../../img/clickedsmalluparrow.png');
+                                                $(this).unbind('mouseout');
+                                                $(this).unbind('mouseover');
+                                                $("#commentdown_" + id).attr('src', '/../../img/smalldownarrow.png');
+                                                $("#commentdown_" + id).mouseout(function(){
+                                                    $(this).attr('src','/../../img/smalldownarrow.png');
+                                                });
+                                                $("#commentdown_" + id).mouseover(function(){
+                                                    $(this).attr('src','/../../img/clickedsmalldownarrow.png');
+                                                });
+                                                $.post("/api/comments/vote/" + id + "/up", function(data){
+                                                    $("#commentvotecount_" + id).html(data.votes);
+                                                }, 'json');
+                                                console.log(data);
+                                            });
+                                        });
+                                        $(".commentdown").each(function(){
+                                            $(this).mouseout(function(){
+                                                $(this).attr('src','/../../img/smalldownarrow.png');
+                                            });
+                                             $(this).mouseover(function(){
+                                                $(this).attr('src','/../../img/clickedsmalldownarrow.png');
+                                            });
+                                            $(this).click(function(){
+                                                var commentid = $(this).attr("id");
+                                                idobject = /(\d+)/.exec(commentid);
+                                                id = idobject[1];
+                                                $(this).attr('src','/../../img/clickedsmalldownarrow.png');
+                                                $(this).unbind('mouseout');
+                                                $(this).unbind('mouseover');
+                                                $("#commentup_" + id).attr('src', '/../../img/smalluparrow.png');
+                                                $("#commentup_" + id).mouseout(function(){
+                                                    $(this).attr('src','/../../img/smalluparrow.png');
+                                                });
+                                                $("#commentup_" + id).mouseover(function(){
+                                                    $(this).attr('src','/../../img/clickedsmalluparrow.png');
+                                                });
+                                                $.post("/api/comments/vote/" + id + "/down", function(data){
+                                                    $("#commentvotecount_" + id).html(data.votes);
+                                                }, 'json');
+                                                console.log('post success');
+                                                
+                                            });
+                                        });
+                                        
+                                        $(".deletecommentbutton").each(function(){
+                                            var id = $(this).attr("id");
+                                            var question_id = $(this).attr("question_id");
+                                            $("#" + id).click(function(){
+                                                idobject = /(\d+)/.exec(id);
+                                                id = idobject[1];
+                                                $.ajax({
+                                                    url: "/comments/" + question_id + "/" + id, type: 'DELETE'
+                                                });
+                                                console.log('Deleted comment #' + id);
+                                                $("#comment_" + id).remove();
+                                            });
+                                        });
+                                        $(".markanswerbutton").each(function(){
+                                            var id = $(this).attr("id");
+                                            var question_id = $(this).attr("question_id");
+                                            $("#" + id).click(function(){
+                                                idobject = /(\d+)/.exec(id);
+                                                id = idobject[1];
+                                                $.post("/comments/" + question_id + "");
+                                            });
+                                        });
+                                        
+                                        $(".commenttext").each(function(){
+                                            var commentid = $(this).attr("id");
+                                            var question_id = $(this).attr("question_id");
+                                            var editformshown = false;
+                                            $("#" + commentid).click(function(){
+                                                if (!editformshown) {
+                                                    idobject = /(\d+)/.exec(commentid);
+                                                    id = idobject[1];
+                                                    var comment = $.trim($("#commenttext_" + id).text());
+                                                    console.log(comment);
+                                                    var commenteditHTML = "<form id='commentform_<%= $question->{id} %>'>\
+                                                        <label class='commentlabel' for='comment'>Edit Comment</label>\
+                                                        <br><textarea id='textarea_" + question_id + "' name='comment' required>" + comment + "</textarea>\
+                                                        <input type='hidden' name='question_id' value='<%= $question->{id} %>'>\
+                                                        <br><input id='editsubmit_<%= $question->{id}%>' class='postbutton' type='submit' value='Post'>\
+                                                        </form>"
+                                                    $("#comment_" + id).after(commenteditHTML);
+                                                    $("#editsubmit_" + question_id).click(function(){
+                                                        var message = $("#textarea_" + question_id).val();
+                                                        $.ajax({url: "/comments/" + question_id + "/" + id,
+                                                        type: "PUT",
+                                                        contentType: "application/x-www-form-urlencoded",
+                                                        dataType: 'json',
+                                                        data: {question_id: question_id, id: commentid, comment: message}});
+                                                    });
+                                                    editformshown = true;
+                                                }
+                                                else {
+                                                    $("#commentform_<%= $question->{id} %>").remove();
+                                                    editformshown = false;
+                                                }
+                                            });
+                                        });
+                                            //$(".markanswerbutton").click(function() {
+                                                //$.post("/comments/" + v.question_id + "/" + v.id + "/answer");
+                                           // });
+                                    }, 'json');
+                                    loaded = true;
+                                }
+                                shown = true;
+                                $("#commentcontainer_<%= $question->{id} %>").toggle(true);
+                                $("#showcomments_<%= $question->{id} %>").html("Hide Comments");
+                                console.log('Comments displayed');
+                            }
+                        });
+                    });
+                </script>
+                    </div>
+                % unless (!$question->{answer} ) {
+                    <div>Answered Question</div>
+                % }
+            % }
+            
+        % }
+            <script>
+                $(document).ready(function(){
+                    var formshown = false;
+                    $("#newquestion").click(function(){
+                        if (formshown){
+                            $("#newquestionbutton").html('+ New Question');
+                            $("#content").css("padding-top", "50px");
+                            $("#newquestionform").remove();
+                            formshown = false;
+                        }
+                        else {
+                            $("#newquestionbutton").html('- Hide');
+                            $("#content").css("padding-top", "0px");
+                            $("#bar").after(
+                                "<form id='newquestionform' action='/questions' method='POST'>\
+                                <label for='question'>New Question</label><br>\
+                                <textarea name='question' required></textarea><br>\
+                                <input class='postbutton' type='submit' value='Create'></form>");
+                            formshown = true;
+                        }
+                    });
+                });
+            </script>
+        </div>
+    </body>
+</html>

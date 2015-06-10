@@ -1,0 +1,379 @@
+@font-face {
+    font-family: Caviar;
+    src: url(Caviar.ttf);
+}
+
+body {
+    margin:0px;
+    padding:0px;
+    font-family: 'Noto Sans', sans-serif;
+    background-color: #afd2e9;
+    overflow-x: hidden;
+}
+
+#content {
+    padding-top: 50px;
+}
+
+.account {
+    color: #ffffff;
+}
+
+#newquestion {
+    margin: 1px;
+    height: 40px;
+    position: fixed;
+    z-index: 2;
+    background-color: #6d9d41;
+    border-radius: 10px;
+    border: 3px solid #005200;
+    cursor: pointer;
+}
+
+#newquestionform {
+    padding-top: 55px;
+}
+
+#questionbutton:hover {
+    background-color: #70E270;
+    cursor: pointer;
+}
+
+#bar {
+    position: fixed;
+    width: 100%;
+    display: flex;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    margin: 0px;
+    padding: 0px;
+    background-color: #3a332d;
+    box-shadow: 0px 2px 3px 0.5px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+#logo {
+    display: block;
+    height: 50px;
+}
+
+#sortbar {
+    position: relative;
+    top: 50px;
+    display: flex;
+    height: 50px;
+    width: 100%;
+}
+
+.sortbar {
+    cursor: pointer;
+}
+
+#popularity {
+    text-decoration: underline;
+}
+
+.questionansweredcontainer {
+    width: 100%;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    border-bottom: 2px solid #000;
+}
+
+.questionunansweredcontainer {
+    width: 100%;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    border-bottom: 2px solid #000;
+}
+
+.question {
+    display: flex;
+    width: 100%;
+    min-height:83px;
+    justify-content: left;
+    align-items: center;
+}
+
+.vote {
+    width: 60px;
+    position: relative;
+    flex: 1 1 60px;
+}
+
+.votecontainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vote_up {
+    width: 50px;
+    margin: 5px;
+    margin-bottom: 2.5px;
+    cursor: pointer;
+}
+
+.count {
+    position: absolute;
+    width: 20px;
+    height: 25px;
+    left: 20px;
+    top: 20px;
+}
+
+.countnumber {
+    user-select: none;
+    cursor: default;
+}
+
+.vote_down {
+    width: 50px;
+    margin: 5px;
+    margin-top: 2.5px;
+    cursor: pointer;
+}
+
+.questionbuttoncontainer {
+    width: 50px;
+    padding-left: 10px;
+}
+
+.questiontime {
+    padding: 5px;
+    cursor: default;
+}
+.question {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+    
+
+.questiontitle {
+    display: flex;
+    font-size: 22px;
+    font-weight: bold;
+    padding: 5px;
+    padding-left: 10px;
+    flex: 1 1;
+    align-items: center;
+}
+
+.infobar {
+    display: flex;
+}
+
+.info {
+    width: auto;
+    padding: 3px;
+    padding-left: 15px;
+    cursor: pointer;
+}
+
+.time {
+    width: auto;
+    padding: 3px;
+    padding-left: 15px;
+    cursor: default;
+}
+
+.deletecommentbutton {
+    height: 20px;
+    min-width: 20px;
+    cursor: pointer;
+    padding: 2px;
+}
+
+.deletequestionbutton {
+    height: 25px;
+    min-width: 20px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.markanswerbutton {
+    display: none;            /*DISABLED*/
+    height: 20px;
+    min-width: 20px;
+    cursor: pointer;
+    padding: 2px;
+    padding-left: 4px;
+}
+
+a {
+    text-decoration: none;
+    color: #000;
+}
+
+.countnumber {
+    font-size: 18;
+    color: #757575;
+    text-align: center;
+}
+
+p {
+    margin: 0px;
+    padding: 0px;
+}
+
+h1 {
+    margin: 0px;
+    padding: 0px;
+}
+
+h2 {
+    margin: 5px;
+    padding: 0px;
+    font-size: 14;
+    font-weight: normal;
+}
+
+h3 {
+    margin: 5px;
+    padding: 0px;
+    font-size: 20;
+    font-weight: normal;
+}
+
+h4 {
+    font-size: 10;
+    margin: 0px;
+    padding: 0px;
+}
+
+.flagcontainer {
+    display: none;   /*DISABLED*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.deletecontainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.flag {
+    display: none;               /*DISABLED*/
+    height: 18px;
+}
+
+.flagtext {
+    margin: 0px;
+    padding: 0px;
+}
+
+.flagcommentbutton {
+    display: none;     /*DISABLED*/
+    MINwidth: 15px;
+    height: 15px;
+    cursor: pointer;
+    padding: 2px;
+}
+.commentcontainer {
+    height: auto;
+}
+.comment {
+    position: relative;
+    display: flex;
+    align-items: center;
+    left: 50px;
+    border-bottom: 2px solid #000;
+    border-left: 2px solid #000;
+    justify-content: left;
+    vertical-align: middle;
+}
+
+.commenttext {
+    display: flex;
+    cursor: pointer;
+}
+
+.answer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    left: 50px;
+    width: 100%;
+    height: auto;
+    border-bottom: 2px solid #000;
+    border-left: 2px solid #000;
+    justify-content: left;
+    vertical-align: middle;
+}
+
+.replytime {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.replyformcontainer {
+    display: none;
+}
+
+textarea {
+    width: 800px;
+    height: 100px;
+    margin: 5px;
+}
+
+.postbutton {
+    margin-left: 5px;
+    background-color: #6d9d41;
+    border-radius: 5px;
+    border: 2px solid #005200;
+    font-size: 14;
+    cursor: pointer;
+}
+
+.commentlabel {
+    margin: 5px;
+}
+
+form {
+    margin: 10px;
+    margin-left: 45px;
+    margin-top: 0px;
+}
+
+.commentvotecontainer  {
+    display: flex;
+    min-width: 30px;
+    flex-direction: column;
+    padding-right: 5px;
+}
+.commentup {
+    width: 25px;
+    padding: 5px;
+    padding-bottom: 3px;
+    cursor: pointer;
+}
+
+.commentdown {
+    width: 25px;
+    padding: 5px;
+    padding-top: 3px;
+    cursor: pointer;
+}
+
+.commentvotecount {
+    min-width: 10px;
+    padding: 5px;
+    cursor: default;
+}
+
+.commenttime {
+    min-width: 60px;
+    cursor: default;
+}
+
+h4 {
+    text-align: center;
+}

@@ -12,9 +12,9 @@ $(document).ready(function(){
         var message = $("textarea[name=comment]").val();
         $.ajax({url: "/comments/" + question_id + "/" + id,
         type: "PUT",
-        contentType: "application/json",
+        contentType: "application/x-www-form-urlencoded",
         dataType: 'json',
-        data: JSON.stringify({question_id: question_id, id: id, comment: message})});
+        data: {question_id: question_id, id: id, comment: message}});
         console.log('PUT sent');
     });
 });

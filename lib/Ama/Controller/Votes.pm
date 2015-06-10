@@ -19,7 +19,6 @@ sub count {
 
 sub cast {
   my $self = shift;
-
   my $entry_type = $self->param('entry_type');
   my $entry_id = $self->param('entry_id');
   my $vote = $self->param('vote');
