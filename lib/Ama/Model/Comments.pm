@@ -14,8 +14,8 @@ sub all { shift->pg->db->query(q[
     comments.id,
     comments.question_id,
     comment,
-    comments.created, 
-    comments.modified,
+    to_char(comments.created, 'MM/DD/YYYY HH12:MI:SS') as created,
+    to_char(comments.modified, 'MM/DD/YYYY HH12:MI:SS') as modified,
     comments.username,
     case when answer is not null then comment else null end as answer,
     comments.answer as answered_by,
@@ -27,7 +27,7 @@ sub all { shift->pg->db->query(q[
     left join votes on comments.id=votes.entry_id and votes.entry_type='comments'
   where question_id = ?
   group by comments.id
-  order by 7,votes desc,comments.created
+  order by 7,votes desc,4
 ], @_)->hashes->to_array }
 
 sub find { shift->pg->db->query('select * from comments where id = ?', shift)->hash }

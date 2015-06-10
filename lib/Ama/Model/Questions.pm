@@ -13,9 +13,8 @@ sub all { shift->pg->db->query(q[
   select
     questions.id,
     question,
-    questions.created,
-    questions.modified,
-    questions.username,
+    to_char(questions.created, 'MM/DD/YYYY HH12:MI:SS') as created,
+    to_char(questions.modified, 'MM/DD/YYYY HH12:MI:SS') as modified,
     SUM(CASE WHEN vote = 'up' THEN 1 ELSE 0 END) as votes_up,
     SUM(CASE WHEN vote = 'down' THEN 1 ELSE 0 END) as votes_down,
     SUM(CASE WHEN vote = 'up' THEN 1 ELSE -1 END) as votes,
@@ -38,7 +37,7 @@ sub all { shift->pg->db->query(q[
     left join votes on questions.id=votes.entry_id and votes.entry_type='questions'
     left join comments on questions.id=comments.question_id
   group by questions.id
-  order by 9 desc,votes desc,questions.created
+  order by 9 desc,votes desc,3
 ])->hashes->to_array }
 sub answered { shift->pg->db->query(q[select questions.id,question,SUM(CASE WHEN vote = 'up' THEN 1 ELSE 0 END) as votes_up, SUM(CASE WHEN vote = 'down' THEN 1 ELSE 0 END) as votes_down from questions left join votes on questions.id=votes.entry_id and votes.entry_type='questions' left join comments on questions.id=comments.question_id where answer is not null group by questions.id])->hashes->to_array }
 sub unanswered { shift->pg->db->query(q[select questions.id,question,SUM(CASE WHEN vote = 'up' THEN 1 ELSE 0 END) as votes_up, SUM(CASE WHEN vote = 'down' THEN 1 ELSE 0 END) as votes_down from questions left join votes on questions.id=votes.entry_id and votes.entry_type='questions' left join comments on questions.id=comments.question_id where answer is null group by questions.id])->hashes->to_array }
