@@ -15,7 +15,7 @@
     </div>
     <div id="content">
         % for my $question (@$questions) {
-            % if (!$question->{answer}) {
+            % if (!$question->{answer} || 1) {
                 <div id="question_<%= $question->{id} %>" class="question<%= $question->{answer} ? 'answered' : 'unanswered' %>container">
                     <div class="questioninfocontainer">
                         <div class="votecontainer">
@@ -317,8 +317,8 @@
                     </div>
             % }
             % unless (!$question->{answer} ) {
-                    <div>Answered Question</div>
-                % }
+                    %#<div>Answered Question</div>
+            % }
         % }
             <script>
                 $(document).ready(function(){
