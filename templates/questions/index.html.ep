@@ -15,9 +15,7 @@
     </div>
     <div id="content">
         % for my $question (@$questions) {
-            % warn dumper $question ;
             % if (!$question->{answer}) {
-            
                 <div id="question_<%= $question->{id} %>" class="question<%= $question->{answer} ? 'answered' : 'unanswered' %>container">
                     <div class="questioninfocontainer">
                         <div class="votecontainer">
@@ -69,12 +67,16 @@
                                 % }
                             </div>
                             <div class="questionbuttoncontainer">
+                                % if ( $question->{username} eq session 'username' ) {
                                 <div class="deletecontainer">
                                     <img id="deletequestion_<%= $question->{id} %>" class="deletequestionbutton" src="/../../img/trash.png" data-toggle='tooltip' title='Delete question'>
                                 </div>
+                                % }
+                                % if ( $question->{username} eq session 'username' ) {
                                 <div id="flagcontainer_<%= $question->{id} %>" class="flagcontainer">
                                     <img id="flag_<%= $question->{id} %>" class="flag" src="/../../img/flag.png" data-toggle='tooltip' title='Flag question'>
                                 </div>
+                                % }
                                 <script>
                                     $(document).ready(function(){
                                         $("#flagcontainer_<%= $question->{id} %>").click(function(){
@@ -97,6 +99,13 @@
                                 console.log('Deleted question # <%= $question->{id} %>');
                                 $("#question_<%= $question->{id} %>").remove();
                             });
+                            $("#deletequestion_<%= $question->{id} %>").mouseover(function(){
+                                $(this).attr("src", "/../../img/opentrash.png");
+                            });
+                            $("#deletequestion_<%= $question->{id} %>").mouseout(function(){
+                                $(this).attr("src", "/../../img/trash.png");
+                            });
+                            
                         });
                     </script>
                     <div class="question">
@@ -163,7 +172,9 @@
                                                 <img id='flag_" + v.id + "' question_id='" + v.question_id + "' class='flagcommentbutton' src='/../../img/flag.png' data-toggle='tooltip' title='Flag comment'>\
                                                 <span class='commenttext' id='commenttext_" + v.id + "' question_id='" + v.question_id + "' data-toggle='tooltip' title='Click to edit'>\
                                                 " + v.comment + "</span></div>");
-                                                $("#commentcontainer_<%= $question->{id} %>").html(HTMLstring); 
+                                                $("#commentcontainer_<%= $question->{id} %>").html(HTMLstring);
+                                                console.log("Checked checkmark for question #" + v.id);
+                                                console.log("Comment number " + v.id + " and question number " + v.question_id); 
                                         });
                                         $(".commentup").each(function(){
                                             
@@ -235,6 +246,16 @@
                                                 console.log('Deleted comment #' + id);
                                                 $("#comment_" + id).remove();
                                             });
+                                            $("#" + id).mouseover(function(){
+                                                idobject = /(\d+)/.exec(id);
+                                                id = idobject[1];
+                                                $(this).attr("src", "/../../img/opentrash.png");
+                                            });
+                                            $("#" + id).mouseout(function(){
+                                                idobject = /(\d+)/.exec(id);
+                                                id = idobject[1];
+                                                $(this).attr("src", "/../../img/trash.png");
+                                            });
                                         });
                                         $(".markanswerbutton").each(function(){
                                             var id = $(this).attr("id");
@@ -294,11 +315,10 @@
                     });
                 </script>
                     </div>
-                % unless (!$question->{answer} ) {
+            % }
+            % unless (!$question->{answer} ) {
                     <div>Answered Question</div>
                 % }
-            % }
-            
         % }
             <script>
                 $(document).ready(function(){

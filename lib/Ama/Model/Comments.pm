@@ -20,11 +20,8 @@ sub all { shift->pg->db->query(q[
     case when answer is not null then comment else null end as answer,
     comments.answer as answered_by,
     answered,
-    SUM(CASE WHEN vote = 'up' THEN 1 ELSE 0 END) as votes_up,
-    SUM(CASE WHEN vote = 'down' THEN 1 ELSE 0 END) as votes_down,
-    SUM(CASE WHEN vote = 'up' THEN 1 ELSE -1 END) as votes
+    votes('comments', comments.id) as votes
   from comments
-    left join votes on comments.id=votes.entry_id and votes.entry_type='comments'
   where question_id = ?
   group by comments.id
   order by 7,votes desc,4
@@ -42,11 +39,11 @@ sub save {
 }
 
 sub answer {
-  my ($self, $id, $answer, $username) = @_;
-  $self->pg->db->query('update comments set answered=null where id = ?', $id);
+  my ($self, $question_id, $id, $answer, $username) = @_;
+  $self->pg->db->query('update comments set answered=null where question_id = ?', $question_id);
   if ( $answer ) {
-    my $sql = 'update comments set answered = now() where id = ?';
-    $self->pg->db->query($sql, $id);
+    my $sql = 'update comments set answer = ?, answered = now() where id = ?';
+    $self->pg->db->query($sql, $username, $id);
   }
 }
 

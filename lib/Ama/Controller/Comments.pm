@@ -86,10 +86,11 @@ sub update {
 sub answer {
   my $self = shift;
 
+  my $question_id = $self->param('question_id');
   my $id = $self->param('id');
   my $answer = $self->param('answer');
   my $username = $self->session->{username};
-  $self->render(json => {ok => $self->comments->answer($id, $answer, $username)});
+  $self->render(json => {ok => $self->comments->answer($question_id, $id, $answer, $username)});
 }
 
 sub _validation {

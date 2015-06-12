@@ -31,7 +31,8 @@ sub index {
 
 sub remove {
   my $self = shift;
-  my $ok = $self->questions->remove($self->param('id'));
+  my $username = $self->session->{username};
+  my $ok = $self->questions->remove($username, $self->param('id'));
   $self->respond_to(
     json => {json => {ok => $ok}},
   );

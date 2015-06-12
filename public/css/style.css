@@ -3,6 +3,12 @@
     src: url(Caviar.ttf);
 }
 
+* {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
 body {
     margin:0px;
     padding:0px;
@@ -34,7 +40,7 @@ body {
     padding-top: 55px;
 }
 
-#questionbutton:hover {
+#newquestion:hover {
     background-color: #70E270;
     cursor: pointer;
 }
@@ -56,6 +62,10 @@ body {
 #logo {
     display: block;
     height: 50px;
+}
+
+#logo:focus {
+    outline:0;
 }
 
 #sortbar {
@@ -103,12 +113,12 @@ body {
 .vote {
     width: 60px;
     position: relative;
-    flex: 1 1 60px;
 }
 
 .votecontainer {
     display: flex;
     align-items: center;
+    align-content: center;
     justify-content: center;
 }
 
@@ -163,6 +173,10 @@ body {
     padding-left: 10px;
     flex: 1 1;
     align-items: center;
+    cursor: pointer;
+    -webkit-user-select: all;
+    -moz-user-select: all;
+    -ms-user-select: all;
 }
 
 .infobar {
@@ -198,10 +212,9 @@ body {
 }
 
 .markanswerbutton {
-    display: none;            /*DISABLED*/
+    /*display: none;*/            /*DISABLED*/
     height: 20px;
     min-width: 20px;
-    cursor: pointer;
     padding: 2px;
     padding-left: 4px;
 }
@@ -294,6 +307,9 @@ h4 {
 .commenttext {
     display: flex;
     cursor: pointer;
+    -webkit-user-select: all;
+    -moz-user-select: all;
+    -ms-user-select: all;
 }
 
 .answer {
