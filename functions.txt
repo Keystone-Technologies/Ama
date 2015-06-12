@@ -17,31 +17,42 @@ $BODY$
   END; 
 $BODY$ LANGUAGE plpgsql;
   
-CREATE OR REPLACE FUNCTION answer(integer, out answer text, out answered timestamptz, out answered_by text) AS
+drop function answer(integer);
+CREATE OR REPLACE FUNCTION answer(integer)
+RETURNS json
+AS
 $BODY$
+  DECLARE j json;
   BEGIN
     select
-      comment, comments.answered, comments.answer into answer, answered, answered_by
+      row_to_json(comments) into j
     from
       comments 
     where
       comments.answer is not null and question_id=$1;
+    if j is null then
+      return null;
+    else
+      return j;
+    end if;
   END; 
 $BODY$ LANGUAGE plpgsql;
 
-  
-    
-     
-CREATE FUNCTION test_ret(a TEXT, b TEXT) RETURNS RECORD AS $$
-DECLARE 
-  ret RECORD;
-BEGIN
-  -- Arbitrary expression to change the first parameter
-  IF LENGTH(a) < LENGTH(b) THEN
-      SELECT TRUE, a || b, 'a shorter than b' INTO ret;
-  ELSE
-      SELECT FALSE, b || a INTO ret;
-  END IF;
-RETURN ret;
-END;$$ LANGUAGE plpgsql;
-     
+CREATE OR REPLACE FUNCTION answer(integer,out answer text,out answered timestamptz,out answered_by text)
+AS
+$BODY$
+  DECLARE a text;
+  DECLARE b timestamptz;
+  DECLARE c text;
+  BEGIN
+    select
+      comments.comment,comments.answered,comments.answer into a,b,c
+    from
+      comments 
+    where
+      comments.answer is not null and question_id=$1;
+    answer := a;
+    answered := b;
+    answered_by := c;
+  END; 
+$BODY$ LANGUAGE plpgsql;

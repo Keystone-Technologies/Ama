@@ -10,6 +10,7 @@ sub add {
 }
 
 sub all { shift->pg->db->query(q[
+  select * from (
   select
     questions.id,
     question,
@@ -17,11 +18,11 @@ sub all { shift->pg->db->query(q[
     to_char(questions.created, 'MM/DD/YYYY HH12:MI:SS') as created,
     to_char(questions.modified, 'MM/DD/YYYY HH12:MI:SS') as modified,
     votes('questions', questions.id) as votes,
-    (answer(questions.id)).*
+    answer(questions.id) as answer
   from questions
-  group by questions.id
-  order by 8 desc,votes desc,4
-])->hashes->to_array }
+  ) questions
+  order by answer::json->>'answered' desc,votes desc,4
+])->expand->hashes->to_array }
 sub answered { shift->pg->db->query(q[select questions.id,question,SUM(CASE WHEN vote = 'up' THEN 1 ELSE 0 END) as votes_up, SUM(CASE WHEN vote = 'down' THEN 1 ELSE 0 END) as votes_down from questions left join votes on questions.id=votes.entry_id and votes.entry_type='questions' left join comments on questions.id=comments.question_id where answer is not null group by questions.id])->hashes->to_array }
 sub unanswered { shift->pg->db->query(q[select questions.id,question,SUM(CASE WHEN vote = 'up' THEN 1 ELSE 0 END) as votes_up, SUM(CASE WHEN vote = 'down' THEN 1 ELSE 0 END) as votes_down from questions left join votes on questions.id=votes.entry_id and votes.entry_type='questions' left join comments on questions.id=comments.question_id where answer is null group by questions.id])->hashes->to_array }
 
