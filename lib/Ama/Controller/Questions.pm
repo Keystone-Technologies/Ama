@@ -21,7 +21,6 @@ sub edit {
 
 sub index {
   my $self = shift;
-  $self->session->{username} ||= time;
   $self->stash(questions => $self->questions->all);
   $self->respond_to(
     json => {json => $self->stash('questions')},
@@ -31,10 +30,10 @@ sub index {
 
 sub remove {
   my $self = shift;
-  my $username = $self->session->{username};
-  my $ok = $self->questions->remove($username, $self->param('id'));
+  $self->stash(question => $self->questions->remove($self->param('id')));
   $self->respond_to(
-    json => {json => {ok => $ok}},
+    json => {json => $self->stash('question')},
+    any => {},
   );
 }
 
@@ -51,16 +50,15 @@ sub store {
   my $self = shift;
 
   my $validation = $self->_validation;
-  warn $self->dumper($validation->output);
   return $self->respond_to(
-    json => {json => {id => undef}},
+    json => {json => {}},
     any => sub { $self->render(action => 'create', question => {}) },
   ) if $validation->has_error;
 
-  my $id = $self->questions->add($validation->output, $self->session->{username});
+  $self->stash(question => $self->questions->add($validation->output));
 
   $self->respond_to(
-    json => {json => {id => $id}},
+    json => {json => $self->stash('question')},
     any => sub { $self->redirect_to('questions') },
   );
 }
@@ -70,14 +68,15 @@ sub update {
 
   my $validation = $self->_validation;
   return $self->respond_to(
-    json => {json => {id => undef}}
+    json => {json => {}},
+    any => sub { $self->render(action => 'edit', question => {}) },
   ) if $validation->has_error;
 
   my $id = $self->param('id');
-  $id = $self->questions->save($id, $validation->output);
+  $self->stash('question' => $self->questions->save($id, $validation->output));
 
   $self->respond_to(
-    json => {json => {id => $id}},
+    json => {json => $self->stash('question')},
     any => sub { $self->redirect_to('show_question', id => $id) },
   );
 }

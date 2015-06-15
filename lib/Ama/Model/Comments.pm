@@ -2,49 +2,52 @@ package Ama::Model::Comments;
 use Mojo::Base -base;
 
 has 'pg';
+has 'username';
 
 sub add {
-  my ($self, $comment, $username) = @_;
-  my $sql = 'insert into comments (question_id, comment, username) values (?, ?, ?) returning id';
-  return $self->pg->db->query($sql, $comment->{question_id}, $comment->{comment}, $username)->hash->{id};
+  my ($self, $question_id, $comment) = @_;
+  my $sql = 'insert into comments (question_id, comment, username) values (?, ?, ?) returning *';
+  return $self->pg->db->query($sql, $question_id, $comment, $self->username)->hash;
 }
 
-sub all { shift->pg->db->query(q[
+sub all {
+  my $self = shift;
+  $self->pg->db->query(q[
   select
-    comments.id,
+    comments.id as comment_id,
     comments.question_id,
     comment,
     to_char(comments.created, 'MM/DD/YYYY HH12:MI:SS') as created,
     to_char(comments.modified, 'MM/DD/YYYY HH12:MI:SS') as modified,
-    comments.username,
-    case when answer is not null then comment else null end as answer,
-    comments.answer as answered_by,
-    answered,
-    votes('comments', comments.id) as votes
-  from comments
-  where question_id = ?
-  group by comments.id
-  order by 7,votes desc,4
-], @_)->hashes->to_array }
+    comments.username as username,
+    votes('comments',comments.id) votes,
+    (select vote from votes where entry_type = 'comments' and entry_id = comments.id and username = ?) as my_vote,
+    flagged('comments',comments.id) flagged,
+    case when answers.username is not null then 1 else 0 end as answer,
+    answers.username as approver,
+    answers.created as approved
+  from
+    comments
+  left join
+    answers on comments.id=answers.comment_id
+  where
+    comments.question_id = ?
+  group by comments.id,answers.username,answers.created
+  order by 10 desc,votes desc,4
+], $self->username, @_)->hashes->to_array }
 
 sub find { shift->pg->db->query('select * from comments where id = ?', shift)->hash }
 
-sub remove { shift->pg->db->query('delete from comments where id = ?', shift) }
+sub remove {
+  my ($self, $id) = @_;
+  my $sql = 'delete from comments where id = ? and username = ? and answered(?) != 1 limit 1 returning *';
+  $self->pg->db->query($sql, $id, $self->username)->hash;
+}
 
 sub save {
   my ($self, $id, $comment) = @_;
-  warn Data::Dumper::Dumper($comment);
-  my $sql = 'update comments set comment = ?, modified = now() where id = ?';
-  $self->pg->db->query($sql, $comment->{comment}, $id);
-}
-
-sub answer {
-  my ($self, $question_id, $id, $answer, $username) = @_;
-  $self->pg->db->query('update comments set answered=null where question_id = ?', $question_id);
-  if ( $answer ) {
-    my $sql = 'update comments set answer = ?, answered = now() where id = ?';
-    $self->pg->db->query($sql, $username, $id);
-  }
+  my $sql = 'update comments set comment = ?, modified = now() where id = ? and username = ? and answered(?) != 1 limit 1 returning *';
+  $self->pg->db->query($sql, $comment, $id, self->username)->hash;
 }
 
 1;

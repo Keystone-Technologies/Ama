@@ -31,9 +31,11 @@ sub index {
 
 sub remove {
   my $self = shift;
-  my $ok = $self->comments->remove($self->param('id'));
+  my $id = $self->param('id');
+  $self->stash('comment' => $self->comments->remove($id));
   $self->respond_to(
-    json => {json => {ok => $ok}},
+    json => {json => $self->stash('comment')},
+    any => {},
   );
 }
 
@@ -51,54 +53,47 @@ sub store {
 
   my $validation = $self->_validation;
   return $self->respond_to(
-    json => {json => {id => undef}},
+    json => {json => {}},
     any => sub { $self->render(action => 'create', comment => {}) },
   ) if $validation->has_error;
 
-  my $id = $self->comments->add($validation->output, $self->session->{username});
+  my $question_id = $self->param('question_id');
+  my $comment = $self->param('comment');
+  $self->stash('comment' => $self->comments->add($question_id, $comment));
 
   $self->respond_to(
-    json => {json => {id => $id}},
+    json => {json => $self->stash('comment')},
     any => sub { $self->redirect_to('questions')},
   );
 }   
 
 sub update {
   my $self = shift;
-  warn $self->dumper($self->req->params->to_hash);
-  $self->stash(comment => ($self->param('comment')));
+
   my $validation = $self->_validation;
   return $self->respond_to(
-  json => {json => {id => $self->res->json->{'comment'}}},
-   any => sub { $self->render(action => 'edit', comment => {}) },
+    json => {json => {}},
+    any => sub { $self->render(action => 'edit', comment => {}) },
   ) if $validation->has_error;
 
   my $id = $self->param('id');
-  $id = $self->comments->save($id, $validation->output);
+  my $comment = $self->param('comment');
+  $self->stash('comment' => $self->comments->save($id, $comment));
+
   $self->respond_to(
-    json => {json => {id => $id}},
+    json => {json => $self->stash('comment')},
     any => sub { 
       $self->redirect_to('questions');
     },
   );
 }   
 
-sub answer {
-  my $self = shift;
-
-  my $question_id = $self->param('question_id');
-  my $id = $self->param('id');
-  my $answer = $self->param('answer');
-  my $username = $self->session->{username};
-  $self->render(json => {ok => $self->comments->answer($question_id, $id, $answer, $username)});
-}
-
 sub _validation {
   my $self = shift;
 
   my $validation = $self->validation;
-  $validation->required('comment');
   $validation->required('question_id');
+  $validation->required('comment');
   return $validation;
 }
 
