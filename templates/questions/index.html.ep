@@ -39,7 +39,8 @@
                                                 $("#down_<%= $question->{id}%>").attr("src", "/img/downarrow.png");
                                                 $.post("<%= url_for 'cast_vote', {entry_type=>'questions', \
                                                 entry_id=>$question->{id}, vote=>'up'} %>", function(data){
-                                                $("#count_<%= $question->{id} %>").html(data.votes);
+                                                    console.log(data);
+                                                    $("#count_<%= $question->{id} %>").html(data.votes);
                                                 }, 'json');
                                             });
                                         });
@@ -59,8 +60,8 @@
                                                 $("#up_<%= $question->{id}%>").attr("src", "/img/uparrow.png");
                                                 $.post("<%= url_for 'cast_vote', {entry_type=>'questions', \
                                                 entry_id=>$question->{id}, vote=>'down'} %>", function(data){
-                                                console.log(data);
-                                                $("#count_<%= $question->{id} %>").html(data.votes);
+                                                    console.log(data);
+                                                    $("#count_<%= $question->{id} %>").html(data.votes);
                                                 }, 'json');
                                             });
                                         });
@@ -110,7 +111,7 @@
                         });
                     </script>
                     <div class="question">
-                        <h1 class="questiontitle"><%= $question->{question} %></h1>
+                        <h1 id="questiontitle_<%=$question->{id} %>" class="questiontitle"><%= $question->{question} %></h1>
                         <div id="<%= $question->{id} %>" class="infobar">
                             <h4 id="showcomments_<%= $question->{id}%>" class="info">Show Comments</h4>
                             <h4 id="reply_<%= $question->{id}%>" class ="info">Reply</h4>
@@ -138,7 +139,7 @@
                 <div id="commentcontainer_<%= $question->{id} %>" class="commentcontainer">
                 </div>
                 <div id="replyformcontainer_<%= $question->{id} %>" class="replyformcontainer">
-                    <form id='commentform_<%= $question->{id} %>' action="<%= url_for 'store_comment', {id => $question->{id}} %>" method='POST'>
+                    <form id='commentform_<%= $question->{id} %>' action="<%= url_for 'store_comment', {question_id => $question->{id}} %>" method='POST'>
                         <label class='commentlabel' for='comment'>Comment</label>
                         <br><textarea name='comment' required></textarea>
                         <input type='hidden' name='question_id' value='<%= $question->{id} %>'>
@@ -158,24 +159,32 @@
                             else {
                                 if (!loaded){  //Load comments for question via post request
                                     var HTMLstring = "";
-                                    console.log('Loading comment data');
                                     $.get("<%= url_for 'comments', {question_id => $question->{id}} %>", function(data){
-                                        console.log('Comment data loaded');
+                                        console.log(data);
                                         $.each(data, function(i, v){
+                                            console.log("in function");
+                                            var markanswerattributes = "";
+                                                if ("<%=$question->{username} %>" == "<%= session 'username' %>") {
+                                                    markanswerattributes = "src='/img/checkmark.png' data-toggle='tooltip' title='Mark as answer' onclick='answerbuttonclick(" + v.comment_id + ", false, " + v.question_id + ");' \
+                                                    onmouseover='answerbuttonhover(this.id, false, true);' onmouseout='answerbuttonhover(this.id, false, false);' style='cursor:pointer'";
+                                                }
+                                                else {
+                                                    markanswerattributes = "src='/img/checkmark.png'";
+                                                }
+                                            
+                                            console.log(markanswerattributes);
                                             HTMLstring = HTMLstring + (
-                                                "<div id='comment_" + v.id + "' class='comment'>\
-                                                <span id='commentvotecount_" + v.id + "' class='commentvotecount'>" + v.votes + "</span><div class='commentvotecontainer'>\
-                                                <img id='commentup_" + v.id + "' class='commentup' src='/img/smalluparrow.png'>\
-                                                <img id='commentdown_" + v.id + "' class='commentdown' src='/img/smalldownarrow.png'></div>\
-                                                <span id='commenttime_" + v.id + "' class='commenttime' ><h4>" + v.created + "</h4></span><img id='markanswer_" + v.id + "' \
-                                                class='markanswerbutton' question_id='" + v.question_id + "' src='/img/checkmark.png' data-toggle='tooltip' title='Mark as answer'>\
-                                                <img id='delete_" + v.id + "' question_id='" + v.question_id + "' class='deletecommentbutton' src='/img/trash.png' data-toggle='tooltip' title='Delete comment'>\
-                                                <img id='flag_" + v.id + "' question_id='" + v.question_id + "' class='flagcommentbutton' src='/img/flag.png' data-toggle='tooltip' title='Flag comment'>\
-                                                <span class='commenttext' id='commenttext_" + v.id + "' question_id='" + v.question_id + "' data-toggle='tooltip' title='Click to edit'>\
+                                                "<div id='comment_" + v.comment_id + "' class='comment'>\
+                                                <span id='commentvotecount_" + v.comment_id + "' class='commentvotecount'>" + v.votes + "</span><div class='commentvotecontainer'>\
+                                                <img id='commentup_" + v.comment_id + "' class='commentup' src='/img/smalluparrow.png'>\
+                                                <img id='commentdown_" + v.comment_id + "' class='commentdown' src='/img/smalldownarrow.png'></div>\
+                                                <span id='commenttime_" + v.comment_id + "' class='commenttime' ><h4>" + v.created + "</h4></span><img id='markanswer_" + v.comment_id + "' \
+                                                class='markanswerbutton' question_id='" + v.question_id + "' " + markanswerattributes + ">\
+                                                <img id='delete_" + v.comment_id + "' question_id='" + v.question_id + "' class='deletecommentbutton' src='/img/trash.png' data-toggle='tooltip' title='Delete comment'>\
+                                                <img id='flag_" + v.comment_id + "' question_id='" + v.question_id + "' class='flagcommentbutton' src='/img/flag.png' data-toggle='tooltip' title='Flag comment'>\
+                                                <span class='commenttext' id='commenttext_" + v.comment_id + "' question_id='" + v.question_id + "' data-toggle='tooltip' title='Click to edit'>\
                                                 " + v.comment + "</span></div>");
                                                 $("#commentcontainer_<%= $question->{id} %>").html(HTMLstring);
-                                                console.log("Checked checkmark for question #" + v.id);
-                                                console.log("Comment number " + v.id + " and question number " + v.question_id); 
                                         });
                                         $(".commentup").each(function(){
                                             
@@ -231,6 +240,7 @@
                                                     $("#commentvotecount_" + id).html(data.votes);
                                                 }, 'json');
                                                 console.log('post success');
+                                                console.log(data);
                                                 
                                             });
                                         });
@@ -301,9 +311,6 @@
                                                 }
                                             });
                                         });
-                                            //$(".markanswerbutton").click(function() {
-                                                //$.post(url_for('mark_comment_as_answer', {question_id: v.question_id, id: v.id}));
-                                           // });
                                     }, 'json');
                                     loaded = true;
                                 }
@@ -316,7 +323,105 @@
                     });
                 </script>
                     </div>
-            % }
+            % } else {
+                
+                
+                <div id="question_<%= $question->{id} %>" class="questionansweredcontainer">
+                    <div class="questioninfocontainer">
+                        <div class="answeredquestionbuttoncontainer">
+                        <div class="answeredcount">
+                            <p id="count_<%= $question->{id} %>" class="countnumber"><%= $question->{votes} %></p>
+                        </div>
+                            % if ( $question->{username} eq session 'username' ) {
+                                <div class="deletecontainer">
+                                    <img id="deletequestion_<%= $question->{id} %>" class="deletequestionbutton" src="/img/trash.png" data-toggle='tooltip' 
+                                    title='Delete question' onmouseover='trashhover(this.id, true)' onmouseout='trashhover(this.id, false)'>
+                                </div>
+                                <script>
+                                $(document).ready(function(){
+                                    $("#deletequestion_<%= $question->{id} %>").click(function(){
+                                        $.ajax({
+                                            url: "<%= url_for 'remove_question', {id => $question->{id}} %>", type: 'DELETE'
+                                        });
+                                        console.log('Deleted question # <%= $question->{id} %>');
+                                        $("#question_<%= $question->{id} %>").remove();
+                                    });
+                                });
+                                </script>
+                            % }
+                        </div>
+                        <div id="questiontime_<%= $question->{created} %>" class="questiontime">
+                            <h4><%= $question->{created} %></h4>
+                        </div>
+                    </div>
+                    <div class="question">
+                        <h1 class="questiontitle"><%= $question->{question} %></h1>
+                        <div id="<%= $question->{id} %>" class="infobar">
+                            <h4 id="showcomments_<%= $question->{id}%>" class="info">Show Comments</h4>
+                        </div>
+                    </div>
+                </div>
+                <div id="commentcontainer_<%= $question->{id} %>" class="commentcontainer">
+                </div>
+                <script>
+                    $(document).ready(function(){
+                        var shown = false;
+                        var loaded = false;
+                        $("#showcomments_<%= $question->{id} %>").click(function(){
+                            if (shown){
+                                $("#commentcontainer_<%= $question->{id} %>").toggle(false);
+                                $("#showcomments_<%= $question->{id} %>").html("Show Comments");
+                                shown = false;
+                            }
+                            else {
+                                if (!loaded){  //Load comments for question via post request
+                                    var HTMLstring = "";
+                                    console.log('Loading comment data');
+                                    $.get("<%= url_for 'comments', {question_id => $question->{id}} %>", function(data){
+                                        console.log(data);
+                                        $.each(data, function(i, v){
+                                            var markanswerattributes = "";
+                                                if ("<%=$question->{username} %>" == "<%= session 'username' %>") {
+                                                    if (v.answer){
+                                                        markanswerattributes = "src='/img/checkedcheckmark.png' onclick='answerbuttonclick(" + v.comment_id + ", true, " + v.question_id + ");' onmouseover='answerbuttonhover(this.id, true, true);'\
+                                                        onmouseout='answerbuttonhover(this.id, true, false);' data-toggle='tooltip' answer='true' title='Unmark as answer' style='cursor:pointer'";
+                                                    }
+                                                    else {
+                                                        markanswerattributes = "src='/img/checkmark.png' data-toggle='tooltip' title='Mark as answer' onclick='answerbuttonclick(" + v.comment_id + ", false, " + v.question_id + ");' \
+                                                        onmouseover='answerbuttonhover(this.id, false, true);' onmouseout='answerbuttonhover(this.id, false, false);' style='cursor:pointer'";
+                                                    }
+                                                }
+                                                else {
+                                                    if (v.answer){
+                                                        markanswerattributes = "src='/img/checkedcheckmark.png' answer='true'";
+                                                    }
+                                                    else {
+                                                        markanswerattributes = "src='/img/checkmark.png'";
+                                                    }
+                                                }
+                                            HTMLstring = HTMLstring + (
+                                                "<div id='comment_" + v.comment_id + "' class='answeredcomment'>\
+                                                <span id='commentvotecount_" + v.comment_id + "' class='commentvotecount'>" + v.votes + "</span>\
+                                                <span id='commenttime_" + v.comment_id + "' class='commenttime' ><h4>" + v.created + "</h4></span><img id='markanswer_" + v.comment_id + "' \
+                                                class='markanswerbutton' question_id='" + v.question_id + "' " + markanswerattributes + ">\
+                                                <span class='commenttext' id='commenttext_" + v.comment_id + "' question_id='" + v.question_id + "'>\
+                                                " + v.comment + "</span></div>");
+                                                $("#commentcontainer_<%= $question->{id} %>").html(HTMLstring);
+                                        });
+                                    }, 'json');
+                                    loaded = true;
+                                }
+                                shown = true;
+                                $("#commentcontainer_<%= $question->{id} %>").toggle(true);
+                                $("#showcomments_<%= $question->{id} %>").html("Hide Comments");
+                                console.log('Comments displayed');
+                            }
+                        });
+                    });
+                </script>
+                </div>
+                
+            % } 
             % unless (!$question->{answered} ) {
                     %#<div>Answered Question</div>
             % }

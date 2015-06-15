@@ -113,12 +113,10 @@ $BODY$
       votes 
     where
       entry_type=$1 and entry_id=$2;
-    if result is null or result = 0 then
+    if result is null then
       return 0;
-    elsif result >= 1 then
-      return 1;
     else
-      return null;
+      return result;
     end if;
   END; 
 $BODY$ LANGUAGE plpgsql;

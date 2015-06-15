@@ -33,7 +33,6 @@ sub remove {
   $self->stash(question => $self->questions->remove($self->param('id')));
   $self->respond_to(
     json => {json => $self->stash('question')},
-    any => {},
   );
 }
 

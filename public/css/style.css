@@ -85,13 +85,13 @@ body {
 }
 
 .questionansweredcontainer {
+    background: #C9C9C9;
     width: 100%;
     min-height: 120px;
     display: flex;
     align-items: center;
     justify-content: left;
     border-bottom: 2px solid #000;
-    background-color: lightgray;
 }
 
 .questionunansweredcontainer {
@@ -153,6 +153,11 @@ body {
 .questionbuttoncontainer {
     width: 50px;
     padding-left: 10px;
+}
+
+.answeredquestionbuttoncontainer {
+    width: 50px;
+    margin: auto;
 }
 
 .questiontime {
@@ -305,6 +310,18 @@ h4 {
     vertical-align: middle;
 }
 
+.answeredcomment {
+    background: #C9C9C9;
+    position: relative;
+    display: flex;
+    align-items: center;
+    left: 50px;
+    border-bottom: 2px solid #000;
+    border-left: 2px solid #000;
+    justify-content: left;
+    vertical-align: middle;
+}
+
 .commenttext {
     display: flex;
     cursor: pointer;
@@ -381,7 +398,7 @@ form {
 }
 
 .commentvotecount {
-    min-width: 10px;
+    min-width: 20px;
     padding: 5px;
     cursor: default;
 }

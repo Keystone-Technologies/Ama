@@ -32,15 +32,15 @@
                                         console.log('Comment data loaded');
                                         $.each(data, function(i, v){
                                             HTMLstring = HTMLstring + (
-                                                "<div id='comment_" + v.id + "' class='comment'>\
-                                                <span id='commentvotecount_" + v.id + "' class='commentvotecount'>" + v.votes + "</span><div class='commentvotecontainer'>\
-                                                <span id='commenttime_" + v.id + "' class='commenttime' ><h4>" + v.created + "</h4></span><img id='markanswer_" + v.id + "' \
+                                                "<div id='comment_" + v.comment_id + "' class='comment'>\
+                                                <span id='commentvotecount_" + v.comment_id + "' class='commentvotecount'>" + v.votes + "</span><div class='commentvotecontainer'>\
+                                                <span id='commenttime_" + v.comment_id + "' class='commenttime' ><h4>" + v.created + "</h4></span><img id='markanswer_" + v.comment_id + "' \
                                                 class='markanswerbutton' question_id='" + v.question_id + "' src='/../../img/checkmark.png'>\
-                                                <span class='commenttext' id='commenttext_" + v.id + "' question_id='" + v.question_id + "'>\
+                                                <span class='commenttext' id='commenttext_" + v.comment_id + "' question_id='" + v.question_id + "'>\
                                                 " + v.comment + "</span></div>");
                                                 $("#commentcontainer_<%= $question->{id} %>").html(HTMLstring);
-                                                console.log("Checked checkmark for question #" + v.id);
-                                                console.log("Comment number " + v.id + " and question number " + v.question_id); 
+                                                console.log("Checked checkmark for question #" + v.comment_id);
+                                                console.log("Comment number " + v.comment_id + " and question number " + v.question_id); 
                                         });
                                     }, 'json');
                                     loaded = true;

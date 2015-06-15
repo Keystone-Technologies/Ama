@@ -40,14 +40,14 @@ sub find { shift->pg->db->query('select * from comments where id = ?', shift)->h
 
 sub remove {
   my ($self, $id) = @_;
-  my $sql = 'delete from comments where id = ? and username = ? and answered(?) != 1 limit 1 returning *';
+  my $sql = 'delete from comments where id = ? and username = ? and answered(question_id) != 1 returning *';
   $self->pg->db->query($sql, $id, $self->username)->hash;
 }
 
 sub save {
   my ($self, $id, $comment) = @_;
-  my $sql = 'update comments set comment = ?, modified = now() where id = ? and username = ? and answered(?) != 1 limit 1 returning *';
-  $self->pg->db->query($sql, $comment, $id, self->username)->hash;
+  my $sql = 'update comments set comment = ?, modified = now() where id = ? and username = ? and answered(?) != 1 returning *';
+  $self->pg->db->query($sql, $comment, $id, $self->username)->hash;
 }
 
 1;

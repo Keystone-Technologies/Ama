@@ -14,7 +14,7 @@ sub raise {
 sub remove {
   my ($self, $entry_type, $entry_id) = @_;
   return {} unless $self->_flagged;
-  my $sql = 'delete from flags where entry_type = ? and entry_id = ? and username = ? limit 1 returning *';
+  my $sql = 'delete from flags where entry_type = ? and entry_id = ? and username = ? returning *';
   $self->pg->db->query($sql, $entry_type, $entry_id, $self->username)->hash;
 }
 

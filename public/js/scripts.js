@@ -45,3 +45,66 @@ function smallarrowhover(elementid, elementclass, action) {
         }
     }
 }
+
+function answerbuttonhover(comment_id, marked, action){
+    console.log(comment_id);
+    if (action){
+        if (marked){
+            document.getElementById(comment_id).src='img/checkmark.png';
+        }
+        else {
+            document.getElementById(comment_id).src='img/checkedcheckmark.png';
+        }
+    }
+    else {
+        if (marked){
+            document.getElementById(comment_id).src='img/checkedcheckmark.png';
+        }
+        else {
+            document.getElementById(comment_id).src='img/checkmark.png';
+        }
+    }
+}
+
+function answerbuttonclick(comment_id, marked, question_id){
+    $("#markanswer_" + comment_id).attr("onmouseover", "");
+    $("#markanswer_" + comment_id).attr("onmouseout", "");
+    if (marked){
+        $("#markanswer_" + comment_id).attr("src", "img/checkmark.png");
+        $.ajax({
+            url: "/api/answers/" + question_id + "/" + comment_id,
+            type: 'DELETE'
+        });
+    }
+    else {
+        $("#markanswer_" + comment_id).attr("src", "img/checkedcheckmark.png");
+        $("#comment_" + comment_id).siblings().children(".markanswerbutton").attr("src", "img/checkmark.png");
+        $("#comment_" + comment_id).siblings().children(".markanswerbutton").attr("onmouseover", "answerbuttonhover(this.id, false, true);");
+        $("#comment_" + comment_id).siblings().children(".markanswerbutton").attr("onmouseout", "answerbuttonhover(this.id, false, false);");
+            var oldanswerid = $("#comment_" + comment_id).siblings().children(".markanswerbutton[answer='true']").attr('id');
+            if (oldanswerid != null){
+            var idobject = /(\d+)/.exec(oldanswerid);
+            var newid = idobject[1];
+            console.log(newid);
+            console.log(comment_id);
+            $.ajax({
+                url: "/api/answers/" + question_id + "/" + newid,
+                type: 'DELETE',
+                complete: (function(){$.post("/api/answers/" + question_id + "/" + comment_id);
+                })
+            });
+            }
+            else {
+                $.post("/api/answers/" + question_id + "/" + comment_id);
+            }
+        }
+}
+    
+function trashhover(id, over){
+    if (over){
+        $("#" + id).attr("src", "/img/opentrash.png");
+    }
+    else {
+        $("#" + id).attr("src", "/img/trash.png");
+    }
+}

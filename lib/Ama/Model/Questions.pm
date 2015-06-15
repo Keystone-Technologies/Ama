@@ -32,13 +32,13 @@ sub find { shift->pg->db->query('select * from questions where id = ?', shift)->
 
 sub remove {
   my ($self, $id) = @_;
-  my $sql = 'delete from questions where id = ? and username = ? and answered(id) != 1 limit 1 returning *';
+  my $sql = 'delete from questions where id = ? and username = ? and answered(id) != 1 returning *';
   $self->pg->db->query($sql, $id, $self->username)->hash;
 }
 
 sub save {
   my ($self, $id, $question) = @_;
-  my $sql = 'update questions set question = ? where id = ? and username = ? and answered(id) != 1 limit 1 returning *';
+  my $sql = 'update questions set question = ? where id = ? and username = ? and answered(id) != 1 returning *';
   $self->pg->db->query($sql, $question->{question}, $id, $self->username)->hash;
 }
 
