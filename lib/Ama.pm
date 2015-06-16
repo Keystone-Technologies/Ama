@@ -49,24 +49,24 @@ sub startup {
   $r->get('/questions')->to('questions#index')->name('questions'); # Display all questions
   $r->get('/questions/create')->to('questions#create')->name('create_question'); # Display empty form
   $r->post('/questions')->to('questions#store')->name('store_question'); # Insert into DB and redirect to show_question
-  $r->get('/questions/:id')->to('questions#show')->name('show_question'); # Display specific question
-  $r->get('/questions/:id/edit')->to('questions#edit')->name('edit_question'); # Display filled-out form
-  $r->put('/questions/:id')->to('questions#update')->name('update_question'); # Update DB and redirect to show_question
-  $r->delete('/questions/:id')->to('questions#remove')->name('remove_question'); # Delete from DB and redirect to questions
+  $r->get('/questions/:question_id')->to('questions#show')->name('show_question'); # Display specific question
+  $r->get('/questions/:question_id/edit')->to('questions#edit')->name('edit_question'); # Display filled-out form
+  $r->put('/questions/:question_id')->to('questions#update')->name('update_question'); # Update DB and redirect to show_question
+  $r->delete('/questions/:question_id')->to('questions#remove')->name('remove_question'); # Delete from DB and redirect to questions
 
   $r->get('/questions/:question_id/comments')->to('comments#index')->name('comments');
   $r->get('/questions/:question_id/comment/create')->to('comments#create')->name('create_comment');
   $r->post('/questions/:question_id/comment')->to('comments#store')->name('store_comment');
 
-  $r->get('/comments/:id')->to('comments#show')->name('show_comment');
-  $r->get('/comments/:id/edit')->to('comments#edit')->name('edit_comment');
-  $r->put('/comments/:id')->to('comments#update')->name('update_comment');
-  $r->delete('/comments/:id')->to('comments#remove')->name('remove_comment');
+  $r->get('/comments/:comment_id')->to('comments#show')->name('show_comment');
+  $r->get('/comments/:comment_id/edit')->to('comments#edit')->name('edit_comment');
+  $r->put('/comments/:comment_id')->to('comments#update')->name('update_comment');
+  $r->delete('/comments/:comment_id')->to('comments#remove')->name('remove_comment');
 
   my $api = $r->under('/api'); # Require Ajax (need to do)
 
-  $api->post('/answers/:question_id/:id')->to('answers#mark')->name('mark_comment_as_answer');
-  $api->delete('/answers/:question_id/:id')->to('answers#unmark')->name('unmark_comment_as_answer');
+  $api->post('/answers/:question_id/:comment_id')->to('answers#mark')->name('mark_comment_as_answer');
+  $api->delete('/answers/:question_id/:comment_id')->to('answers#unmark')->name('unmark_comment_as_answer');
 
   $api->post('/:entry_type/vote/:entry_id/:vote', [vote => [qw(up down)]])->to('votes#cast')->name('cast_vote');
 

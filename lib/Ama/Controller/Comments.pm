@@ -12,7 +12,8 @@ sub create {
 
 sub edit {
   my $self = shift;
-  $self->stash(comment => $self->comments->find($self->param('id')));
+  my $comment_id = $self->param('comment_id');
+  $self->stash(comment => $self->comments->find($comment_id));
   $self->respond_to(
     json => {json => $self->stash('comments')},
     any => {},
@@ -31,8 +32,8 @@ sub index {
 
 sub remove {
   my $self = shift;
-  my $id = $self->param('id');
-  $self->stash('comment' => $self->comments->remove($id));
+  my $comment_id = $self->param('comment_id');
+  $self->stash('comment' => $self->comments->remove($comment_id));
   $self->respond_to(
     json => {json => $self->stash('comment')},
     any => {},
@@ -41,7 +42,8 @@ sub remove {
 
 sub show {
   my $self = shift;
-  $self->stash(comment => $self->comments->find($self->param('id')));
+  my $comment_id = $self->param('comment_id');
+  $self->stash(comment => $self->comments->find($comment_id));
   $self->respond_to(
     json => {json => $self->stash('comment')},
     any => {},
@@ -76,9 +78,9 @@ sub update {
     any => sub { $self->render(action => 'edit', comment => {}) },
   ) if $validation->has_error;
 
-  my $id = $self->param('id');
+  my $comment_id = $self->param('comment_id');
   my $comment = $self->param('comment');
-  $self->stash('comment' => $self->comments->save($id, $comment));
+  $self->stash('comment' => $self->comments->save($comment_id, $comment));
 
   $self->respond_to(
     json => {json => $self->stash('comment')},

@@ -12,7 +12,8 @@ sub create {
 
 sub edit {
   my $self = shift;
-  $self->stash(question => $self->questions->find($self->param('id')));
+  my $question_id = $self->param('question_id');
+  $self->stash(question => $self->questions->find($question_id));
   $self->respond_to(
     json => {json => $self->stash('questions')},
     any => {},
@@ -30,7 +31,8 @@ sub index {
 
 sub remove {
   my $self = shift;
-  $self->stash(question => $self->questions->remove($self->param('id')));
+  my $question_id = $self->param('question_id');
+  $self->stash(question => $self->questions->remove($question_id));
   $self->respond_to(
     json => {json => $self->stash('question')},
   );
@@ -38,7 +40,8 @@ sub remove {
 
 sub show {
   my $self = shift;
-  $self->stash(question => $self->questions->find($self->param('id')));
+  my $question_id = $self->param('question_id');
+  $self->stash(question => $self->questions->find($question_id));
   $self->respond_to(
     json => {json => $self->stash('question')},
     any => {},
@@ -54,7 +57,8 @@ sub store {
     any => sub { $self->render(action => 'create', question => {}) },
   ) if $validation->has_error;
 
-  $self->stash(question => $self->questions->add($validation->output));
+  my $question = $self->param('question');
+  $self->stash(question => $self->questions->add($question));
 
   $self->respond_to(
     json => {json => $self->stash('question')},
@@ -71,12 +75,13 @@ sub update {
     any => sub { $self->render(action => 'edit', question => {}) },
   ) if $validation->has_error;
 
-  my $id = $self->param('id');
-  $self->stash('question' => $self->questions->save($id, $validation->output));
+  my $question_id = $self->param('question_id');
+  my $question = $self->param('question');
+  $self->stash('question' => $self->questions->save($question_id, $question));
 
   $self->respond_to(
     json => {json => $self->stash('question')},
-    any => sub { $self->redirect_to('show_question', id => $id) },
+    any => sub { $self->redirect_to('show_question', question_id => $question_id) },
   );
 }
 

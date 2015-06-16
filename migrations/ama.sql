@@ -1,10 +1,29 @@
 -- 1 up
+
+-- A user can:
+--   X post a question and submit an up vote
+--   X post a comment on any unanswered question and submit an up vote
+--   X edit their own question
+--   X edit their own comment
+--   X delete their own question
+--   X delete their own comment
+--   vote one time on any unanswered question not their own
+--   vote one time on any unanswered question's comment not their own comment
+--   flag an unflagged question not their own
+--   unflag a flagged question that they originally flagged
+--   flag an unflagged question's comment not their own
+--   unflag a flagged question's comment that they originally flagged
+--   mark a comment (including their own) of their own question as an answer
+--   unmark a comment (including their own) of their own question as not the answer
+--   mark a new comment (including their own) of their own question as an answer and unmarking the prior mark
+
+
 create table if not exists questions (
-  id         serial primary key,
-  question   text not null,
-  username   text not null,
-  created    timestamptz not null default now(),
-  modified   timestamptz not null default now()
+  question_id serial primary key,
+  question    text not null,
+  username    text not null,
+  created     timestamptz not null default now(),
+  modified    timestamptz not null default now()
 );
 insert into questions (question, username) values
   ('What is the first element of the periodic table of elements?', 'anonymous1'),
@@ -14,8 +33,8 @@ insert into questions (question, username) values
 -- need a constraint that cannot edit or delete any comments but your own
 -- need a constraint that cannot edit or delete comments of answered questions
 create table if not exists comments (
-  id          serial primary key,
-  question_id int not null REFERENCES questions (id) on delete cascade,
+  comment_id  serial primary key,
+  question_id int not null REFERENCES questions on delete cascade,
   comment     text not null,
   username    text not null,
   created     timestamptz not null default now(),
@@ -27,8 +46,8 @@ insert into comments (question_id, comment, username) values
   (3, 'Lithium', 'anonymous1'), (3, 'Calcium', 'anonymous2'), (3, 'Hydrogen', 'anonymous3'), (3, 'Oxygen', 'anonymous4');
 
 create table if not exists answers (
-  question_id int not null REFERENCES questions (id) ON DELETE cascade,
-  comment_id  int not null REFERENCES comments (id) ON DELETE cascade,
+  question_id int not null REFERENCES questions ON DELETE cascade,
+  comment_id  int not null REFERENCES comments ON DELETE cascade,
   username    text not null,
   created     timestamptz not null default now(),
   PRIMARY KEY (question_id)
@@ -82,7 +101,7 @@ insert into flags (entry_type, entry_id, username) values
 -- select comments.id as comment_id,comments.question_id,comment,comments.username as username,comments.created,modified,votes('comments',comments.id) votes,(select vote from votes where entry_type='comments' and entry_id=comments.id and username='anonymous2') as my_vote,flagged('comments',comments.id) flagged, answers.username as approver,answers.created as approved from comments left join answers on comments.id=answers.comment_id where comments.question_id=1;
 
 CREATE OR REPLACE FUNCTION answered(integer) 
-RETURNS integer AS
+RETURNS boolean AS
 $BODY$
   declare result integer;
   BEGIN
@@ -122,7 +141,7 @@ $BODY$
 $BODY$ LANGUAGE plpgsql;
   
 CREATE OR REPLACE FUNCTION flagged(text, integer) 
-RETURNS integer AS
+RETURNS boolean AS
 $BODY$
   declare result integer;
   BEGIN
@@ -144,11 +163,11 @@ $BODY$ LANGUAGE plpgsql;
 
 -- 1 down
 drop function if exists answered(integer);
-drop function if exists votes(integer);
-drop function if exists flagged(integer);
-drop table if exists questions;
-drop table if exists comments;
+drop function if exists votes(text,integer);
+drop function if exists flagged(text,integer);
 drop table if exists answers;
 drop table if exists votes;
 drop table if exists flags;
+drop table if exists comments;
+drop table if exists questions;
 drop table if exists mojo_migrations;
