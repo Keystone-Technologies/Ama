@@ -14,6 +14,9 @@
     <div class="header" id="bar">
         <input class="header" id="logo" type="image" src="/img/logo.png">
     </div>
+    <div id="errorcontainer" class="error">
+    Error: Unable to complete task
+    </div>
     <div id="content">
         % for my $question (@$questions) {
             % my $question_id = $question->{question_id};
@@ -74,18 +77,59 @@
                                     <img id="deletequestion_<%= $question_id %>" class="deletequestionbutton" src="/img/trash.png" data-toggle='tooltip' title='Delete question'>
                                 </div>
                                 % }
-                                % if ( $question->{username} eq session 'username' ) {
                                 <div id="flagcontainer_<%= $question_id %>" class="flagcontainer">
-                                    <img id="flag_<%= $question_id %>" class="flag" src="/img/flag.png" data-toggle='tooltip' title='Flag question'>
+                                    <img id="flag_<%= $question_id %>" class="flag" src="/img/flag.png" data-toggle='tooltip' title='Flag question' onmouseover='flaghover(this.id, true)' onmouseout='flaghover(this.id, false)'>
                                 </div>
-                                % }
+                                % if (!$question->{flagged}){
                                 <script>
                                     $(document).ready(function(){
                                         $("#flagcontainer_<%= $question_id %>").click(function(){
-                                            $.post("<%= url_for 'raise_flag', {entry_type => 'question', entry_id => $question_id} %>");
+                                            $.post("<%= url_for 'raise_flag', {entry_type => 'questions', entry_id => $question_id} %>");
+                                            $("#questiontitle_<%= $question_id%>").css('background', '#000000');
+                                            $("#flag_<%= $question_id %>").attr('src', '/img/flag.png');
+                                            $("#flag_<%= $question_id%>").attr('onmouseover', 'redflaghover(this.id, true)');
+                                            $("#flag_<%= $question_id%>").attr('onmouseout', 'redflaghover(this.id, false)');
+                                            $("#flag_<%= $question_id%>").attr('title', 'Unflag Question');
+                                        });
+                                        
+                                        console.log($("#flag_<%= $question_id %>").attr('src'));
+                                    });
+                                </script>
+                                % } else {
+                                <script>
+                                    $(document).ready(function(){
+                                        $("#flagcontainer_<%= $question_id %>").click(function(){
+                                            $.ajax({
+                                              url: "<%= url_for 'remove_flag', {entry_type => 'questions', entry_id => $question_id} %>",
+                                               type: 'DELETE',
+                                               dataType: 'json'
+                                           })
+                                           .done(function(data) {
+                                               console.log(data);
+                                                if (data == null){
+                                                   $("#errorcontainer").html("Error");
+                                                   showError(3000);
+                                                }
+                                                else {
+                                                    if (data.error != null) {
+                                                        $("#errorcontainer").html("Error: " + data.error);
+                                                        console.log($("#flag_<%= $question_id %>").attr('src'));
+                                                    }
+                                                    else {
+                                                        $("#questiontitle_<%= $question_id%>").css('background', '');
+                                                        $("#flag_<%= $question_id %>").attr('src', '/img/flag.png');
+                                                        $("#flag_<%= $question_id%>").attr('onmouseover', 'flaghover(this.id, true)');
+                                                        $("#flag_<%= $question_id%>").attr('onmouseout', 'flaghover(this.id, false)');
+                                                        $("#flag_<%= $question_id%>").attr('title', 'Flag Question');
+                                                    }
+                                                }
+                                                
+                                                console.log('end flag function');
+                                            });
                                         });
                                     });
                                 </script>
+                                % }
                             </div>
                         </div>
                         <div id="questiontime_<%= $question->{created} %>" class="questiontime">
@@ -117,6 +161,41 @@
                             <h4 id="reply_<%= $question_id %>" class ="info">Reply</h4>
                         </div>
                     </div>
+                    <script>
+                    $(document).ready(function(){
+                        if("<%= $question->{username} %>" == "<%= session 'username' %>"){
+                            var questionformshown = false;
+                            $("#questiontitle_<%= $question_id %>").click(function(){
+                                if (!questionformshown) {
+                                    var question = $.trim($("#questiontextarea_<%= $question_id%>").text());
+                                    var questioneditHTML = "<form id='questionform_<%= $question_id %>'>\
+                                        <label class='questionlabel' for='question'>Edit Question</label>\
+                                        <br><textarea id='questiontextarea_<%= $question_id%>' name='question' required><%= $question->{question}%></textarea>\
+                                        <input type='hidden' name='question_id' value='<%= $question_id %>'>\
+                                        <br><input id='questioneditsubmit_<%= $question_id%>' class='postbutton' type='submit' value='Post'>\
+                                        </form>"
+                                    $("#question_<%= $question_id%>").after(questioneditHTML);
+                                    $("#questioneditsubmit_<%= $question_id%>").click(function(){
+                                        var message = $("#questiontextarea_<%= $question_id%>").val();
+                                        $.ajax({url: url_for('update_question', {question_id: "<%= $question_id%>"}),
+                                        type: "PUT",
+                                        contentType: "application/x-www-form-urlencoded",
+                                        dataType: 'json',
+                                        data: {question_id: "<%= $question_id%>", question: message}});
+                                    });
+                                    questionformshown = true;
+                                }
+                                else {
+                                    $("#questionform_<%= $question_id %>").remove();
+                                    questionformshown = false;
+                                }
+                            });
+                        }
+                        else {
+                            $("#questiontitle_<%= $question_id %>").css('cursor','text');
+                        }
+                    });
+                    </script>
                     <script>
                         $(document).ready(function(){
                             $(".replyformcontainer").toggle(false);
@@ -164,15 +243,23 @@
                                         $.each(data, function(i, v){
                                             console.log("in function");
                                             var markanswerattributes = "";
-                                                if ("<%=$question->{username} %>" == "<%= session 'username' %>") {
+                                            var deletecommentattributes = "";
+                                            var commenttextattributes = "";
+                                                if (v.username == "<%= session 'username' %>") {
+                                                    deletecommentattributes = ""
+                                                    commenttextattributes = "showable='true' style='cursor:pointer'";
+                                                }
+                                                else {
+                                                    deletecommentattributes = "style='display:none'";
+                                                    commenttextattributes = "style='cursor:text'";
+                                                }
+                                                if("<%= $question->{username} %>" == "<%= session 'username' %>"){
                                                     markanswerattributes = "src='/img/checkmark.png' data-toggle='tooltip' title='Mark as answer' onclick='answerbuttonclick(" + v.comment_id + ", false, " + v.question_id + ");' \
                                                     onmouseover='answerbuttonhover(this.id, false, true);' onmouseout='answerbuttonhover(this.id, false, false);' style='cursor:pointer'";
                                                 }
                                                 else {
-                                                    markanswerattributes = "src='/img/checkmark.png'";
+                                                    markanswerattributes = "style='display:none'";
                                                 }
-                                            
-                                            console.log(markanswerattributes);
                                             HTMLstring = HTMLstring + (
                                                 "<div id='comment_" + v.comment_id + "' class='comment'>\
                                                 <span id='commentvotecount_" + v.comment_id + "' class='commentvotecount'>" + v.votes + "</span><div class='commentvotecontainer'>\
@@ -180,9 +267,9 @@
                                                 <img id='commentdown_" + v.comment_id + "' class='commentdown' src='/img/smalldownarrow.png'></div>\
                                                 <span id='commenttime_" + v.comment_id + "' class='commenttime' ><h4>" + v.created + "</h4></span><img id='markanswer_" + v.comment_id + "' \
                                                 class='markanswerbutton' question_id='" + v.question_id + "' " + markanswerattributes + ">\
-                                                <img id='delete_" + v.comment_id + "' question_id='" + v.question_id + "' class='deletecommentbutton' src='/img/trash.png' data-toggle='tooltip' title='Delete comment'>\
+                                                <img id='delete_" + v.comment_id + "' question_id='" + v.question_id + "' class='deletecommentbutton' src='/img/trash.png' data-toggle='tooltip' title='Delete comment' " + deletecommentattributes + ">\
                                                 <img id='flag_" + v.comment_id + "' question_id='" + v.question_id + "' class='flagcommentbutton' src='/img/flag.png' data-toggle='tooltip' title='Flag comment'>\
-                                                <span class='commenttext' id='commenttext_" + v.comment_id + "' question_id='" + v.question_id + "' data-toggle='tooltip' title='Click to edit'>\
+                                                <span class='commenttext' id='commenttext_" + v.comment_id + "' question_id='" + v.question_id + "' data-toggle='tooltip' title='Click to edit' " + commenttextattributes + ">\
                                                 " + v.comment + "</span></div>");
                                                 $("#commentcontainer_<%= $question_id %>").html(HTMLstring);
                                         });
@@ -252,7 +339,10 @@
                                             var comment_id = idobject[1];
                                             $("#" + id).click(function(){
                                                 $.ajax({
-                                                    url: url_for('remove_comment', {comment_id: comment_id}), type: 'DELETE'
+                                                    url: url_for('remove_comment', 
+                                                    {comment_id: comment_id}), 
+                                                    type: 'DELETE',
+                                                    dataType: 'json'
                                                 });
                                                 console.log('Deleted comment #' + comment_id);
                                                 $("#comment_" + comment_id).remove();
@@ -269,9 +359,7 @@
                                             var question_id = $(this).attr("question_id");
                                             idobject = /(\d+)/.exec(id);
                                             var comment_id = idobject[1];
-                                            $("#" + id).click(function(){
-                                                $.post(url_for('mark_comment_as_answer', {question_id: question_id, comment_id: comment_id}));
-                                            });
+                                            
                                         });
                                         
                                         $(".commenttext").each(function(){
@@ -280,32 +368,34 @@
                                             idobject = /(\d+)/.exec(commentid);
                                             var comment_id = idobject[1];
                                             var editformshown = false;
-                                            $("#" + commentid).click(function(){
-                                                if (!editformshown) {
-                                                    var comment = $.trim($("#commenttext_" + id).text());
-                                                    console.log(comment);
-                                                    var commenteditHTML = "<form id='commentform_<%= $question_id %>'>\
-                                                        <label class='commentlabel' for='comment'>Edit Comment</label>\
-                                                        <br><textarea id='textarea_" + question_id + "' name='comment' required>" + comment + "</textarea>\
-                                                        <input type='hidden' name='question_id' value='<%= $question_id %>'>\
-                                                        <br><input id='editsubmit_<%= $question_id%>' class='postbutton' type='submit' value='Post'>\
-                                                        </form>"
-                                                    $("#comment_" + id).after(commenteditHTML);
-                                                    $("#editsubmit_" + question_id).click(function(){
-                                                        var message = $("#textarea_" + question_id).val();
-                                                        $.ajax({url: url_for('update_comment', {comment_id: comment_id}),
-                                                        type: "PUT",
-                                                        contentType: "application/x-www-form-urlencoded",
-                                                        dataType: 'json',
-                                                        data: {question_id: question_id, comment: message}});
-                                                    });
-                                                    editformshown = true;
-                                                }
-                                                else {
-                                                    $("#commentform_<%= $question_id %>").remove();
-                                                    editformshown = false;
-                                                }
-                                            });
+                                            if ($(this).attr('showable') == 'true'){
+                                                $("#" + commentid).click(function(){
+                                                    if (!editformshown) {
+                                                        var comment = $.trim($("#commenttext_" + comment_id).text());
+                                                        console.log(comment);
+                                                        var commenteditHTML = "<form id='commentform_<%= $question_id %>'>\
+                                                            <label class='commentlabel' for='comment'>Edit Comment</label>\
+                                                            <br><textarea id='textarea_" + question_id + "' name='comment' required>" + comment + "</textarea>\
+                                                            <input type='hidden' name='question_id' value='<%= $question_id %>'>\
+                                                            <br><input id='editsubmit_<%= $question_id%>' class='postbutton' type='submit' value='Post'>\
+                                                            </form>"
+                                                        $("#comment_" + comment_id).after(commenteditHTML);
+                                                        $("#editsubmit_" + question_id).click(function(){
+                                                            var message = $("#textarea_" + question_id).val();
+                                                            $.ajax({url: url_for('update_comment', {comment_id: comment_id}),
+                                                            type: "PUT",
+                                                            contentType: "application/x-www-form-urlencoded",
+                                                            dataType: 'json',
+                                                            data: {question_id: question_id, comment: message}});
+                                                        });
+                                                        editformshown = true;
+                                                    }
+                                                    else {
+                                                        $("#commentform_<%= $question_id %>").remove();
+                                                        editformshown = false;
+                                                    }
+                                                });
+                                            }
                                         });
                                     }, 'json');
                                     loaded = true;
@@ -319,6 +409,19 @@
                     });
                 </script>
                     </div>
+                % if ($question->{flagged}){
+                    <script>
+                    $(document).ready(function(){
+                        $("#questiontitle_<%= $question_id%>").css('background', '#000000');
+                        $("#flag_<%= $question_id%>").attr('src', '/img/redflag.png');
+                        $("#flag_<%= $question_id%>").attr('onmouseover', 'redflaghover(this.id, true)');
+                        $("#flag_<%= $question_id%>").attr('onmouseout', 'redflaghover(this.id, false)');
+                        $("#flag_<%= $question_id%>").attr('title', 'Unflag Question');
+                    });
+                    </script>
+                % }
+                    
+                    
             % } else {
                 
                 
@@ -328,23 +431,6 @@
                         <div class="answeredcount">
                             <p id="count_<%= $question_id %>" class="countnumber"><%= $question->{votes} %></p>
                         </div>
-                            % if ( $question->{username} eq session 'username' ) {
-                                <div class="deletecontainer">
-                                    <img id="deletequestion_<%= $question_id %>" class="deletequestionbutton" src="/img/trash.png" data-toggle='tooltip' 
-                                    title='Delete question' onmouseover='trashhover(this.id, true)' onmouseout='trashhover(this.id, false)'>
-                                </div>
-                                <script>
-                                $(document).ready(function(){
-                                    $("#deletequestion_<%= $question_id %>").click(function(){
-                                        $.ajax({
-                                            url: "<%= url_for 'remove_question', {question_id => $question_id} %>", type: 'DELETE'
-                                        });
-                                        console.log('Deleted question # <%= $question_id %>');
-                                        $("#question_<%= $question_id %>").remove();
-                                    });
-                                });
-                                </script>
-                            % }
                         </div>
                         <div id="questiontime_<%= $question->{created} %>" class="questiontime">
                             <h4><%= $question->{created} %></h4>
@@ -377,10 +463,12 @@
                                         console.log(data);
                                         $.each(data, function(i, v){
                                             var markanswerattributes = "";
+                                            var commentbackground = "";
                                                 if ("<%=$question->{username} %>" == "<%= session 'username' %>") {
                                                     if (v.answered){
                                                         markanswerattributes = "src='/img/checkedcheckmark.png' onclick='answerbuttonclick(" + v.comment_id + ", true, " + v.question_id + ");' onmouseover='answerbuttonhover(this.id, true, true);'\
                                                         onmouseout='answerbuttonhover(this.id, true, false);' data-toggle='tooltip' answered='true' title='Unmark as answer' style='cursor:pointer'";
+                                                        commentbackground = "style='background:#ffffff'";
                                                     }
                                                     else {
                                                         markanswerattributes = "src='/img/checkmark.png' data-toggle='tooltip' title='Mark as answer' onclick='answerbuttonclick(" + v.comment_id + ", false, " + v.question_id + ");' \
@@ -390,17 +478,18 @@
                                                 else {
                                                     if (v.answered){
                                                         markanswerattributes = "src='/img/checkedcheckmark.png' answered='true'";
+                                                        commentbackground = "style='background:#ffffff'";
                                                     }
                                                     else {
-                                                        markanswerattributes = "src='/img/checkmark.png'";
+                                                        markanswerattributes = "style='display:none'";
                                                     }
                                                 }
                                             HTMLstring = HTMLstring + (
-                                                "<div id='comment_" + v.comment_id + "' class='answeredcomment'>\
+                                                "<div id='comment_" + v.comment_id + "' class='answeredcomment' " + commentbackground + " >\
                                                 <span id='commentvotecount_" + v.comment_id + "' class='commentvotecount'>" + v.votes + "</span>\
                                                 <span id='commenttime_" + v.comment_id + "' class='commenttime' ><h4>" + v.created + "</h4></span><img id='markanswer_" + v.comment_id + "' \
                                                 class='markanswerbutton' question_id='" + v.question_id + "' " + markanswerattributes + ">\
-                                                <span class='commenttext' id='commenttext_" + v.comment_id + "' question_id='" + v.question_id + "'>\
+                                                <span class='commenttext' id='commenttext_" + v.comment_id + "' question_id='" + v.question_id + "' >\
                                                 " + v.comment + "</span></div>");
                                                 $("#commentcontainer_<%= $question_id %>").html(HTMLstring);
                                         });
@@ -418,9 +507,6 @@
                 </div>
                 
             % } 
-            % unless (!$question->{answered} ) {
-                    %#<div>Answered Question</div>
-            % }
         % }
             <script>
                 $(document).ready(function(){

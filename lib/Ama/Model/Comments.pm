@@ -63,7 +63,7 @@ sub remove {
 sub save {
   my ($self, $comment_id, $comment) = @_;
   my $results = eval {
-    my $sql = 'update comments set comment = ?, modified = now() where comment_id = ? and username = ? and not answered(?) returning *';
+    my $sql = 'update comments set comment = ?, modified = now() where comment_id = ? and username = ? and not answered(question_id) returning *';
     $self->pg->db->query($sql, $comment, $comment_id, $self->username)->hash;
   };
   $@ ? {error => $@} : $results;

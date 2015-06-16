@@ -80,6 +80,7 @@ sub update {
 
   my $comment_id = $self->param('comment_id');
   my $comment = $self->param('comment');
+  say $comment_id;
   $self->stash('comment' => $self->comments->save($comment_id, $comment));
 
   $self->respond_to(
