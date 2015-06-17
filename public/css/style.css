@@ -137,6 +137,10 @@ body {
     top: 20px;
 }
 
+.flaggedcount {
+    
+}
+
 .countnumber {
     user-select: none;
     cursor: default;

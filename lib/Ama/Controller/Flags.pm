@@ -14,9 +14,8 @@ sub remove {
 
   my $entry_type = $self->param('entry_type');
   my $entry_id = $self->param('entry_id');
-  my $r = $self->flags->remove($entry_type, $entry_id);
-  warn $r;
-  $self->render(json => $r);
+  my $results = $self->flags->remove($entry_type, $entry_id);
+  $self->render(json => $results);
 }
 
 1;

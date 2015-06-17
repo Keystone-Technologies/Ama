@@ -131,11 +131,11 @@ function showError(time){
     $("#errorcontainer").animate({top: '50px'}, 250).delay(time).animate({top: '0px', opacity: 0}, 250);
 }
 
-function redflagclick(){
+function redflagclick(question_id, votes){
     $.ajax({
-      url: "<%= url_for 'remove_flag', {entry_type => 'questions', entry_id => $question_id} %>",
-       type: 'DELETE',
-       dataType: 'json'
+        url: url_for('raise_flag', {entry_type : 'questions', entry_id : question_id}),
+        type: 'DELETE',
+        dataType: 'json'
    })
    .done(function(data) {
        console.log(data);
@@ -146,26 +146,51 @@ function redflagclick(){
         else {
             if (data.error != null) {
                 $("#errorcontainer").html("Error: " + data.error);
-                console.log($("#flag_<%= $question_id %>").attr('src'));
             }
             else {
-                $("#questiontitle_<%= $question_id%>").css('background', '');
-                $("#flag_<%= $question_id %>").attr('src', '/img/flag.png');
-                $("#flag_<%= $question_id%>").attr('onmouseover', 'flaghover(this.id, true)');
-                $("#flag_<%= $question_id%>").attr('onmouseout', 'flaghover(this.id, false)');
-                $("#flag_<%= $question_id%>").attr('title', 'Flag Question');
+                $("#flag_" + question_id).attr('src', '/img/flag.png');
+                $("#flag_" + question_id).attr('onmouseover', 'flaghover(this.id, true)');
+                $("#flag_" + question_id).attr('onmouseout', 'flaghover(this.id, false)');
+                $("#flag_" + question_id).attr('title', 'Unflag Question');
+                $("#questiontitle_" + question_id).css('background', '');
+                $("#vote_" + question_id).css('display', 'block');
+                $("#flaggedcount_" + question_id).remove();
+                $("#reply_" + question_id).css('display', 'block');
+                $("#countcontainer_" + question_id).css('display', 'block');
+                $("#flagcontainer_" + question_id).unbind('click');
+                $("#flagcontainer_" + question_id).click(function(){flagclick(question_id, votes)});
             }
         }
-        
-        console.log('end flag function');
+       
     });
 }
 
-function flagclick(){
-     $.post("<%= url_for 'raise_flag', {entry_type => 'questions', entry_id => $question_id} %>");
-    $("#questiontitle_<%= $question_id%>").css('background', '#000000');
-    $("#flag_<%= $question_id %>").attr('src', '/img/flag.png');
-    $("#flag_<%= $question_id%>").attr('onmouseover', 'redflaghover(this.id, true)');
-    $("#flag_<%= $question_id%>").attr('onmouseout', 'redflaghover(this.id, false)');
-    $("#flag_<%= $question_id%>").attr('title', 'Unflag Question');
+function flagclick(question_id, votes){
+    console.log('into post');
+    $.post(url_for('raise_flag', {entry_type : 'questions', entry_id : question_id}))
+    .done(function(data) {
+        console.log(data);
+        if (data == null){
+           $("#errorcontainer").html("Error");
+           showError(3000);
+        }
+        else {
+            if (data.error != null) {
+                $("#errorcontainer").html("Error: " + data.error);
+            }
+            else {
+                $("#flag_" + question_id).attr('src', '/img/redflag.png');
+                $("#flag_" + question_id).attr('onmouseover', 'redflaghover(this.id, true)');
+                $("#flag_" + question_id).attr('onmouseout', 'redflaghover(this.id, false)');
+                $("#flag_" + question_id).attr('title', 'Unflag Question');
+                $("#questiontitle_" + question_id).css('background', '#000000');
+                $("#vote_" + question_id).css('display', 'none');
+                $("#reply_" + question_id).css('display', 'none');
+                $("#countcontainer_" + question_id).css('display', 'none');
+                $("#questionbuttoncontainer_" + question_id).prepend("<div id='flaggedcount_" + question_id + "' class='flaggedcount'><p class='countnumber'>" + votes + "</p></div>");
+                $("#flagcontainer_" + question_id).unbind('click');
+                $("#flagcontainer_" + question_id).click(function(){redflagclick(question_id, votes)});
+            }
+        }
+    });
 }

@@ -25,12 +25,12 @@
                 <div id="question_<%= $question_id %>" class="question<%= $question->{answered} ? 'answered' : 'unanswered' %>container">
                     <div class="questioninfocontainer">
                         <div class="votecontainer">
-                            <div class="vote">
+                            <div id="vote_<%= $question_id %>" class="vote">
+                            
                                 <img id="up_<%= $question_id %>" class="vote_up" src="/img/uparrow.png" onmouseover="arrowhover(this.id, this.className, 'over');" onmouseout="arrowhover(this.id, this.className, 'out');">
-                                <div class="count">
+                                <div id="countcontainer_<%= $question_id %>" class="count">
                                     <p id="count_<%= $question_id %>" class="countnumber"><%= $question->{votes} %></p>
                                 </div>
-                                % unless ( $question->{answered} ) {
                                     <script>
                                         $(document).ready(function(){
                                             var clicked = false;
@@ -49,9 +49,7 @@
                                             });
                                         });
                                     </script>
-                                % }
                                 <img id="down_<%= $question_id %>" class="vote_down" src="/img/downarrow.png" onmouseover="arrowhover(this.id, this.className, 'over');" onmouseout="arrowhover(this.id, this.className, 'out');">
-                                % unless ( $question->{answered} ) {
                                     <script>
                                         $(document).ready(function(){
                                             console.log("down <%= $question_id %>");
@@ -69,9 +67,16 @@
                                             });
                                         });
                                     </script>
+                                % if ($question->{flagged}){
+                                    <script>
+                                    $(document).ready(function(){
+                                        $("#vote_<%= $question_id %>").css('display', 'none');
+                                        $("#questionbuttoncontainer_<%= $question_id %>").prepend("<div id='flaggedcount_<%= $question_id %>' class='flaggedcount'><p class='countnumber'><%= $question->{votes} %></p></div>");
+                                    });
+                                    </script>
                                 % }
                             </div>
-                            <div class="questionbuttoncontainer">
+                            <div id="questionbuttoncontainer_<%= $question_id %>" class="questionbuttoncontainer">
                                 % if ( $question->{username} eq session 'username' ) {
                                 <div class="deletecontainer">
                                     <img id="deletequestion_<%= $question_id %>" class="deletequestionbutton" src="/img/trash.png" data-toggle='tooltip' title='Delete question'>
@@ -83,50 +88,13 @@
                                 % if (!$question->{flagged}){
                                 <script>
                                     $(document).ready(function(){
-                                        $("#flagcontainer_<%= $question_id %>").click(function(){
-                                            $.post("<%= url_for 'raise_flag', {entry_type => 'questions', entry_id => $question_id} %>");
-                                            $("#questiontitle_<%= $question_id%>").css('background', '#000000');
-                                            $("#flag_<%= $question_id %>").attr('src', '/img/flag.png');
-                                            $("#flag_<%= $question_id%>").attr('onmouseover', 'redflaghover(this.id, true)');
-                                            $("#flag_<%= $question_id%>").attr('onmouseout', 'redflaghover(this.id, false)');
-                                            $("#flag_<%= $question_id%>").attr('title', 'Unflag Question');
-                                        });
-                                        
-                                        console.log($("#flag_<%= $question_id %>").attr('src'));
+                                        $("#flagcontainer_<%= $question_id %>").one('click', function() {flagclick("<%= $question_id %>", "<%= $question->{votes} %>")});
                                     });
                                 </script>
                                 % } else {
                                 <script>
                                     $(document).ready(function(){
-                                        $("#flagcontainer_<%= $question_id %>").click(function(){
-                                            $.ajax({
-                                              url: "<%= url_for 'remove_flag', {entry_type => 'questions', entry_id => $question_id} %>",
-                                               type: 'DELETE',
-                                               dataType: 'json'
-                                           })
-                                           .done(function(data) {
-                                               console.log(data);
-                                                if (data == null){
-                                                   $("#errorcontainer").html("Error");
-                                                   showError(3000);
-                                                }
-                                                else {
-                                                    if (data.error != null) {
-                                                        $("#errorcontainer").html("Error: " + data.error);
-                                                        console.log($("#flag_<%= $question_id %>").attr('src'));
-                                                    }
-                                                    else {
-                                                        $("#questiontitle_<%= $question_id%>").css('background', '');
-                                                        $("#flag_<%= $question_id %>").attr('src', '/img/flag.png');
-                                                        $("#flag_<%= $question_id%>").attr('onmouseover', 'flaghover(this.id, true)');
-                                                        $("#flag_<%= $question_id%>").attr('onmouseout', 'flaghover(this.id, false)');
-                                                        $("#flag_<%= $question_id%>").attr('title', 'Flag Question');
-                                                    }
-                                                }
-                                                
-                                                console.log('end flag function');
-                                            });
-                                        });
+                                        $("#flagcontainer_<%= $question_id %>").one('click', function(){redflagclick("<%= $question_id %>", "<%= $question->{votes} %>")});
                                     });
                                 </script>
                                 % }
@@ -159,6 +127,13 @@
                         <div id="<%= $question_id %>" class="infobar">
                             <h4 id="showcomments_<%= $question_id %>" class="info">Show Comments</h4>
                             <h4 id="reply_<%= $question_id %>" class ="info">Reply</h4>
+                            % if ($question->{flagged}){
+                                <script>
+                                $(document).ready(function(){
+                                    $("#reply_<%= $question_id %>").css('display', 'none');
+                                });
+                                </script>
+                            % }
                         </div>
                     </div>
                     <script>
@@ -239,9 +214,7 @@
                                 if (!loaded){  //Load comments for question via post request
                                     var HTMLstring = "";
                                     $.get("<%= url_for 'comments', {question_id => $question_id} %>", function(data){
-                                        console.log(data);
                                         $.each(data, function(i, v){
-                                            console.log("in function");
                                             var markanswerattributes = "";
                                             var deletecommentattributes = "";
                                             var commenttextattributes = "";
