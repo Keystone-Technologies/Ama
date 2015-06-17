@@ -76,12 +76,14 @@ function answerbuttonclick(comment_id, marked, question_id){
             url: "/api/answers/" + question_id + "/" + comment_id,
             type: 'DELETE'
         });
+        $("#comment_" + comment_id).css("background", "");
     }
     else {
         $("#markanswer_" + comment_id).attr("src", "img/checkedcheckmark.png");
         $("#comment_" + comment_id).siblings().children(".markanswerbutton").attr("src", "img/checkmark.png");
         $("#comment_" + comment_id).siblings().children(".markanswerbutton").attr("onmouseover", "answerbuttonhover(this.id, false, true);");
         $("#comment_" + comment_id).siblings().children(".markanswerbutton").attr("onmouseout", "answerbuttonhover(this.id, false, false);");
+        $("#comment_" + comment_id).siblings().css("background", "");
             var oldanswerid = $("#comment_" + comment_id).siblings().children(".markanswerbutton[answered='true']").attr('id')
             if (oldanswerid != null){
             var idobject = /(\d+)/.exec(oldanswerid);
@@ -96,6 +98,7 @@ function answerbuttonclick(comment_id, marked, question_id){
             else {
                 $.post("/api/answers/" + question_id + "/" + comment_id);
             }
+        $("#comment_" + comment_id).css("background", "#ffffff");
         }
 }
     

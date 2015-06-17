@@ -11,15 +11,18 @@ sub cast {
     my $sql;
     say $entry_type;
     say $entry_id;
+    say $vote;
     if ( $entry_type eq 'questions' ) {
       $sql = 'insert into votes (entry_type, entry_id, vote, username) select ?, ?, ?, ? where not answered(?) and not flagged(?, ?) returning *, votes(?, ?) as votes';
     } elsif ( $entry_type = 'comments' ) {
-      $sql = 'insert into votes (entry_type, entry_id, vote, username) select ?, ?, ?, ? where not answered((select question_id from comments where comment_id = ?)) returning *, votes(?, ?) as votes';
+      say 'entered comments';
+      $sql = 'insert into votes (entry_type, entry_id, vote, username) select ?, ?, ?, ? where not answered((select question_id from comments where comment_id = ?)) and not flagged(?, ?) returning *, votes(?, ?) as votes';
     } else {
       die "Unknown votes entry_type";
     }
     $self->pg->db->query($sql, $entry_type, $entry_id, $vote, $self->username, $entry_id, $entry_type, $entry_id, $entry_type, $entry_id)->hash;
   };
+  warn Data::Dumper::Dumper($results);
   $@ ? {error => $@} : $results;
 }
 
