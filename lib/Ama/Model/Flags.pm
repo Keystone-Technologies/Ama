@@ -9,10 +9,6 @@ sub raise {
   my $results = eval {
     my $sql;
     if ( $entry_type eq 'questions' ) {
-      say $entry_type;
-      say $entry_id;
-      say $self->username;
-      
       $sql = 'insert into flags (entry_type, entry_id, username) select ?, ?, ? where not flagged(?, ?) returning *';
     } elsif ( $entry_type eq 'comments' ) {
       $sql = 'insert into flags (entry_type, entry_id, username) select ?, ?, ? where not flagged(?, (select question_id from comments where comment_id = ?)) returning *';

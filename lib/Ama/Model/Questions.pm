@@ -1,6 +1,6 @@
 package Ama::Model::Questions;
 use Mojo::Base -base;
-use Mojo::Pg;
+
 use Ama::Model::Votes;
 
 has 'pg';

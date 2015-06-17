@@ -143,6 +143,7 @@ function redflagclick(question_id, votes){
    .done(function(data) {
        console.log(data);
         if (data == null){
+            console.log('Showing error')
            $("#errorcontainer").html("Error");
            showError(3000);
         }
