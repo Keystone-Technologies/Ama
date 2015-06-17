@@ -8,4 +8,6 @@ sudo -u postgres psql -s dn_name
 createdb test
 create database "test"
 \l, \d+ \du \dn \list ...
+create user "ama";
 \password user_name
+grant all on database ama to ama;
