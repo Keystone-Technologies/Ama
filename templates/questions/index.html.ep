@@ -88,13 +88,13 @@
                                 % if (!$question->{flagged}){
                                 <script>
                                     $(document).ready(function(){
-                                        $("#flagcontainer_<%= $question_id %>").one('click', function() {flagclick("<%= $question_id %>", "<%= $question->{votes} %>")});
+                                        $("#flagcontainer_<%= $question_id %>").one('click', function() {questionflagclick("<%= $question_id %>", "<%= $question->{votes} %>")});
                                     });
                                 </script>
                                 % } else {
                                 <script>
                                     $(document).ready(function(){
-                                        $("#flagcontainer_<%= $question_id %>").one('click', function(){redflagclick("<%= $question_id %>", "<%= $question->{votes} %>")});
+                                        $("#flagcontainer_<%= $question_id %>").one('click', function(){questionredflagclick("<%= $question_id %>", "<%= $question->{votes} %>")});
                                     });
                                 </script>
                                 % }
@@ -123,7 +123,7 @@
                         });
                     </script>
                     <div class="question">
-                        <h1 id="questiontitle_<%=$question_id %>" class="questiontitle"><%= $question->{question} %></h1>
+                        <h1 id="questiontitle_<%=$question_id %>" class="questionunansweredtitle"><%= $question->{question} %></h1>
                         <div id="<%= $question_id %>" class="infobar">
                             <h4 id="showcomments_<%= $question_id %>" class="info">Show Comments</h4>
                             <h4 id="reply_<%= $question_id %>" class ="info">Reply</h4>
@@ -140,28 +140,37 @@
                     $(document).ready(function(){
                         if("<%= $question->{username} %>" == "<%= session 'username' %>"){
                             var questionformshown = false;
+                            var question = "<%= $question->{question} %>";
                             $("#questiontitle_<%= $question_id %>").click(function(){
                                 if (!questionformshown) {
-                                    var question = $.trim($("#questiontextarea_<%= $question_id%>").text());
                                     var questioneditHTML = "<form id='questionform_<%= $question_id %>'>\
                                         <label class='questionlabel' for='question'>Edit Question</label>\
-                                        <br><textarea id='questiontextarea_<%= $question_id%>' name='question' required><%= $question->{question}%></textarea>\
+                                        <br><textarea id='questiontextarea_<%= $question_id%>' name='question' required>" + question + "</textarea>\
                                         <input type='hidden' name='question_id' value='<%= $question_id %>'>\
-                                        <br><input id='questioneditsubmit_<%= $question_id%>' class='postbutton' type='submit' value='Post'>\
-                                        </form>"
+                                        </form><input id='questioneditsubmit_<%= $question_id%>' class='questionpostbutton' type='submit' value='Post'>\
+                                        "
                                     $("#question_<%= $question_id%>").after(questioneditHTML);
+                                    questionformshown = true;
                                     $("#questioneditsubmit_<%= $question_id%>").click(function(){
                                         var message = $("#questiontextarea_<%= $question_id%>").val();
                                         $.ajax({url: url_for('update_question', {question_id: "<%= $question_id%>"}),
                                         type: "PUT",
                                         contentType: "application/x-www-form-urlencoded",
                                         dataType: 'json',
-                                        data: {question_id: "<%= $question_id%>", question: message}});
+                                        data: {question_id: "<%= $question_id%>", question: message}})
+                                        .done(function(data){
+                                            $("#questionform_<%= $question_id %>").remove();
+                                            $("#questioneditsubmit_<%= $question_id %>").remove();
+                                            $("#questiontitle_<%= $question_id %>").text(data.question);
+                                            question = data.question;
+                                            questionformshown = false;
+                                            });
                                     });
-                                    questionformshown = true;
+                                    
                                 }
                                 else {
                                     $("#questionform_<%= $question_id %>").remove();
+                                    $("#questioneditsubmit_<%= $question_id %>").remove();
                                     questionformshown = false;
                                 }
                             });
@@ -197,8 +206,8 @@
                         <label class='commentlabel' for='comment'>Comment</label>
                         <br><textarea name='comment' required></textarea>
                         <input type='hidden' name='question_id' value='<%= $question_id %>'>
-                        <br><input id="submit_<%= $question_id %>" class="postbutton" type='submit' value='Post'>
                     </form>
+                    <input id="submit_<%= $question_id %>" class="postbutton" type='submit' value='Post'>
                 </div>
                 <script>
                     $(document).ready(function(){
@@ -215,9 +224,11 @@
                                     var HTMLstring = "";
                                     $.get("<%= url_for 'comments', {question_id => $question_id} %>", function(data){
                                         $.each(data, function(i, v){
+                                            console.log(v);
                                             var markanswerattributes = "";
                                             var deletecommentattributes = "";
                                             var commenttextattributes = "";
+                                            var commentflagattributes = "";
                                                 if (v.username == "<%= session 'username' %>") {
                                                     deletecommentattributes = ""
                                                     commenttextattributes = "showable='true' style='cursor:pointer'";
@@ -233,17 +244,34 @@
                                                 else {
                                                     markanswerattributes = "style='display:none'";
                                                 }
-                                            HTMLstring = HTMLstring + (
-                                                "<div id='comment_" + v.comment_id + "' class='comment'>\
-                                                <span id='commentvotecount_" + v.comment_id + "' class='commentvotecount'>" + v.votes + "</span><div class='commentvotecontainer'>\
-                                                <img id='commentup_" + v.comment_id + "' class='commentup' src='/img/smalluparrow.png'>\
-                                                <img id='commentdown_" + v.comment_id + "' class='commentdown' src='/img/smalldownarrow.png'></div>\
-                                                <span id='commenttime_" + v.comment_id + "' class='commenttime' ><h4>" + v.created + "</h4></span><img id='markanswer_" + v.comment_id + "' \
-                                                class='markanswerbutton' question_id='" + v.question_id + "' " + markanswerattributes + ">\
-                                                <img id='delete_" + v.comment_id + "' question_id='" + v.question_id + "' class='deletecommentbutton' src='/img/trash.png' data-toggle='tooltip' title='Delete comment' " + deletecommentattributes + ">\
-                                                <img id='flag_" + v.comment_id + "' question_id='" + v.question_id + "' class='flagcommentbutton' src='/img/flag.png' data-toggle='tooltip' title='Flag comment'>\
-                                                <span class='commenttext' id='commenttext_" + v.comment_id + "' question_id='" + v.question_id + "' data-toggle='tooltip' title='Click to edit' " + commenttextattributes + ">\
-                                                " + v.comment + "</span></div>");
+                                                if (!v.flagged){
+                                                    HTMLstring = HTMLstring + (
+                                                        "<div id='comment_" + v.comment_id + "' class='comment'>\
+                                                        <span id='commentvotecount_" + v.comment_id + "' class='commentvotecount'>" + v.votes + "</span><div id='commentvotecontainer_" + v.comment_id + "' class='commentvotecontainer'>\
+                                                        <img id='commentup_" + v.comment_id + "' class='commentup' src='/img/smalluparrow.png'>\
+                                                        <img id='commentdown_" + v.comment_id + "' class='commentdown' src='/img/smalldownarrow.png'></div>\
+                                                        <span id='commenttime_" + v.comment_id + "' class='commenttime' ><h4>" + v.created + "</h4></span><img id='markanswer_" + v.comment_id + "' \
+                                                        class='markanswerbutton' question_id='" + v.question_id + "' " + markanswerattributes + ">\
+                                                        <img id='delete_" + v.comment_id + "' question_id='" + v.question_id + "' class='deletecommentbutton' src='/img/trash.png' data-toggle='tooltip' title='Delete comment' " + deletecommentattributes + ">\
+                                                        <img id='commentflag_" + v.comment_id + "' question_id='" + v.question_id + "' class='flagcommentbutton' flagged='false' src='/img/flag.png' data-toggle='tooltip' title='Flag comment' onmouseover='flaghover(this.id, true);' onmouseout='flaghover(this.id, false);'>\
+                                                        <span class='commenttext' id='commenttext_" + v.comment_id + "' question_id='" + v.question_id + "' data-toggle='tooltip' title='Click to edit' " + commenttextattributes + ">\
+                                                        " + v.comment + "</span></div>");
+                                                }
+                                                else {
+                                                    HTMLstring = HTMLstring + (
+                                                        "<div id='comment_" + v.comment_id + "' class='comment'>\
+                                                        <span id='commentvotecount_" + v.comment_id + "' class='commentvotecount'>" + v.votes + "</span><div id='commentvotecontainer_" + v.comment_id + "' class='commentvotecontainer' style='display:none'>\
+                                                        <img id='commentup_" + v.comment_id + "' class='commentup' src='/img/smalluparrow.png'>\
+                                                        <img id='commentdown_" + v.comment_id + "' class='commentdown' src='/img/smalldownarrow.png'></div>\
+                                                        <span id='commenttime_" + v.comment_id + "' class='commenttime' ><h4>" + v.created + "</h4></span><img id='markanswer_" + v.comment_id + "' \
+                                                        class='markanswerbutton' question_id='" + v.question_id + "' " + markanswerattributes + ">\
+                                                        <img id='delete_" + v.comment_id + "' question_id='" + v.question_id + "' class='deletecommentbutton' src='/img/trash.png' data-toggle='tooltip' title='Delete comment' " + deletecommentattributes + ">\
+                                                        <img id='commentflag_" + v.comment_id + "' question_id='" + v.question_id + "' class='flagcommentbutton' flagged='true' src='/img/redflag.png' data-toggle='tooltip' title='Unflag comment' onmouseover='redflaghover(this.id, true);' onmouseout='redflaghover(this.id, false);'>\
+                                                        <span class='commenttext' style='background:#000000' id='commenttext_" + v.comment_id + "' question_id='" + v.question_id + "' data-toggle='tooltip' title='Click to edit' " + commenttextattributes + ">\
+                                                        " + v.comment + "</span></div>");
+                                                }
+                                                
+                                                
                                                 $("#commentcontainer_<%= $question_id %>").html(HTMLstring);
                                         });
                                         $(".commentup").each(function(){
@@ -335,6 +363,19 @@
                                             
                                         });
                                         
+                                        $(".flagcommentbutton").each(function(){
+                                            var id = $(this).attr("id");
+                                            var question_id = $(this).attr("question_id");
+                                            idobject = /(\d+)/.exec(id);
+                                            var comment_id = idobject[1];
+                                            if ($(this).attr('flagged') == 'false'){
+                                                $("#commentflag_" + comment_id).click(function(){commentflagclick(comment_id)});
+                                            }
+                                            else {
+                                                $("#commentflag_" + comment_id).click(function(){commentredflagclick(comment_id)});
+                                            }
+                                        });
+                                        
                                         $(".commenttext").each(function(){
                                             var commentid = $(this).attr("id");
                                             var question_id = $(this).attr("question_id");
@@ -342,16 +383,14 @@
                                             var comment_id = idobject[1];
                                             var editformshown = false;
                                             if ($(this).attr('showable') == 'true'){
+                                                var comment = $.trim($("#commenttext_" + comment_id).text());
                                                 $("#" + commentid).click(function(){
                                                     if (!editformshown) {
-                                                        var comment = $.trim($("#commenttext_" + comment_id).text());
-                                                        console.log(comment);
-                                                        var commenteditHTML = "<form id='commentform_<%= $question_id %>'>\
+                                                        var commenteditHTML = "<form id='commentform_<%= $question_id %>'><br>\
                                                             <label class='commentlabel' for='comment'>Edit Comment</label>\
                                                             <br><textarea id='textarea_" + question_id + "' name='comment' required>" + comment + "</textarea>\
                                                             <input type='hidden' name='question_id' value='<%= $question_id %>'>\
-                                                            <br><input id='editsubmit_<%= $question_id%>' class='postbutton' type='submit' value='Post'>\
-                                                            </form>"
+                                                            </form><input id='editsubmit_<%= $question_id%>' class='commentpostbutton' type='submit' value='Post'>"
                                                         $("#comment_" + comment_id).after(commenteditHTML);
                                                         $("#editsubmit_" + question_id).click(function(){
                                                             var message = $("#textarea_" + question_id).val();
@@ -359,12 +398,22 @@
                                                             type: "PUT",
                                                             contentType: "application/x-www-form-urlencoded",
                                                             dataType: 'json',
-                                                            data: {question_id: question_id, comment: message}});
+                                                            data: {question_id: question_id, comment: message}})
+                                                            .done(function(data){
+                                                                console.log(data);
+                                                                $("#commentform_<%= $question_id %>").remove();
+                                                                $("#editsubmit_<%= $question_id %>").remove();
+                                                                comment = data.comment;
+                                                                $("#textarea_<%= $question_id %>").text(comment);
+                                                                $("#commenttext_" + comment_id).text(comment);
+                                                                editformshown = false;
+                                                            });
                                                         });
                                                         editformshown = true;
                                                     }
                                                     else {
                                                         $("#commentform_<%= $question_id %>").remove();
+                                                        $("#editsubmit_<%= $question_id %>").remove();
                                                         editformshown = false;
                                                     }
                                                 });
@@ -410,7 +459,7 @@
                         </div>
                     </div>
                     <div class="question">
-                        <h1 class="questiontitle"><%= $question->{question} %></h1>
+                        <h1 class="questionansweredtitle"><%= $question->{question} %></h1>
                         <div id="<%= $question_id %>" class="infobar">
                             <h4 id="showcomments_<%= $question_id %>" class="info">Show Comments</h4>
                         </div>

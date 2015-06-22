@@ -64,14 +64,13 @@ sub store {
   $self->stash('comment' => $self->comments->add($question_id, $comment));
 
   $self->respond_to(
-    json => {json => $self->stash('comment')},
+    any => {json => $self->stash('comment')},
     any => sub { $self->redirect_to('questions')},
   );
 }   
 
 sub update {
   my $self = shift;
-
   my $validation = $self->_validation;
   return $self->respond_to(
     json => {json => {}},
@@ -80,14 +79,14 @@ sub update {
 
   my $comment_id = $self->param('comment_id');
   my $comment = $self->param('comment');
+  say $comment;
   say $comment_id;
-  $self->stash('comment' => $self->comments->save($comment_id, $comment));
+  my $r = $self->comments->save($comment_id, $comment);
 
+  $self->stash('comment' => $r);
   $self->respond_to(
     json => {json => $self->stash('comment')},
-    any => sub { 
-      $self->redirect_to('questions');
-    },
+    any => {},
   );
 }   
 

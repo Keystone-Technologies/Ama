@@ -22,12 +22,14 @@ sub raise {
 
 sub remove {
   my ($self, $entry_type, $entry_id) = @_;
+  say $entry_type;
+  say $entry_id;
   my $results = eval {
     my $sql;
     if ( $entry_type eq 'questions' ) {
       $sql = 'delete from flags where entry_type = ? and entry_id = ? and username = ? and flagged(?, ?) returning *';
     } elsif ( $entry_type eq 'comments' ) {
-      $sql = 'delete from flags where entry_type = ? and entry_id = ? and username = ? and flagged(?, (select question_id from comments where comment_id = ?)) returning *';
+      $sql = 'delete from flags where entry_type = ? and entry_id = ? and username = ? and flagged(?, ?) returning *';
     } else {
       die "Unknown flags entry_type";
     }

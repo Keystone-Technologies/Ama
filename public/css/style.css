@@ -49,6 +49,10 @@ body {
     position: fixed;
     width: 100%;
     display: flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: -webkit-flex;
     height: 50px;
     justify-content: center;
     align-items: center;
@@ -72,6 +76,10 @@ body {
     position: relative;
     top: 50px;
     display: flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: -webkit-flex;
     height: 50px;
     width: 100%;
 }
@@ -89,6 +97,10 @@ body {
     width: 100%;
     min-height: 120px;
     display: flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: -webkit-flex;
     align-items: center;
     border-bottom: 2px solid #000;
 }
@@ -97,6 +109,10 @@ body {
     width: 100%;
     min-height: 120px;
     display: flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: -webkit-flex;
     align-items: center;
     justify-content: left;
     border-bottom: 2px solid #000;
@@ -104,6 +120,10 @@ body {
 
 .question {
     display: flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: -webkit-flex;
     width: 100%;
     min-height:83px;
     justify-content: left;
@@ -117,6 +137,10 @@ body {
 
 .votecontainer {
     display: flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: -webkit-flex;
     align-items: center;
     align-content: center;
     justify-content: center;
@@ -171,13 +195,20 @@ body {
 }
 .question {
     display: flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: -webkit-flex;
     flex-direction: column;
     align-items: flex-start;
 }
     
-
-.questiontitle {
+.questionunansweredtitle {
     display: flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: -webkit-flex;
     font-size: 22px;
     font-weight: bold;
     padding: 5px;
@@ -190,8 +221,29 @@ body {
     -ms-user-select: all;
 }
 
+.questionansweredtitle {
+    display: flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: -webkit-flex;
+    font-size: 22px;
+    font-weight: bold;
+    padding: 5px;
+    padding-left: 10px;
+    flex: 1 1;
+    align-items: center;
+    -webkit-user-select: all;
+    -moz-user-select: all;
+    -ms-user-select: all;
+}
+
 .infobar {
     display: flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: -webkit-flex;
 }
 
 .info {
@@ -273,6 +325,10 @@ h4 {
 .flagcontainer {
     /*display: none;  DISABLE */
     display: flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: -webkit-flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
@@ -294,7 +350,7 @@ h4 {
 }
 
 .flagcommentbutton {
-    display: none;     /*DISABLED*/
+    /* display: none;     DISABLED*/
     min-width: 15px;
     height: 15px;
     cursor: pointer;
@@ -304,8 +360,13 @@ h4 {
     height: auto;
 }
 .comment {
+    width: calc(100% - 52px);
     position: relative;
     display: flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: -webkit-flex;
     align-items: center;
     left: 50px;
     border-bottom: 2px solid #000;
@@ -317,6 +378,10 @@ h4 {
     background: #C9C9C9;
     position: relative;
     display: flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: -webkit-flex;
     align-items: center;
     left: 50px;
     border-bottom: 2px solid #000;
@@ -326,6 +391,10 @@ h4 {
 
 .commenttext {
     display: flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: -webkit-flex;
     text-align: left;
     padding-left: 2.5px;
     -webkit-user-select: all;
@@ -336,6 +405,10 @@ h4 {
 .answer {
     position: relative;
     display: flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: -webkit-flex;
     align-items: center;
     left: 50px;
     width: 100%;
@@ -369,6 +442,26 @@ textarea {
     cursor: pointer;
 }
 
+.questionpostbutton {
+    margin-left: 50px;
+    margin-bottom: 20px;
+    background-color: #6d9d41;
+    border-radius: 5px;
+    border: 2px solid #005200;
+    font-size: 14;
+    cursor: pointer;
+}
+
+.commentpostbutton {
+    margin-left: 50px;
+    margin-bottom: 20px;
+    background-color: #6d9d41;
+    border-radius: 5px;
+    border: 2px solid #005200;
+    font-size: 14;
+    cursor: pointer;
+}
+
 .commentlabel {
     margin: 5px;
 }
@@ -381,6 +474,10 @@ form {
 
 .commentvotecontainer  {
     display: flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: -webkit-flex;
     min-width: 30px;
     flex-direction: column;
     padding-right: 5px;
@@ -419,6 +516,10 @@ span {
 
 #errorcontainer {
     display: flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: -webkit-flex;
     align-items: center;
     justify-content: center;
     position: absolute;

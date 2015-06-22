@@ -9,8 +9,8 @@
 --   X delete their own comment
 --   X vote one time on any unanswered question not their own
 --   X vote one time on any unanswered question's comment not their own comment
---   flag an unflagged question not their own
---   unflag a flagged question that they originally flagged
+--   X flag an unflagged question not their own
+--   X unflag a flagged question that they originally flagged
 --   flag an unflagged question's comment not their own
 --   unflag a flagged question's comment that they originally flagged
 --   X mark a comment (including their own) of their own question as an answer
@@ -151,6 +151,30 @@ $BODY$
     end if;
   END; 
 $BODY$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION deletequestionchildren() RETURNS trigger AS $deletequestionchildren$
+  BEGIN
+    DELETE FROM flags WHERE entry_type='questions' and entry_id = OLD.question_id;
+    DELETE FROM votes where entry_type='questions' and entry_id = OLD.question_id;
+    RETURN NULL;
+  END;
+  $deletequestionchildren$ LANGUAGE plpgsql;
+  
+CREATE TRIGGER deletequestionchildren
+AFTER DELETE ON questions
+FOR EACH ROW EXECUTE PROCEDURE deletequestionchildren();
+
+CREATE OR REPLACE FUNCTION deletecommentchildren() RETURNS trigger AS $deletecommentchildren$
+  BEGIN
+    DELETE FROM flags WHERE entry_type='comments' and entry_id = OLD.comment_id;
+    DELETE FROM votes where entry_type='comments' and entry_id = OLD.comment_id;
+    RETURN NULL;
+  END;
+  $deletecommentchildren$ LANGUAGE plpgsql;
+  
+CREATE TRIGGER deletecommentchildren
+AFTER DELETE ON comments
+FOR EACH ROW EXECUTE PROCEDURE deletecommentchildren();
 
 -- 1 down
 drop function if exists answered(integer);
