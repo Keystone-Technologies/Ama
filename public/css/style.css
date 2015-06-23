@@ -55,6 +55,8 @@ body {
     display: -webkit-flex;
     height: 50px;
     justify-content: center;
+    -ms-flex-pack: center;
+    -ms-flex-align: center;
     align-items: center;
     margin: 0px;
     padding: 0px;
@@ -115,6 +117,8 @@ body {
     display: -webkit-flex;
     align-items: center;
     justify-content: left;
+    -ms-flex-pack: center;
+    -ms-flex-align: center;
     border-bottom: 2px solid #000;
 }
 
@@ -127,6 +131,8 @@ body {
     width: 100%;
     min-height:83px;
     justify-content: left;
+    -ms-flex-pack: center;
+    -ms-flex-align: center;
     align-items: center;
 }
 
@@ -144,6 +150,8 @@ body {
     align-items: center;
     align-content: center;
     justify-content: center;
+    -ms-flex-pack: center;
+    -ms-flex-align: center;
 }
 
 .vote_up {
@@ -199,6 +207,8 @@ body {
     display: -ms-flex;
     display: -o-flex;
     display: -webkit-flex;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
     flex-direction: column;
     align-items: flex-start;
 }
@@ -330,6 +340,8 @@ h4 {
     display: -o-flex;
     display: -webkit-flex;
     justify-content: center;
+    -ms-flex-pack: center;
+    -ms-flex-align: center;
     align-items: center;
     cursor: pointer;
 }
@@ -337,6 +349,8 @@ h4 {
 .deletecontainer {
     display: flex;
     justify-content: center;
+    -ms-flex-pack: center;
+    -ms-flex-align: center;
     align-items: center;
 }
 .flag {
@@ -488,6 +502,8 @@ form {
     display: -o-flex;
     display: -webkit-flex;
     min-width: 30px;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
     flex-direction: column;
     padding-right: 5px;
 }
@@ -531,6 +547,8 @@ span {
     display: -webkit-flex;
     align-items: center;
     justify-content: center;
+    -ms-flex-pack: center;
+    -ms-flex-align: center;
     position: absolute;
     z-index: 1;
     top: 0px;

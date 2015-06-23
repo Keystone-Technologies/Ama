@@ -261,7 +261,7 @@
                                                 }
                                                 if("<%= $question->{username} %>" == "<%= session 'username' %>"){
                                                     markanswerattributes = "src='/img/checkmark.png' data-toggle='tooltip' title='Mark as answer' onclick='answerbuttonclick(" + v.comment_id + ", false, " + v.question_id + ");' \
-                                                    onmouseover='answerbuttonhover(this.id, false, true);' onmouseout='answerbuttonhover(this.id, false, false);' style='cursor:pointer'";
+                                                    onmouseover='answerbuttonhover(this.id, false, true);' onmouseout='answerbuttonhover(this.id, false, false);' style='cursor:pointer' showable='true'";
                                                 }
                                                 else {
                                                     markanswerattributes = "style='display:none'";

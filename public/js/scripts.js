@@ -236,7 +236,9 @@ function commentredflagclick(comment_id){
                 $("#commentflag_" + comment_id).attr('title', 'Flag Comment');
                 $("#commenttext_" + comment_id).css('background', '');
                 $("#commentvotecontainer_" + comment_id).css('display', 'flex');
-                $("#markanswer_" + comment_id).css('display', 'block');
+                if ($("#markanswer_" + comment_id).attr('showable') == 'true'){
+                   $("#markanswer_" + comment_id).css('display', 'block'); 
+                }
                 $("#commentflag_" + comment_id).unbind('click');
                 $("#commentflag_" + comment_id).click(function(){commentflagclick(comment_id)});
             }
