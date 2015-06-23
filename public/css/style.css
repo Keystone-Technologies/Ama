@@ -442,6 +442,15 @@ textarea {
     cursor: pointer;
 }
 
+.replypostbutton {
+    margin-left: 50px;
+    background-color: #6d9d41;
+    border-radius: 5px;
+    border: 2px solid #005200;
+    font-size: 14;
+    cursor: pointer;
+}
+
 .questionpostbutton {
     margin-left: 50px;
     margin-bottom: 20px;

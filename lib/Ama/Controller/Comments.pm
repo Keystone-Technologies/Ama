@@ -64,7 +64,7 @@ sub store {
   $self->stash('comment' => $self->comments->add($question_id, $comment));
 
   $self->respond_to(
-    any => {json => $self->stash('comment')},
+    json => {json => $self->stash('comment')},
     any => sub { $self->redirect_to('questions')},
   );
 }   

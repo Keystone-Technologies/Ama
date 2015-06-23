@@ -194,26 +194,48 @@
                                 }
                             });
                             $("#submit_<%= $question_id %>").click(function(){
-                                $("#replyformcontainer_<%= $question_id %>").toggle(false);
-                            });
+                                var mycomment = $.trim($("#newcommenttext_<%= $question_id %>").val());
+                                console.log(mycomment);
+                                $.ajax({url: url_for('store_comment', {question_id: "<%= $question_id%>"}),
+                                        type: "POST",
+                                        contentType: "application/x-www-form-urlencoded",
+                                        dataType: 'json',
+                                        data: {question_id: "<%= $question_id%>", comment: mycomment}})
+                                        .done(function(data){
+                                            $("#newcommenttext_<%= $question_id %>").val('');
+                                            $("#replyformcontainer_<%= $question_id %>").toggle(false);
+                                            $("#reply_<%= $question_id %>").html('Reply');
+                                            if ($("#showcomments_<%= $question_id %>").html() == 'Hide Comments'){
+                                                $("#showcomments_<%= $question_id %>").trigger('click');
+                                            }
+                                            window.loaded = false;
+                                            $("#showcomments_<%= $question_id %>").trigger('click');
+                                        });
+                                });
                         });
                     </script>
                 </div>
                 <div id="commentcontainer_<%= $question_id %>" class="commentcontainer">
                 </div>
                 <div id="replyformcontainer_<%= $question_id %>" class="replyformcontainer">
-                    <form id='commentform_<%= $question_id %>' action="<%= url_for 'store_comment', {question_id => $question_id} %>" method='POST'>
+                    <form id='commentform_<%= $question_id %>'>
                         <label class='commentlabel' for='comment'>Comment</label>
-                        <br><textarea name='comment' required></textarea>
+                        <br><textarea id="newcommenttext_<%= $question_id %>" name='comment' required></textarea>
                         <input type='hidden' name='question_id' value='<%= $question_id %>'>
                     </form>
-                    <input id="submit_<%= $question_id %>" class="postbutton" type='submit' value='Post'>
+                    <input id="submit_<%= $question_id %>" class="replypostbutton" type='submit' value='Post'>
                 </div>
                 <script>
                     $(document).ready(function(){
                         var shown = false;
                         var loaded = false;
                         $("#showcomments_<%= $question_id %>").click(function(){
+                            console.log("Window loaded: " + window.loaded);
+                            console.log("Loaded: " + loaded);
+                            if (!window.loaded){
+                                loaded = false;
+                                window.loaded = true;
+                            }
                             if (shown){
                                 $("#commentcontainer_<%= $question_id %>").toggle(false);
                                 $("#showcomments_<%= $question_id %>").html("Show Comments");

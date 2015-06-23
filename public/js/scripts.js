@@ -272,3 +272,7 @@ function commentflagclick(comment_id){
         }
     });
 }
+
+function loadcomments(){
+    
+}
