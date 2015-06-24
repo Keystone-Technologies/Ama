@@ -14,6 +14,7 @@ sub startup {
   # Configuration
   $self->plugin('Config');
   $self->secrets($self->config('secrets'));
+  $self->sessions->default_expiration(86400*365*10); # 10yr cookie
 
   # Model
   $self->helper(pg => sub { state $pg = Mojo::Pg->new(shift->config('pg')) });
