@@ -23,6 +23,26 @@ sub add {
   $@ ? { error => $@ } : $results;
 }
 
+sub addmultiple {
+  my ($pg, $question, $created, $upvotes, $downvotes) = @_;
+  my $username = int(rand(8999999999)) + 1000000000;
+  my $sql = 'insert into questions (question, username, created) values (?, ?, ?) returning *';
+  my $results = $pg->db->query($sql, $question, $username, $created)->hash;
+  for (my $i = 0; $i < $upvotes; $i++) {
+    my $voteusername = int(rand(8999999999)) + 1000000000;
+    my $sql2 = 'insert into votes (entry_type, entry_id, vote, username) values (?, ?, ?, ?) returning *';
+    my $id = $pg->db->query($sql2, 'questions', $results->{question_id}, 'up', $voteusername)->hash;
+    say "success " . $id;
+  }
+  for (my $i = 0; $i < $downvotes; $i++) {
+    my $voteusername = int(rand(8999999999)) + 1000000000;
+    my $sql3 = 'insert into votes (entry_type, entry_id, vote, username) values (?, ?, ?, ?) returning *';
+    my $id = $pg->db->query($sql3, 'questions', $results->{question_id}, 'down', $voteusername)->hash;
+    say "success " . $id;
+  }
+  return $results;
+}
+
 sub all {
   my $self = shift;
   $self->pg->db->query(q[

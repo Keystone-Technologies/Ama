@@ -143,7 +143,8 @@ function redflaghover(id, over){
 }
 
 function showError(time){
-    $("#errorcontainer").css('opacity', 1)
+    console.log("called error");
+    $("#errorcontainer").css('opacity', 1);
     $("#errorcontainer").animate({top: '50px'}, 250).delay(time).animate({top: '0px', opacity: 0}, 250);
 }
 

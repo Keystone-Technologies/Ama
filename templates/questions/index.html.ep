@@ -88,13 +88,13 @@
                                 % if (!$question->{flagged}){
                                 <script>
                                     $(document).ready(function(){
-                                        $("#flagcontainer_<%= $question_id %>").one('click', function() {questionflagclick("<%= $question_id %>", "<%= $question->{votes} %>")});
+                                        $("#flagcontainer_<%= $question_id %>").click(function() {questionflagclick("<%= $question_id %>", "<%= $question->{votes} %>")});
                                     });
                                 </script>
                                 % } else {
                                 <script>
                                     $(document).ready(function(){
-                                        $("#flagcontainer_<%= $question_id %>").one('click', function(){questionredflagclick("<%= $question_id %>", "<%= $question->{votes} %>")});
+                                        $("#flagcontainer_<%= $question_id %>").click(function(){questionredflagclick("<%= $question_id %>", "<%= $question->{votes} %>")});
                                     });
                                 </script>
                                 % }

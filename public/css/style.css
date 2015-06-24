@@ -50,7 +50,7 @@ body {
     width: 100%;
     display: flex;
     display: -moz-flex;
-    display: -ms-flex;
+    display: -ms-flexbox;
     display: -o-flex;
     display: -webkit-flex;
     height: 50px;
@@ -79,7 +79,7 @@ body {
     top: 50px;
     display: flex;
     display: -moz-flex;
-    display: -ms-flex;
+    display: -ms-flexbox;
     display: -o-flex;
     display: -webkit-flex;
     height: 50px;
@@ -100,7 +100,7 @@ body {
     min-height: 120px;
     display: flex;
     display: -moz-flex;
-    display: -ms-flex;
+    display: -ms-flexbox;
     display: -o-flex;
     display: -webkit-flex;
     align-items: center;
@@ -112,7 +112,7 @@ body {
     min-height: 120px;
     display: flex;
     display: -moz-flex;
-    display: -ms-flex;
+    display: -ms-flexbox;
     display: -o-flex;
     display: -webkit-flex;
     align-items: center;
@@ -125,7 +125,7 @@ body {
 .question {
     display: flex;
     display: -moz-flex;
-    display: -ms-flex;
+    display: -ms-flexbox;
     display: -o-flex;
     display: -webkit-flex;
     width: 100%;
@@ -144,7 +144,7 @@ body {
 .votecontainer {
     display: flex;
     display: -moz-flex;
-    display: -ms-flex;
+    display: -ms-flexbox;
     display: -o-flex;
     display: -webkit-flex;
     align-items: center;
@@ -204,9 +204,10 @@ body {
 .question {
     display: flex;
     display: -moz-flex;
-    display: -ms-flex;
+    display: -ms-flexbox;
     display: -o-flex;
     display: -webkit-flex;
+    -ms-flex: 0 1 auto;
     -webkit-flex-direction: column;
     -ms-flex-direction: column;
     flex-direction: column;
@@ -216,7 +217,7 @@ body {
 .questionunansweredtitle {
     display: flex;
     display: -moz-flex;
-    display: -ms-flex;
+    display: -ms-flexbox;
     display: -o-flex;
     display: -webkit-flex;
     font-size: 22px;
@@ -234,7 +235,7 @@ body {
 .questionansweredtitle {
     display: flex;
     display: -moz-flex;
-    display: -ms-flex;
+    display: -ms-flexbox;
     display: -o-flex;
     display: -webkit-flex;
     font-size: 22px;
@@ -251,7 +252,7 @@ body {
 .infobar {
     display: flex;
     display: -moz-flex;
-    display: -ms-flex;
+    display: -ms-flexbox;
     display: -o-flex;
     display: -webkit-flex;
 }
@@ -336,7 +337,7 @@ h4 {
     /*display: none;  DISABLE */
     display: flex;
     display: -moz-flex;
-    display: -ms-flex;
+    display: -ms-flexbox;
     display: -o-flex;
     display: -webkit-flex;
     justify-content: center;
@@ -378,7 +379,7 @@ h4 {
     position: relative;
     display: flex;
     display: -moz-flex;
-    display: -ms-flex;
+    display: -ms-flexbox;
     display: -o-flex;
     display: -webkit-flex;
     align-items: center;
@@ -393,7 +394,7 @@ h4 {
     position: relative;
     display: flex;
     display: -moz-flex;
-    display: -ms-flex;
+    display: -ms-flexbox;
     display: -o-flex;
     display: -webkit-flex;
     align-items: center;
@@ -406,7 +407,7 @@ h4 {
 .commenttext {
     display: flex;
     display: -moz-flex;
-    display: -ms-flex;
+    display: -ms-flexbox;
     display: -o-flex;
     display: -webkit-flex;
     text-align: left;
@@ -420,7 +421,7 @@ h4 {
     position: relative;
     display: flex;
     display: -moz-flex;
-    display: -ms-flex;
+    display: -ms-flexbox;
     display: -o-flex;
     display: -webkit-flex;
     align-items: center;
@@ -498,7 +499,7 @@ form {
 .commentvotecontainer  {
     display: flex;
     display: -moz-flex;
-    display: -ms-flex;
+    display: -ms-flexbox;
     display: -o-flex;
     display: -webkit-flex;
     min-width: 30px;
@@ -542,14 +543,14 @@ span {
 #errorcontainer {
     display: flex;
     display: -moz-flex;
-    display: -ms-flex;
+    display: -ms-flexbox;
     display: -o-flex;
     display: -webkit-flex;
     align-items: center;
     justify-content: center;
     -ms-flex-pack: center;
     -ms-flex-align: center;
-    position: absolute;
+    position: fixed;
     z-index: 1;
     top: 0px;
     width: 100%;
