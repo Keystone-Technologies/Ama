@@ -25,20 +25,23 @@ sub add {
 
 sub addmultiple {
   my ($pg, $question, $created, $upvotes, $downvotes) = @_;
-  my $username = int(rand(8999999999)) + 1000000000;
+  my $username = 1000000000 + int(rand(435000000));
   my $sql = 'insert into questions (question, username, created) values (?, ?, ?) returning *';
   my $results = $pg->db->query($sql, $question, $username, $created)->hash;
+  $sql = 'insert into comments (question_id, comment, username) select ?, ?, ? where not answered(?) returning *';
+  $username = int(rand(435000000)) + 1000000000;
+  my $commentresults = $pg->db->query($sql, $results->{question_id}, 'Answered', $username, $results->{question_id})->hash;
+  $sql = 'insert into answers (comment_id, question_id, username) values (?, ?, ?) returning *';
+  $pg->db->query($sql, $commentresults->{comment_id}, $results->{question_id}, $username)->hash;
   for (my $i = 0; $i < $upvotes; $i++) {
-    my $voteusername = int(rand(8999999999)) + 1000000000;
-    my $sql2 = 'insert into votes (entry_type, entry_id, vote, username) values (?, ?, ?, ?) returning *';
-    my $id = $pg->db->query($sql2, 'questions', $results->{question_id}, 'up', $voteusername)->hash;
-    say "success " . $id;
+    my $username = int(rand(435000000)) + 1000000000;
+    $sql = 'insert into votes (entry_type, entry_id, vote, username) values (?, ?, ?, ?) returning *';
+    my $id = $pg->db->query($sql, 'questions', $results->{question_id}, 'up', $username)->hash;
   }
   for (my $i = 0; $i < $downvotes; $i++) {
-    my $voteusername = int(rand(8999999999)) + 1000000000;
-    my $sql3 = 'insert into votes (entry_type, entry_id, vote, username) values (?, ?, ?, ?) returning *';
-    my $id = $pg->db->query($sql3, 'questions', $results->{question_id}, 'down', $voteusername)->hash;
-    say "success " . $id;
+    my $username = int(rand(435000000)) + 1000000000;
+    $sql = 'insert into votes (entry_type, entry_id, vote, username) values (?, ?, ?, ?) returning *';
+    my $id = $pg->db->query($sql, 'questions', $results->{question_id}, 'down', $username)->hash;
   }
   return $results;
 }

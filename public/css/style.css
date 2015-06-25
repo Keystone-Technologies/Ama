@@ -225,6 +225,7 @@ body {
     padding: 5px;
     padding-left: 10px;
     flex: 1 1;
+    -ms-flex: 1 1 auto;
     align-items: center;
     cursor: pointer;
     -webkit-user-select: all;
@@ -243,6 +244,7 @@ body {
     padding: 5px;
     padding-left: 10px;
     flex: 1 1;
+    -ms-flex: 1 1 auto;
     align-items: center;
     -webkit-user-select: all;
     -moz-user-select: all;
@@ -310,6 +312,7 @@ p {
 h1 {
     margin: 0px;
     padding: 0px;
+    width: 100%;
 }
 
 h2 {

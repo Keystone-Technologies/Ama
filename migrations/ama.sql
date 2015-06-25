@@ -152,31 +152,8 @@ $BODY$
   END; 
 $BODY$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION deletequestionchildren() RETURNS trigger AS $deletequestionchildren$
-  BEGIN
-    DELETE FROM flags WHERE entry_type='questions' and entry_id = OLD.question_id;
-    DELETE FROM votes where entry_type='questions' and entry_id = OLD.question_id;
-    RETURN NULL;
-  END;
-  $deletequestionchildren$ LANGUAGE plpgsql;
-  
-CREATE TRIGGER deletequestionchildren
-AFTER DELETE ON questions
-FOR EACH ROW EXECUTE PROCEDURE deletequestionchildren();
-
-CREATE OR REPLACE FUNCTION deletecommentchildren() RETURNS trigger AS $deletecommentchildren$
-  BEGIN
-    DELETE FROM flags WHERE entry_type='comments' and entry_id = OLD.comment_id;
-    DELETE FROM votes where entry_type='comments' and entry_id = OLD.comment_id;
-    RETURN NULL;
-  END;
-  $deletecommentchildren$ LANGUAGE plpgsql;
-  
-CREATE TRIGGER deletecommentchildren
-AFTER DELETE ON comments
-FOR EACH ROW EXECUTE PROCEDURE deletecommentchildren();
-
 -- 1 down
+
 drop function if exists answered(integer);
 drop function if exists votes(text,integer);
 drop function if exists flagged(text,integer);
@@ -186,3 +163,32 @@ drop table if exists flags;
 drop table if exists comments;
 drop table if exists questions;
 drop table if exists mojo_migrations;
+
+
+-- 2 up
+
+CREATE OR REPLACE FUNCTION deletechildren() RETURNS trigger AS $$
+  BEGIN
+    IF TG_ARGV[0] = 'questions' THEN
+      DELETE FROM comments WHERE question_id=OLD.question_id;
+      DELETE FROM flags WHERE entry_type='questions' and entry_id = OLD.question_id;
+      DELETE FROM votes where entry_type='questions' and entry_id = OLD.question_id;
+    ELSE
+      DELETE FROM flags WHERE entry_type='comments' and entry_id = OLD.comment_id;
+      DELETE FROM votes where entry_type='comments' and entry_id = OLD.comment_id;
+    END IF;
+    RETURN NULL;
+  END;
+  $$ LANGUAGE plpgsql;
+  
+CREATE TRIGGER deletecommentchildren
+AFTER DELETE ON comments
+FOR EACH ROW EXECUTE PROCEDURE deletechildren('comments');
+
+CREATE TRIGGER deletequestionchildren
+AFTER DELETE ON questions
+FOR EACH ROW EXECUTE PROCEDURE deletechildren('questions');
+
+-- 2 down 
+
+DROP FUNCTION deletechildren() CASCADE;

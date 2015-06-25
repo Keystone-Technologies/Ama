@@ -15,8 +15,12 @@ my $slurp = Text::CSV::Slurp->new();
 my $data = $slurp->load(file => $file);
 
 my @results;
+my $dots;
+
 foreach (@$data){
     my $result = Ama::Model::Questions::addmultiple($pg, decode_entities($_->{'Text'}), $_->{'Time Created'}, $_->{'Plus Votes'}, $_->{'Minus Votes'});
     push @results, $result;
+    print "success " . $dots . "\n";
+    $dots = $dots . "."
 }
-print "Done. Added " . ($#results + 1) . " questions.";
+print "Done. Added " . ($#results + 1) . " questions.\n";

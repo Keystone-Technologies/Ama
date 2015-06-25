@@ -112,6 +112,7 @@
                                 });
                                 console.log('Deleted question # <%= $question_id %>');
                                 $("#question_<%= $question_id %>").remove();
+                                $("#commentcontainer_<%= $question_id %>").remove();
                             });
                             $("#deletequestion_<%= $question_id %>").mouseover(function(){
                                 $(this).attr("src", "/img/opentrash.png");
@@ -164,6 +165,7 @@
                                             $("#questiontitle_<%= $question_id %>").text(data.question);
                                             question = data.question;
                                             questionformshown = false;
+                                            console.log(data);
                                             });
                                     });
                                     
@@ -467,8 +469,6 @@
                     
                     
             % } else {
-                
-                
                 <div id="question_<%= $question_id %>" class="questionansweredcontainer">
                     <div class="questioninfocontainer">
                         <div class="answeredquestionbuttoncontainer">
