@@ -189,6 +189,26 @@ CREATE TRIGGER deletequestionchildren
 AFTER DELETE ON questions
 FOR EACH ROW EXECUTE PROCEDURE deletechildren('questions');
 
+CREATE OR REPLACE FUNCTION commentcount(integer) 
+RETURNS integer AS
+$BODY$
+  declare result integer;
+  BEGIN
+    select
+      COUNT(*) into result as counted
+    from
+      comments 
+    where
+      question_id=$1;
+    if result is null or result = 0 then
+      return 0;
+    else
+      return result;
+    end if;
+  END; 
+$BODY$ LANGUAGE plpgsql;
+
 -- 2 down 
 
 DROP FUNCTION deletechildren() CASCADE;
+DROP FUNCTION commentcount();

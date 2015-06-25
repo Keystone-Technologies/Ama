@@ -58,7 +58,8 @@ sub all {
     username,
     to_char(created, 'MM/DD/YYYY HH12:MI:SS') as created,
     to_char(modified, 'MM/DD/YYYY HH12:MI:SS') as modified,
-    answered(question_id)::int as answered
+    answered(question_id)::int as answered,
+    commentcount(question_id)::int as comment_count
   from
     questions
   order by answered asc, votes desc, created desc;
