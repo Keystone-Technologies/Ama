@@ -211,7 +211,7 @@
                                             if ($("#showcomments_<%= $question_id %>").html() == 'Hide Comments'){
                                                 $("#showcomments_<%= $question_id %>").trigger('click');
                                             }
-                                            window.loaded = false;
+                                            globalloaded = false;
                                             $("#showcomments_<%= $question_id %>").trigger('click');
                                         });
                                 });
@@ -230,14 +230,15 @@
                 </div>
                 <script>
                     $(document).ready(function(){
+                        globalloaded = true;
                         var shown = false;
                         var loaded = false;
                         $("#showcomments_<%= $question_id %>").click(function(){
-                            console.log("Window loaded: " + window.loaded);
+                            console.log("Global loaded: " + globalloaded);
                             console.log("Loaded: " + loaded);
-                            if (!window.loaded){
+                            if (!globalloaded){
                                 loaded = false;
-                                window.loaded = true;
+                                globalloaded = true;
                             }
                             if (shown){
                                 $("#commentcontainer_<%= $question_id %>").toggle(false);
