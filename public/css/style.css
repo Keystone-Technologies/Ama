@@ -25,6 +25,15 @@ body {
     color: #ffffff;
 }
 
+#youtube {
+    position: fixed;
+    left: 170px;
+    width: 48px;
+    height: 48px;
+    z-index: 3;
+    cursor: pointer;
+}
+
 #newquestion {
     margin: 1px;
     height: 40px;

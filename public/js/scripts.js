@@ -46,6 +46,16 @@ function smallarrowhover(elementid, elementclass, action) {
     }
 }
 
+function youtubehover(action) {
+    if (action){
+        $("#youtube").attr('src', 'img/youtubehover.png');
+        $("#youtube").css('width', 'auto');
+    }
+    else {
+        $("#youtube").attr('src', 'img/youtube.png');
+    }
+}
+
 function answerbuttonhover(comment_id, marked, action){
     console.log(comment_id);
     if (action){
