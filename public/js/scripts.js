@@ -152,8 +152,9 @@ function redflaghover(id, over){
     }
 }
 
-function showError(time){
+function showError(message, time){
     console.log("called error");
+    $("#errorcontainer").html(message);
     $("#errorcontainer").css('opacity', 1);
     $("#errorcontainer").animate({top: '50px'}, 250).delay(time).animate({top: '0px', opacity: 0}, 250);
 }
@@ -168,8 +169,7 @@ function questionredflagclick(question_id, votes){
        console.log(data);
         if (data == null){
             console.log('Showing error')
-           $("#errorcontainer").html("Error");
-           showError(3000);
+            showError("Error", 3000);
         }
         else {
             if (data.error != null) {
@@ -199,12 +199,11 @@ function questionflagclick(question_id, votes){
     .done(function(data) {
         console.log(data);
         if (data == null){
-           $("#errorcontainer").html("Error");
-           showError(3000);
+           showError("Error", 3000);
         }
         else {
             if (data.error != null) {
-                $("#errorcontainer").html("Error: " + data.error);
+                showError(data.error, 3000);
             }
             else {
                 $("#flag_" + question_id).attr('src', '/img/redflag.png');
@@ -232,9 +231,8 @@ function commentredflagclick(comment_id){
    .done(function(data) {
        console.log(data);
         if (data == null){
-            console.log('Showing error')
-           $("#errorcontainer").html("Error");
-           showError(3000);
+            console.log('Showing error');
+           showError("Error", 3000);
         }
         else {
             if (data.error != null) {
@@ -264,8 +262,7 @@ function commentflagclick(comment_id){
     .done(function(data) {
         console.log(data);
         if (data == null){
-           $("#errorcontainer").html("Error");
-           showError(3000);
+           showError("Error", 3000);
         }
         else {
             if (data.error != null) {

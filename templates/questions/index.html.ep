@@ -109,11 +109,26 @@
                         $(document).ready(function(){
                             $("#deletequestion_<%= $question_id %>").click(function(){
                                 $.ajax({
-                                    url: "<%= url_for 'remove_question', {question_id => $question_id} %>", type: 'DELETE'
+                                    url: "<%= url_for 'remove_question', {question_id => $question_id} %>",
+                                    type: 'DELETE',
+                                    dataType: 'json'
+                                }).done(function(data){
+                                    if (data) {
+                                        if (data.question_id){
+                                            $("#question_<%= $question_id %>").remove();
+                                            $("#commentcontainer_<%= $question_id %>").remove();
+                                        }
+                                        else if (data.error){
+                                            showError(data.error, 3000);
+                                        }
+                                        else {
+                                            showError("Error", 3000);
+                                        }
+                                    }
+                                    else {
+                                        showError("Error", 3000);
+                                    }
                                 });
-                                console.log('Deleted question # <%= $question_id %>');
-                                $("#question_<%= $question_id %>").remove();
-                                $("#commentcontainer_<%= $question_id %>").remove();
                             });
                             $("#deletequestion_<%= $question_id %>").mouseover(function(){
                                 $(this).attr("src", "/img/opentrash.png");
@@ -155,18 +170,32 @@
                                     questionformshown = true;
                                     $("#questioneditsubmit_<%= $question_id%>").click(function(){
                                         var message = $("#questiontextarea_<%= $question_id%>").val();
-                                        $.ajax({url: url_for('update_question', {question_id: "<%= $question_id%>"}),
-                                        type: "PUT",
-                                        contentType: "application/x-www-form-urlencoded",
-                                        dataType: 'json',
-                                        data: {question_id: "<%= $question_id%>", question: message}})
-                                        .done(function(data){
-                                            $("#questionform_<%= $question_id %>").remove();
-                                            $("#questioneditsubmit_<%= $question_id %>").remove();
-                                            $("#questiontitle_<%= $question_id %>").text(data.question);
-                                            question = data.question;
-                                            questionformshown = false;
-                                            console.log(data);
+                                        $.ajax({
+                                            url: url_for('update_question', {question_id: "<%= $question_id%>"}),
+                                            type: "PUT",
+                                            contentType: "application/x-www-form-urlencoded",
+                                            dataType: 'json',
+                                            data: {question_id: "<%= $question_id%>", question: message}})
+                                            .done(function(data){
+                                                if (data){
+                                                    if (data.question_id) {
+                                                        $("#questionform_<%= $question_id %>").remove();
+                                                        $("#questioneditsubmit_<%= $question_id %>").remove();
+                                                        $("#questiontitle_<%= $question_id %>").text(data.question);
+                                                        question = data.question;
+                                                        questionformshown = false;
+                                                        console.log(data);
+                                                    }
+                                                    else if (data.error) {
+                                                        showError(data.error, 3000);
+                                                    }
+                                                    else {
+                                                        showError("Error", 3000);
+                                                    }
+                                                }
+                                                else {
+                                                    showError("Error", 3000);
+                                                }
                                             });
                                     });
                                     
@@ -199,21 +228,35 @@
                             $("#submit_<%= $question_id %>").click(function(){
                                 var mycomment = $.trim($("#newcommenttext_<%= $question_id %>").val());
                                 console.log(mycomment);
-                                $.ajax({url: url_for('store_comment', {question_id: "<%= $question_id%>"}),
-                                        type: "POST",
-                                        contentType: "application/x-www-form-urlencoded",
-                                        dataType: 'json',
-                                        data: {question_id: "<%= $question_id%>", comment: mycomment}})
-                                        .done(function(data){
-                                            $("#newcommenttext_<%= $question_id %>").val('');
-                                            $("#replyformcontainer_<%= $question_id %>").toggle(false);
-                                            $("#reply_<%= $question_id %>").html('Reply');
-                                            if ($("#showcomments_<%= $question_id %>").html() == 'Hide Comments'){
+                                $.ajax({
+                                    url: url_for('store_comment', {question_id: "<%= $question_id%>"}),
+                                    type: "POST",
+                                    contentType: "application/x-www-form-urlencoded",
+                                    dataType: 'json',
+                                    data: {question_id: "<%= $question_id%>", comment: mycomment}})
+                                    .done(function(data){
+                                        if (data){
+                                            if (data.comment_id){
+                                                $("#newcommenttext_<%= $question_id %>").val('');
+                                                $("#replyformcontainer_<%= $question_id %>").toggle(false);
+                                                $("#reply_<%= $question_id %>").html('Reply');
+                                                if ($("#showcomments_<%= $question_id %>").html() == 'Hide Comments'){
+                                                    $("#showcomments_<%= $question_id %>").trigger('click');
+                                                }
+                                                globalloaded = false;
                                                 $("#showcomments_<%= $question_id %>").trigger('click');
                                             }
-                                            globalloaded = false;
-                                            $("#showcomments_<%= $question_id %>").trigger('click');
-                                        });
+                                            else if (data.error) {
+                                                showError(data.error, 3000);
+                                            }
+                                            else {
+                                                showError("Error", 3000);
+                                            }
+                                        }
+                                        else {
+                                            showError("Error", 3000);
+                                        }
+                                    });
                                 });
                         });
                     </script>
@@ -366,13 +409,25 @@
                                             var comment_id = idobject[1];
                                             $("#" + id).click(function(){
                                                 $.ajax({
-                                                    url: url_for('remove_comment', 
-                                                    {comment_id: comment_id}), 
+                                                    url: url_for('remove_comment', {comment_id: comment_id}), 
                                                     type: 'DELETE',
                                                     dataType: 'json'
+                                                }).done(function(data){
+                                                    if (data){
+                                                        if (data.comment_id){
+                                                            $("#comment_" + comment_id).remove();
+                                                        }
+                                                        else if (data.error) {
+                                                            showError(data.error, 3000);
+                                                        }
+                                                        else {
+                                                            showError("Error", 3000);
+                                                        }
+                                                    }
+                                                    else {
+                                                        showError("Error", 3000);
+                                                    }
                                                 });
-                                                console.log('Deleted comment #' + comment_id);
-                                                $("#comment_" + comment_id).remove();
                                             });
                                             $("#" + id).mouseover(function(){
                                                 $(this).attr("src", "/img/opentrash.png");
@@ -420,19 +475,29 @@
                                                         $("#comment_" + comment_id).after(commenteditHTML);
                                                         $("#editsubmit_" + question_id).click(function(){
                                                             var message = $("#textarea_" + question_id).val();
-                                                            $.ajax({url: url_for('update_comment', {comment_id: comment_id}),
-                                                            type: "PUT",
-                                                            contentType: "application/x-www-form-urlencoded",
-                                                            dataType: 'json',
-                                                            data: {question_id: question_id, comment: message}})
-                                                            .done(function(data){
-                                                                console.log(data);
-                                                                $("#commentform_<%= $question_id %>").remove();
-                                                                $("#editsubmit_<%= $question_id %>").remove();
-                                                                comment = data.comment;
-                                                                $("#textarea_<%= $question_id %>").text(comment);
-                                                                $("#commenttext_" + comment_id).text(comment);
-                                                                editformshown = false;
+                                                            $.ajax({
+                                                                url: url_for('update_comment', {comment_id: comment_id}),
+                                                                type: "PUT",
+                                                                contentType: "application/x-www-form-urlencoded",
+                                                                dataType: 'json',
+                                                                data: {question_id: question_id, comment: message}
+                                                            }).done(function(data){
+                                                                if (data) {
+                                                                    if (data.comment_id){
+                                                                        $("#commentform_<%= $question_id %>").remove();
+                                                                        $("#editsubmit_<%= $question_id %>").remove();
+                                                                        comment = data.comment;
+                                                                        $("#textarea_<%= $question_id %>").text(comment);
+                                                                        $("#commenttext_" + comment_id).text(comment);
+                                                                        editformshown = false;
+                                                                    }
+                                                                    else if (data.error) {
+                                                                        showError(data.error, 3000);
+                                                                    }
+                                                                }
+                                                                else {
+                                                                    showError("Error", 3000);
+                                                                }
                                                             });
                                                         });
                                                         editformshown = true;
@@ -502,7 +567,7 @@
                                 shown = false;
                             }
                             else {
-                                if (!loaded){  //Load comments for question via post request
+                                if (!loaded){
                                     var HTMLstring = "";
                                     console.log('Loading comment data');
                                     $.get("<%= url_for 'comments', {question_id => $question_id} %>", function(data){

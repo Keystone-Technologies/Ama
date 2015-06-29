@@ -125,7 +125,7 @@ body {
     display: -o-flex;
     display: -webkit-flex;
     align-items: center;
-    justify-content: left;
+    justify-content: center;
     -ms-flex-pack: center;
     -ms-flex-align: center;
     border-bottom: 2px solid #000;
@@ -138,7 +138,7 @@ body {
     display: -o-flex;
     display: -webkit-flex;
     width: 100%;
-    min-height:83px;
+    min-height: 83px;
     justify-content: left;
     -ms-flex-pack: center;
     -ms-flex-align: center;

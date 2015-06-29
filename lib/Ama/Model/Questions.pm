@@ -73,7 +73,12 @@ sub remove {
     my $sql = 'delete from questions where question_id = ? and username = ? and not answered(question_id) returning *';
     $self->pg->db->query($sql, $question_id, $self->username)->hash;
   };
-  $@ ? { error => $@ } : $results;
+  if ($results) {
+    $@ ? { error => $@ } : $results;
+  }
+  else {
+    error => "Couldn't delete question";
+  }
 }
 
 sub save {
