@@ -229,6 +229,7 @@ body {
     display: -ms-flexbox;
     display: -o-flex;
     display: -webkit-flex;
+    width: calc(100% - 30px);
     font-size: 22px;
     font-weight: bold;
     padding: 5px;
@@ -248,6 +249,7 @@ body {
     display: -ms-flexbox;
     display: -o-flex;
     display: -webkit-flex;
+    width: calc(100% - 30px);
     font-size: 22px;
     font-weight: bold;
     padding: 5px;
@@ -570,4 +572,10 @@ span {
     background-color: #00ff00;
     -webkit-user-select: all;
     text-align: center;
+}
+
+.spinner {
+    height: 30px;
+    width: 30px;
+    padding-left: 50px;
 }

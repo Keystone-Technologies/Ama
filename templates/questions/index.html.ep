@@ -21,7 +21,6 @@
     <div id="content">
         % for my $question (@$questions) {
             % my $question_id = $question->{question_id};
-            % warn $question_id;
             % if (!$question->{answered}) {
                 <div id="question_<%= $question_id %>" class="question<%= $question->{answered} ? 'answered' : 'unanswered' %>container">
                     <div class="questioninfocontainer">
@@ -291,7 +290,9 @@
                             else {
                                 if (!loaded){  //Load comments for question via post request
                                     var HTMLstring = "";
+                                    $("#commentcontainer_<%= $question_id %>").html("<img class='spinner' src='/img/spinner.gif'>");
                                     $.get("<%= url_for 'comments', {question_id => $question_id} %>", function(data){
+                                        $("#commentcontainer_<%= $question_id %>").html("");
                                         $.each(data, function(i, v){
                                             console.log(v);
                                             var markanswerattributes = "";
@@ -570,8 +571,10 @@
                                 if (!loaded){
                                     var HTMLstring = "";
                                     console.log('Loading comment data');
+                                    $("#commentcontainer_<%= $question_id %>").html("<img class='spinner' src='/img/spinner.gif'>");
                                     $.get("<%= url_for 'comments', {question_id => $question_id} %>", function(data){
                                         console.log(data);
+                                        $("#commentcontainer_<%= $question_id %>").html("");
                                         $.each(data, function(i, v){
                                             var markanswerattributes = "";
                                             var commentbackground = "";
