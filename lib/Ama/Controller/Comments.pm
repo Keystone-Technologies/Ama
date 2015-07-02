@@ -62,7 +62,6 @@ sub store {
   my $question_id = $self->param('question_id');
   my $comment = $self->param('comment');
   $self->stash('comment' => $self->comments->add($question_id, $comment));
-
   $self->respond_to(
     json => {json => $self->stash('comment')},
     any => sub { $self->redirect_to('questions')},
@@ -79,10 +78,7 @@ sub update {
 
   my $comment_id = $self->param('comment_id');
   my $comment = $self->param('comment');
-  say $comment;
-  say $comment_id;
   my $r = $self->comments->save($comment_id, $comment);
-
   $self->stash('comment' => $r);
   $self->respond_to(
     json => {json => $self->stash('comment')},

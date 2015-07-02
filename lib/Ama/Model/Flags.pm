@@ -22,8 +22,6 @@ sub raise {
 
 sub remove {
   my ($self, $entry_type, $entry_id) = @_;
-  say $entry_type;
-  say $entry_id;
   my $results = eval {
     my $sql;
     if ( $entry_type eq 'questions' ) {

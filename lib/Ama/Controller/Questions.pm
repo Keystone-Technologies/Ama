@@ -32,7 +32,7 @@ sub index {
 sub remove {
   my $self = shift;
   my $question_id = $self->param('question_id');
-  $self->stash(question => $self->questions->remove($question_id));
+  $self->stash('question' => $self->questions->remove($question_id));
   $self->respond_to(
     json => {json => $self->stash('question')},
   );
@@ -77,11 +77,10 @@ sub update {
 
   my $question_id = $self->param('question_id');
   my $question = $self->param('question');
-  $self->stash('question' => $self->questions->save($question_id, $question));
-
+  my $result = $self->stash('question' => $self->questions->save($question_id, $question));
   $self->respond_to(
     json => {json => $self->stash('question')},
-    any => sub { $self->redirect_to('show_question', question_id => $question_id) },
+    any => {},
   );
 }
 
