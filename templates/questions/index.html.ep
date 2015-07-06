@@ -100,7 +100,7 @@
                                 % }
                             </div>
                         </div>
-                        <div id="questiontime_<%= $question->{created} %>" class="questiontime">
+                        <div id="questiontime_<%= $question_id %>" class="questiontime">
                             <h4><%= $question->{created} %></h4>
                         </div>
                     </div>
@@ -159,7 +159,7 @@
                             var question = "<%= $question->{question} %>";
                             $("#questiontitle_<%= $question_id %>").click(function(){
                                 if (!questionformshown) {
-                                    var questioneditHTML = "<form id='questionform_<%= $question_id %>'>\
+                                    var questioneditHTML = "<form id='questionform_<%= $question_id %>' class='questionform'>\
                                         <label class='questionlabel' for='question'>Edit Question</label>\
                                         <br><textarea id='questiontextarea_<%= $question_id%>' name='question' required>" + question + "</textarea>\
                                         <input type='hidden' name='question_id' value='<%= $question_id %>'>\
@@ -544,7 +544,7 @@
                             <p id="count_<%= $question_id %>" class="countnumber"><%= $question->{votes} %></p>
                         </div>
                         </div>
-                        <div id="questiontime_<%= $question->{created} %>" class="questiontime">
+                        <div id="questiontime_<%= $question->{id} %>" class="questiontime">
                             <h4><%= $question->{created} %></h4>
                         </div>
                     </div>
