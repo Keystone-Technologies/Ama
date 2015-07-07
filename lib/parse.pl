@@ -4,8 +4,11 @@ use Data::Dumper qw(Dumper);
 use HTML::Entities;
 use Text::CSV_XS;
 use Text::CSV::Slurp;
-use Ama::Model::Questions;
 use Mojo::Pg;
+use FindBin;
+
+use lib "$FindBin::Bin/../lib";
+use Ama::Model::Questions;
 
 my $pg = Mojo::Pg->new('postgresql://mojo:mojo@/test1'); 
 
@@ -15,7 +18,7 @@ my $slurp = Text::CSV::Slurp->new();
 my $data = $slurp->load(file => $file);
 
 my @results;
-my $dots;
+my $dots = '.';
 
 foreach (@$data){
     my $result = Ama::Model::Questions::addmultiple($pg, decode_entities($_->{'Text'}), $_->{'Time Created'}, $_->{'Plus Votes'}, $_->{'Minus Votes'});
