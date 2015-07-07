@@ -468,7 +468,7 @@
                                                 var comment = $.trim($("#commenttext_" + comment_id).text());
                                                 $("#" + commentid).click(function(){
                                                     if (!editformshown) {
-                                                        var commenteditHTML = "<form id='commentform_<%= $question_id %>'><br>\
+                                                        var commenteditHTML = "<form id='editcommentform_<%= $question_id %>'><br>\
                                                             <label class='commentlabel' for='comment'>Edit Comment</label>\
                                                             <br><textarea id='textarea_" + question_id + "' name='comment' required>" + comment + "</textarea>\
                                                             <input type='hidden' name='question_id' value='<%= $question_id %>'>\
@@ -485,7 +485,7 @@
                                                             }).done(function(data){
                                                                 if (data) {
                                                                     if (data.comment_id){
-                                                                        $("#commentform_<%= $question_id %>").remove();
+                                                                        $("#editcommentform_<%= $question_id %>").remove();
                                                                         $("#editsubmit_<%= $question_id %>").remove();
                                                                         comment = data.comment;
                                                                         $("#textarea_<%= $question_id %>").text(comment);
@@ -504,7 +504,7 @@
                                                         editformshown = true;
                                                     }
                                                     else {
-                                                        $("#commentform_<%= $question_id %>").remove();
+                                                        $("#editcommentform_<%= $question_id %>").remove();
                                                         $("#editsubmit_<%= $question_id %>").remove();
                                                         editformshown = false;
                                                     }
