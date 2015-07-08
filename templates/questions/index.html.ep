@@ -630,11 +630,13 @@
                             $("#newquestionbutton").html('+ New Question');
                             $("#content").css("padding-top", "50px");
                             $("#newquestionform").remove();
+                            $("#youtube").css('left', '170px');
                             formshown = false;
                         }
                         else {
                             $("#newquestionbutton").html('- Hide');
                             $("#content").css("padding-top", "0px");
+                            $("#youtube").css('left', '76px');
                             $("#bar").after(
                                 "<form id='newquestionform' action='<%= url_for 'store_question' %>' method='POST'>\
                                 <label for='question'>New Question</label><br>\
