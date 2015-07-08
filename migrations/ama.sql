@@ -11,8 +11,8 @@
 --   X vote one time on any unanswered question's comment not their own comment
 --   X flag an unflagged question not their own
 --   X unflag a flagged question that they originally flagged
---   flag an unflagged question's comment not their own
---   unflag a flagged question's comment that they originally flagged
+--   X flag an unflagged question's comment not their own
+--   X unflag a flagged question's comment that they originally flagged
 --   X mark a comment (including their own) of their own question as an answer
 --   X unmark a comment (including their own) of their own question as not the answer
 --   X mark a new comment (including their own) of their own question as an answer and unmarking the prior mark
