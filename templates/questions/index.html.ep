@@ -8,7 +8,7 @@
     </head>
     <title>Keystone Moderator</title>
 <body>
-        <a href='https://www.youtube.com/channel/UCwSuyK7EsrNN02Z92bI34gA/feed' ><img id='youtube' src='/img/youtube.png' onmouseover='youtubehover(true);' onmouseout='youtubehover(false);' data-toggle='true' title='KSTN video blog on YouTube'></a>
+        <a href='https://www.youtube.com/channel/UCwSuyK7EsrNN02Z92bI34gA/feed' target="_blank"><img id='youtube' src='/img/youtube.png' onmouseover='youtubehover(true);' onmouseout='youtubehover(false);' data-toggle='true' title='KSTN video blog on YouTube'></a>
     <div id="newquestion">
         <h3 id="newquestionbutton">+ New Question</h3>
     </div>
