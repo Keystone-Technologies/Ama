@@ -6,7 +6,7 @@
         <script language="javascript" type="text/javascript" src="/js/scripts.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>    
     </head>
-    <title>Keystone Moderator</title>
+    <title>Ama</title>
 <body>
         <a href='https://www.youtube.com/channel/UCwSuyK7EsrNN02Z92bI34gA/feed' target="_blank"><img id='youtube' src='/img/youtube.png' onmouseover='youtubehover(true);' onmouseout='youtubehover(false);' data-toggle='true' title='KSTN video blog on YouTube'></a>
     <div id="newquestion">

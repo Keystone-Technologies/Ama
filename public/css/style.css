@@ -524,6 +524,7 @@ form {
 }
 .commentup {
     width: 25px;
+    height: 25px;
     padding: 5px;
     padding-bottom: 3px;
     cursor: pointer;
@@ -531,6 +532,7 @@ form {
 
 .commentdown {
     width: 25px;
+    height: 25px;
     padding: 5px;
     padding-top: 3px;
     cursor: pointer;
