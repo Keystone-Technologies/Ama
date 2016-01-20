@@ -538,6 +538,9 @@
                     
             % } else {
                 <div id="question_<%= $question_id %>" class="questionansweredcontainer">
+<table>
+<tr>
+<td>
                     <div class="questioninfocontainer">
                         <div class="answeredquestionbuttoncontainer">
                         <div class="answeredcount">
@@ -548,12 +551,17 @@
                             <h4><%= $question->{created} %></h4>
                         </div>
                     </div>
+</td>
+<td>
                     <div class="question">
                         <h1 class="questionansweredtitle"><%= $question->{question} %></h1>
                         <div id="<%= $question_id %>" class="infobar">
                             <h4 id="showcomments_<%= $question_id %>" class="info">Show Comments (<%= $question->{comment_count} %>)</h4>
                         </div>
                     </div>
+</td>
+</tr>
+</table>
                 </div>
                 <div id="commentcontainer_<%= $question_id %>" class="commentcontainer">
                 </div>
