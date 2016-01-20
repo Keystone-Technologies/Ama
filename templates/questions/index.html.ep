@@ -4,11 +4,13 @@
         <link rel="stylesheet" type="text/css" href="/css/style.css">
         <link href='https://fonts.googleapis.com/css?family=Noto+Sans:400,700' rel='stylesheet' type='text/css'>
         <script language="javascript" type="text/javascript" src="/js/scripts.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>    
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="/js/linkify.js"></script>
+        <script src="/js/linkify-jquery.js"></script>
     </head>
-    <title>Keystone Moderator</title>
+    <title>Ama</title>
 <body>
-        <a href='https://www.youtube.com/channel/UCwSuyK7EsrNN02Z92bI34gA/feed' ><img id='youtube' src='/img/youtube.png' onmouseover='youtubehover(true);' onmouseout='youtubehover(false);' data-toggle='true' title='KSTN video blog on YouTube'></a>
+        <a href='https://www.youtube.com/channel/UCwSuyK7EsrNN02Z92bI34gA/feed' target="_blank"><img id='youtube' src='/img/youtube.png' onmouseover='youtubehover(true);' onmouseout='youtubehover(false);' data-toggle='true' title='KSTN video blog on YouTube'></a>
     <div id="newquestion">
         <h3 id="newquestionbutton">+ New Question</h3>
     </div>
@@ -299,9 +301,11 @@
                                             var deletecommentattributes = "";
                                             var commenttextattributes = "";
                                             var commentflagattributes = "";
+                                            var owned = "false";
                                                 if (v.username == "<%= session 'username' %>") {
                                                     deletecommentattributes = ""
                                                     commenttextattributes = "showable='true' style='cursor:pointer'";
+                                                    owned = "true";
                                                 }
                                                 else {
                                                     deletecommentattributes = "style='display:none'";
@@ -343,6 +347,10 @@
                                                 
                                                 
                                                 $("#commentcontainer_<%= $question_id %>").html(HTMLstring);
+                                                if (owned != "true"){
+                                                    $("#commenttext_" + v.comment_id).linkify({target: "_blank"});
+                                                    console.log("linkified commenttext" + v.comment_id);
+                                                }
                                         });
                                         $(".commentup").each(function(){
                                             
