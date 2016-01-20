@@ -304,11 +304,6 @@ body {
     padding-left: 7px;
 }
 
-a {
-    text-decoration: none;
-    color: #000;
-}
-
 .countnumber {
     font-size: 18;
     color: #757575;
@@ -580,4 +575,23 @@ span {
     height: 30px;
     width: 30px;
     padding-left: 50px;
+}
+
+a:link {
+    text-decoration: underline;
+    color: blue;
+}
+
+a:visited {
+    color: purple;
+    text-decoration: underline;
+}
+
+a:hover {
+    color: green;
+    text-decoration: underline;
+}
+
+a:active {
+    color: black;
 }

@@ -4,7 +4,9 @@
         <link rel="stylesheet" type="text/css" href="/css/style.css">
         <link href='https://fonts.googleapis.com/css?family=Noto+Sans:400,700' rel='stylesheet' type='text/css'>
         <script language="javascript" type="text/javascript" src="/js/scripts.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>    
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="/js/linkify.js"></script>
+        <script src="/js/linkify-jquery.js"></script>
     </head>
     <title>Ama</title>
 <body>
@@ -299,9 +301,11 @@
                                             var deletecommentattributes = "";
                                             var commenttextattributes = "";
                                             var commentflagattributes = "";
+                                            var owned = "false";
                                                 if (v.username == "<%= session 'username' %>") {
                                                     deletecommentattributes = ""
                                                     commenttextattributes = "showable='true' style='cursor:pointer'";
+                                                    owned = "true";
                                                 }
                                                 else {
                                                     deletecommentattributes = "style='display:none'";
@@ -343,6 +347,10 @@
                                                 
                                                 
                                                 $("#commentcontainer_<%= $question_id %>").html(HTMLstring);
+                                                if (owned != "true"){
+                                                    $("#commenttext_" + v.comment_id).linkify({target: "_blank"});
+                                                    console.log("linkified commenttext" + v.comment_id);
+                                                }
                                         });
                                         $(".commentup").each(function(){
                                             
