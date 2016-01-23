@@ -141,7 +141,7 @@
                         });
                     </script>
                     <div class="question" id="questionholder_<%= $question_id %>">
-                        <h1 id="questiontitle_<%=$question_id %>" class="questionunansweredtitle"><%= $question->{question} %></h1>
+                        <h1 id="questiontitle_<%=$question_id %>" class="questionunansweredtitle"><span><%= $question->{question} %></span></h1>
                         <div id="<%= $question_id %>" class="infobar">
                             <h4 id="showcomments_<%= $question_id %>" class="info">Show Comments (<%= $question->{comment_count} %>)</h4>
                             <h4 id="reply_<%= $question_id %>" class ="info">Reply</h4>
@@ -565,7 +565,7 @@
                         </div>
                     </div>
                     <div class="question">
-                        <h1 class="questionansweredtitle"><%= $question->{question} %></h1>
+                        <h1 class="questionansweredtitle"><span><%= $question->{question} %></span></h1>
                         <div id="<%= $question_id %>" class="infobar">
                             <h4 id="showcomments_<%= $question_id %>" class="info">Show Comments (<%= $question->{comment_count} %>)</h4>
                         </div>
