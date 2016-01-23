@@ -159,12 +159,13 @@
                         $(".questionunansweredtitle").each(function(){
                             $(this).linkify({target: "_blank"});
                         });
+                        $(".questionansweredtitle").each(function(){
+                            $(this).linkify({target: "_blank"});
+                        });
                         if("<%= $question->{username} %>" == "<%= session 'username' %>"){
                             var questionformshown = false;
                             var question = "<%= $question->{question} %>";
                             $("#questionholder_<%= $question_id %>").click(function(event){
-                                console.log(this);
-                                console.log(event.target);
                                 if ($(event.target).attr('class') == "questionunansweredtitle"){
                                     if (!questionformshown) {
                                         var questioneditHTML = "<form id='questionform_<%= $question_id %>' class='questionform'>\
