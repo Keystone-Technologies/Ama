@@ -595,3 +595,11 @@ a:hover {
 a:active {
     color: black;
 }
+
+#version {
+    position: absolute;
+    right: 10px;
+    top: 20px;
+    color: #949597;
+    font-weight: bold;
+}

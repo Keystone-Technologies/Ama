@@ -1,6 +1,7 @@
 <html>
     <head>
         %= javascript '/js/url_for.js'
+        % my $version = $self->config('version');
         <link rel="stylesheet" type="text/css" href="/css/style.css">
         <link href='https://fonts.googleapis.com/css?family=Noto+Sans:400,700' rel='stylesheet' type='text/css'>
         <script language="javascript" type="text/javascript" src="/js/scripts.js"></script>
@@ -16,6 +17,7 @@
     </div>
     <div class="header" id="bar">
         <input class="header" id="logo" type="image" src="/img/logo.png">
+        <span id='version'>v<%=$version%></span>
     </div>
     <div id="errorcontainer" class="error">
     Error: Unable to complete task
