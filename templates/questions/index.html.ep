@@ -570,9 +570,9 @@
                         </div>
                     </div>
 </td>
-<td>
-                    <div class="question">
-                        <h1 class="questionansweredtitle"><span><%= $question->{question} %></span></h1>
+<td style="align: left">
+                    <div class="question" style="align: left">
+                        <h1 class="questionansweredtitle"><span style="align: left"><%= $question->{question} %></span></h1>
                         <div id="<%= $question_id %>" class="infobar">
                             <h4 id="showcomments_<%= $question_id %>" class="info">Show Comments (<%= $question->{comment_count} %>)</h4>
                         </div>
