@@ -46,7 +46,11 @@ sub startup {
   # Controller
   my $r = $self->routes;
 
-  $r->get('/' => sub { shift->redirect_to('questions') });
+  $self->plugin('BrowserDetect');
+  $r->get('/' => sub {
+    my $self = shift;
+    $self->redirect_to($self->browser->mobile ? 'create_question' : 'questions');
+  });
   $r->get('/questions')->to('questions#index')->name('questions'); # Display all questions
   $r->get('/questions/create')->to('questions#create')->name('create_question'); # Display empty form
   $r->post('/questions')->to('questions#store')->name('store_question'); # Insert into DB and redirect to show_question

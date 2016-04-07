@@ -62,7 +62,7 @@ sub store {
 
   $self->respond_to(
     json => {json => $self->stash('question')},
-    any => sub { $self->redirect_to('questions') },
+    any => sub { $self->redirect_to('/') },
   );
 }
 
