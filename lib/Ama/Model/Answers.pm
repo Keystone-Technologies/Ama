@@ -9,8 +9,10 @@ sub mark {
   my $results = eval {
     my $tx = $self->pg->db->begin;
     $self->unmark($comment_id, $question_id);
-    my $sql = 'insert into answers (comment_id, question_id, username) select ?, ?, username from questions where question_id = ? and username = ? returning *';
-    my $results = $self->pg->db->query($sql, $comment_id, $question_id, $question_id, $self->username)->hash;
+    #my $sql = 'insert into answers (comment_id, question_id, username) select ?, ?, username from questions where question_id = ? and username = ? returning *';
+    my $sql = 'insert into answers (comment_id, question_id, username) values (?, ?, ?) returning *';
+    #my $results = $self->pg->db->query($sql, $comment_id, $question_id, $question_id, $self->username)->hash;
+    my $results = $self->pg->db->query($sql, $comment_id, $question_id, $self->username)->hash;
     $tx->commit;
     $results;
   };

@@ -312,7 +312,7 @@
                                                     deletecommentattributes = "style='display:none'";
                                                     commenttextattributes = "style='cursor:text'";
                                                 }
-                                                if("<%= $question->{username} %>" == "<%= session 'username' %>"){
+                                                if(1||"<%= $question->{username} %>" == "<%= session 'username' %>"){
                                                     markanswerattributes = "src='/img/checkmark.png' data-toggle='tooltip' title='Mark as answer' onclick='answerbuttonclick(" + v.comment_id + ", false, " + v.question_id + ");' \
                                                     onmouseover='answerbuttonhover(this.id, false, true);' onmouseout='answerbuttonhover(this.id, false, false);' style='cursor:pointer' showable='true'";
                                                 }
