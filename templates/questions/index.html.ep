@@ -2,6 +2,7 @@
     <head>
         <meta http-equiv="refresh" content="20; URL=<%= url_for '/' %>">
         %= javascript '/js/url_for.js'
+        % my $version = $self->config('version');
         <link rel="stylesheet" type="text/css" href="/css/style.css">
         <link href='https://fonts.googleapis.com/css?family=Noto+Sans:400,700' rel='stylesheet' type='text/css'>
         <script language="javascript" type="text/javascript" src="/js/scripts.js"></script>
@@ -17,6 +18,7 @@
     </div>
     <div class="header" id="bar">
         <input class="header" id="logo" type="image" src="/img/logo.png">
+        <span id='version'>v<%=$version%></span>
     </div>
     <div id="errorcontainer" class="error">
     Error: Unable to complete task
@@ -141,8 +143,8 @@
                             
                         });
                     </script>
-                    <div class="question">
-                        <h1 id="questiontitle_<%=$question_id %>" class="questionunansweredtitle"><%= $question->{question} %></h1>
+                    <div class="question" id="questionholder_<%= $question_id %>">
+                        <h1 id="questiontitle_<%=$question_id %>" class="questionunansweredtitle"><span><%= $question->{question} %></span></h1>
                         <div id="<%= $question_id %>" class="infobar">
                             <h4 id="showcomments_<%= $question_id %>" class="info">Show Comments (<%= $question->{comment_count} %>)</h4>
                             <h4 id="reply_<%= $question_id %>" class ="info">Reply</h4>
@@ -157,55 +159,63 @@
                     </div>
                     <script>
                     $(document).ready(function(){
+                        $(".questionunansweredtitle").each(function(){
+                            $(this).linkify({target: "_blank"});
+                        });
+                        $(".questionansweredtitle").each(function(){
+                            $(this).linkify({target: "_blank"});
+                        });
                         if("<%= $question->{username} %>" == "<%= session 'username' %>"){
                             var questionformshown = false;
                             var question = "<%= $question->{question} %>";
-                            $("#questiontitle_<%= $question_id %>").click(function(){
-                                if (!questionformshown) {
-                                    var questioneditHTML = "<form id='questionform_<%= $question_id %>' class='questionform'>\
-                                        <label class='questionlabel' for='question'>Edit Question</label>\
-                                        <br><textarea id='questiontextarea_<%= $question_id%>' name='question' required>" + question + "</textarea>\
-                                        <input type='hidden' name='question_id' value='<%= $question_id %>'>\
-                                        </form><input id='questioneditsubmit_<%= $question_id%>' class='questionpostbutton' type='submit' value='Post'>\
-                                        "
-                                    $("#question_<%= $question_id%>").after(questioneditHTML);
-                                    questionformshown = true;
-                                    $("#questioneditsubmit_<%= $question_id%>").click(function(){
-                                        var message = $("#questiontextarea_<%= $question_id%>").val();
-                                        $.ajax({
-                                            url: url_for('update_question', {question_id: "<%= $question_id%>"}),
-                                            type: "PUT",
-                                            contentType: "application/x-www-form-urlencoded",
-                                            dataType: 'json',
-                                            data: {question_id: "<%= $question_id%>", question: message}})
-                                            .done(function(data){
-                                                if (data){
-                                                    if (data.question_id) {
-                                                        $("#questionform_<%= $question_id %>").remove();
-                                                        $("#questioneditsubmit_<%= $question_id %>").remove();
-                                                        $("#questiontitle_<%= $question_id %>").text(data.question);
-                                                        question = data.question;
-                                                        questionformshown = false;
-                                                        console.log(data);
-                                                    }
-                                                    else if (data.error) {
-                                                        showError(data.error, 3000);
+                            $("#questionholder_<%= $question_id %>").click(function(event){
+                                if ($(event.target).attr('class') == "questionunansweredtitle"){
+                                    if (!questionformshown) {
+                                        var questioneditHTML = "<form id='questionform_<%= $question_id %>' class='questionform'>\
+                                            <label class='questionlabel' for='question'>Edit Question</label>\
+                                            <br><textarea id='questiontextarea_<%= $question_id%>' name='question' required>" + question + "</textarea>\
+                                            <input type='hidden' name='question_id' value='<%= $question_id %>'>\
+                                            </form><input id='questioneditsubmit_<%= $question_id%>' class='questionpostbutton' type='submit' value='Post'>\
+                                            "
+                                        $("#question_<%= $question_id%>").after(questioneditHTML);
+                                        questionformshown = true;
+                                        $("#questioneditsubmit_<%= $question_id%>").click(function(){
+                                            var message = $("#questiontextarea_<%= $question_id%>").val();
+                                            $.ajax({
+                                                url: url_for('update_question', {question_id: "<%= $question_id%>"}),
+                                                type: "PUT",
+                                                contentType: "application/x-www-form-urlencoded",
+                                                dataType: 'json',
+                                                data: {question_id: "<%= $question_id%>", question: message}})
+                                                .done(function(data){
+                                                    if (data){
+                                                        if (data.question_id) {
+                                                            $("#questionform_<%= $question_id %>").remove();
+                                                            $("#questioneditsubmit_<%= $question_id %>").remove();
+                                                            $("#questiontitle_<%= $question_id %>").text(data.question);
+                                                            question = data.question;
+                                                            questionformshown = false;
+                                                            console.log(data);
+                                                        }
+                                                        else if (data.error) {
+                                                            showError(data.error, 3000);
+                                                        }
+                                                        else {
+                                                            showError("Error", 3000);
+                                                        }
                                                     }
                                                     else {
                                                         showError("Error", 3000);
                                                     }
-                                                }
-                                                else {
-                                                    showError("Error", 3000);
-                                                }
-                                            });
-                                    });
-                                    
-                                }
-                                else {
-                                    $("#questionform_<%= $question_id %>").remove();
-                                    $("#questioneditsubmit_<%= $question_id %>").remove();
-                                    questionformshown = false;
+                                                });
+                                        });
+                                        
+                                    }
+                                    else {
+                                        $("#questionform_<%= $question_id %>").remove();
+                                        $("#questioneditsubmit_<%= $question_id %>").remove();
+                                        questionformshown = false;
+                                    }
                                 }
                             });
                         }
@@ -561,9 +571,9 @@
                         </div>
                     </div>
 </td>
-<td>
-                    <div class="question">
-                        <h1 class="questionansweredtitle"><%= $question->{question} %></h1>
+<td style="align: left">
+                    <div class="question" style="align: left">
+                        <h1 class="questionansweredtitle"><span style="align: left"><%= $question->{question} %></span></h1>
                         <div id="<%= $question_id %>" class="infobar">
                             <h4 id="showcomments_<%= $question_id %>" class="info">Show Comments (<%= $question->{comment_count} %>)</h4>
                         </div>
