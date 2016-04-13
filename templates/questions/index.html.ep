@@ -1,6 +1,6 @@
 <html>
     <head>
-        <meta http-equiv="refresh" content="20; URL=<%= url_for '/' %>">
+        %# <meta http-equiv="refresh" content="20; URL=<%= url_for '/' %>">
         %= javascript '/js/url_for.js'
         % my $version = $self->config('version');
         <link rel="stylesheet" type="text/css" href="/css/style.css">
