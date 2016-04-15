@@ -62,7 +62,8 @@ sub all {
     commentcount(question_id)::int as comment_count
   from
     questions
-  order by answered asc, votes desc, created desc;
+  order by answered asc, votes desc, created desc
+  limit 20;
 ], $self->username)->hashes->to_array }
 
 sub find { shift->pg->db->query('select * from questions where question_id = ?', shift)->hash }
