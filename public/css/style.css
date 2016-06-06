@@ -3,12 +3,6 @@
     src: url(Caviar.ttf);
 }
 
-* {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-}
-
 body {
     margin:0px;
     padding:0px;
