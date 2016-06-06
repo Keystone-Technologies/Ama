@@ -245,7 +245,7 @@
                                     type: "POST",
                                     contentType: "application/x-www-form-urlencoded",
                                     dataType: 'json',
-                                    data: {question_id: "<%= $question_id%>", comment: mycomment}})
+                                    data: {question_id: "<%= $question_id%>", comment: mycomment.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}})
                                     .done(function(data){
                                         if (data){
                                             if (data.comment_id){
@@ -500,7 +500,7 @@
                                                                 type: "PUT",
                                                                 contentType: "application/x-www-form-urlencoded",
                                                                 dataType: 'json',
-                                                                data: {question_id: question_id, comment: message}
+                                                                data: {question_id: question_id, comment: message.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
                                                             }).done(function(data){
                                                                 if (data) {
                                                                     if (data.comment_id){

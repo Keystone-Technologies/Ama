@@ -62,7 +62,7 @@ sub all {
     commentcount(question_id)::int as comment_count
   from
     questions
-  order by answered asc, votes desc, created desc
+  order by answered asc, created desc, votes desc
   limit 20;
 ], $self->username)->hashes->to_array }
 
