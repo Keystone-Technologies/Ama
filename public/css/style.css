@@ -1,605 +1,396 @@
-@font-face {
-    font-family: Caviar;
-    src: url(Caviar.ttf);
+body {
+	margin:0;
+	padding:0px;
+	height:100%;
+	background: #white; /* For browsers that do not support gradients */
 }
 
 * {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
+	font-family: Verdana, Geneva, sans-serif;
 }
 
-body {
-    margin:0px;
-    padding:0px;
-    font-family: 'Noto Sans', sans-serif;
-    background-color: #afd2e9;
-    overflow-x: hidden;
+.header {
+	position: fixed;
+	height:100px;
+	width:100%;
+	background-color:2d3338;
+	z-index:1;
 }
 
-#content {
-    padding-top: 50px;
+.logoContainer {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin:auto;
+	text-align:center;
 }
 
-.account {
-    color: #ffffff;
+.logoImg {
+	max-width:500px;
+	max-height:100px;
+	width: auto;
+	height: auto;
 }
 
-#youtube {
-    position: fixed;
-    left: 170px;
-    width: 48px;
-    height: 48px;
-    z-index: 3;
-    cursor: pointer;
+.version {
+	position: absolute;
+	color: b4b4b4;
+	font-size: 1.5em;
+	left: 0%;
+	bottom: 0%;
 }
-
-#newquestion {
-    margin: 1px;
-    height: 40px;
-    position: fixed;
-    z-index: 3;
-    background-color: #6d9d41;
-    border-radius: 10px;
-    border: 3px solid #005200;
-    cursor: pointer;
-}
-
-#newquestionform {
-    padding-top: 55px;
-}
-
-#newquestion:hover {
-    background-color: #70E270;
-    cursor: pointer;
-}
-
-#bar {
-    position: fixed;
-    width: 100%;
-    display: flex;
-    display: -moz-flex;
-    display: -ms-flexbox;
-    display: -o-flex;
-    display: -webkit-flex;
-    height: 50px;
-    justify-content: center;
-    -ms-flex-pack: center;
-    -ms-flex-align: center;
-    align-items: center;
-    margin: 0px;
-    padding: 0px;
-    background-color: #3a332d;
-    box-shadow: 0px 2px 3px 0.5px rgba(0,0,0,0.2);
-    z-index: 2;
-}
-
-#logo {
-    display: block;
-    height: 50px;
-}
-
-#logo:focus {
-    outline:0;
-}
-
-#sortbar {
-    position: relative;
-    top: 50px;
-    display: flex;
-    display: -moz-flex;
-    display: -ms-flexbox;
-    display: -o-flex;
-    display: -webkit-flex;
-    height: 50px;
-    width: 100%;
-}
 
-.sortbar {
-    cursor: pointer;
-}
+.youtube {
+	position: absolute;
+	right: 0px;
+	text-align:center;
+	cursor: pointer;
+}
+
+.youtubeImg {
+	max-width:500px;
+	max-height:100px;
+	width: auto;
+	height: auto;
+}
+
+/*button to push to make a new quesiton */
+
+.newQuestion {
+	width:100%;
+	height:100px;
+	top: 100px;
+	text-align: center;
+	font-size: 3em;
+	font-weight: bold;
+	background-color:green;
+	cursor: pointer;
+	border: 3px solid black;
+	border-radius: 10px;
+	box-sizing: border-box;
+	line-height: 100px;
+	z-index: 1;
+}
+
+.newQuestion:hover {
+	background-color:00CC00;
+}
+
+/*container that pops up when you push button to make new question */
+
+.newQuestionContainer {
+	position: static;
+	width: 100%;
+	height: 400px;
+	top:206px;
+}
+
+.newPostTitle {
+	display:block;
+	text-align: center;
+	font-size: 2em;
+}
+
+.newPostTextarea {
+	display:block;
+	font-size: 1.5em;
+	margin:auto;
+	width: 75%;
+	height: 200px;
+}
+
+.postButton {
+	width:75%;
+	height:75px;
+	background-color:green;
+	color:white;
+	border: 3px solid black;
+	border-radius: 10px;
+	display:block;
+	margin:auto;
+	font-size:2em;
+	cursor:pointer;
+}
+
+.postButton:hover {
+	background-color:00CC00;
+}
+
+.padding {
+	width:100%;
+	height: 100px;
+}
+
+.content {
+	max-width: 1200px;
+	min-width: 810px;
+	margin: auto;
+}
+
+/*question container contains info for a quesiton*/
+
+.postContainer {
+	display:inline-block;
+	position: relative;
+	height: auto;
+	width: 100%;
+	min-height: 275px;
+	max-width: 100%;
+	border-bottom: 1px solid black;
+	box-sizing:border-box;
+}
+
+/*vote info container contains all votes plus up and downvoting*/
+.voteInfoContainer {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 5%;
+	max-height: 275px;
+	width: 10%;
+}
+
+.containedImg {
+	display:block;
+	margin:auto;
+	cursor: pointer;
+	max-height: 100%;
+	max-width: 100%;
+	width: auto;
+	height: auto;
+}
+
+.upvoteContainer {
+	position: absolute;
+	height: 25%;
+	top: 15%;
+	width: 100%;
+}
+
+.voteContainer {
+	position: absolute;
+	top: 40%;
+	width: 100%;
+	text-align: center;
+	font-size: 2em;
+	font-weight: bold;
+	font-family: courier;
+}
+
+.downvoteContainer {
+	position: absolute;
+	height: 25%;
+	bottom: 15%;
+	width: 100%;
+}
+
+/*button container contains buttons, like flag, trash, etc..*/
+
+.buttonContainer {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 20%;
+	max-height: 275px;
+	width: 10%;
+	overflow: auto;
+}
+
+.deleteButtonContainer {
+	position: absolute;
+	height: 25%;
+	top: 15%;
+}
+
+.flagButtonContainer {
+	position: absolute;
+	height: 25%;
+	bottom: 15%;
+}
+
+.answerButtonContainer {
+	position: absolute;
+	height:25%;
+	top: 75%;
+}
+
+/*post text and info contains post text, time created... */
+
+.postTextAndInfoContainer {
+	display: inline-block;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left:30%;
+	width: 70%;
+	box-sizing: border-box;
+	border-left: 1px solid black;
+}
+
+.postTextContainer {
+	position: absolute;
+	overflow: auto;
+	width: 100%;
+	top: 0;
+	bottom: 75px;
+}
+
+.postText {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: 2em;
+	padding: 15px;
+	cursor: default;
+}
+
+.postInfoContainer {
+	position: absolute;
+	bottom: 0;
+	height: 75px;
+	width: 100%;
+	text-align: center;
+	font-size: 1.5em;
+	color: 747474;
+}
+
+.postActionContainer {
+	position: relative;
+	top: 50%;
+	transform: translateY(-50%);
+	float: left;
+	width: 35%;
+	cursor: pointer;
+	border-right: 1px solid black;
+	box-sizing:border-box;
+}
+
+.postActionContainer:hover {
+	color: 1f268b;
+	font-size: 1.08em;
+}
+
+.timeAskedContainer {
+	position: relative;
+	top: 50%;
+	transform: translateY(-50%);
+	float: left;
+	width: 30%;
+	cursor: default;
+}
+
+/*all comment styling below here */
+
+.commentsContainer {
+	width:100%;
+}
+
+.commentPadding {
+	position: relative;
+	float:left;
+	width:10%;
+}
+
+.commentContainer {
+	position:relative;
+	float:left;
+	height: 150px;
+	width:88%;
+	border-bottom: 1px solid black;
+	border-left: 1px solid black;
+	box-sizing:border-box;
+}
+
+/*contains all comment vote styling*/
+
+.commentVoteInfoContainer {
+	position: relative;
+	float: left;
+	width: 10%;
+}
+
+.commentUpVoteContainer {
+	height: 30%;
+	padding-top: 10%;
+}
+
+.commentVoteContainer {
+	height:20%;
+	text-align: center;
+	font-size: 1.5em;
+	font-weight: bold;
+	font-family: courier;
+	margin-top: 5%;
+	margin-bottom: 5%;
+}
+
+.commentDownVoteContainer {
+	height:30%;
+	padding-bottom: 10%;
+}
+
+/*text itself and all buttons beneath*/
+
+.commentPostTextAndInfoContainer {
+	position: relative;
+	float:left;
+	height:100%;
+	width: 90%;
+}
+
+.commentPostTextContainer {
+	position: absolute;
+	top:0;
+	bottom:50px;
+	width:100%;
+	padding-left:15px;
+}
+
+.commentPostText {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: 1.5em;
+	cursor: default;
+}
+
+.commentPostInfoContainer {
+	position:absolute;
+	bottom:0;
+	width: 100%;
+	height: 50px;
+	
+}
+
+.commentDeleteButtonContainer {
+	position:relative;
+	float:left;
+	width: 25%;
+	height:100%;
+}
+
+.commentFlagButtonContainer {
+	position:relative;
+	float:left;
+	width:25%;
+	height:100%;
+}
 
-#popularity {
-    text-decoration: underline;
+.commentAnswerButtonContainer {
+	position:relative;
+	float:left;
+	width:25%;
+	height:100%;
 }
 
-.questionansweredcontainer {
-    background: #C9C9C9;
-    width: 100%;
-    min-height: 120px;
-    display: flex;
-    display: -moz-flex;
-    display: -ms-flexbox;
-    display: -o-flex;
-    display: -webkit-flex;
-    align-items: center;
-    border-bottom: 2px solid #000;
-}
-
-.questionunansweredcontainer {
-    width: 100%;
-    min-height: 120px;
-    display: flex;
-    display: -moz-flex;
-    display: -ms-flexbox;
-    display: -o-flex;
-    display: -webkit-flex;
-    align-items: center;
-    justify-content: center;
-    -ms-flex-pack: center;
-    -ms-flex-align: center;
-    border-bottom: 2px solid #000;
-}
-
-.question {
-    display: flex;
-    display: -moz-flex;
-    display: -ms-flexbox;
-    display: -o-flex;
-    display: -webkit-flex;
-    width: 100%;
-    min-height: 83px;
-    justify-content: left;
-    -ms-flex-pack: center;
-    -ms-flex-align: center;
-    align-items: center;
-}
-
-.vote {
-    width: 60px;
-    position: relative;
-}
-
-.votecontainer {
-    display: flex;
-    display: -moz-flex;
-    display: -ms-flexbox;
-    display: -o-flex;
-    display: -webkit-flex;
-    align-items: center;
-    align-content: center;
-    justify-content: center;
-    -ms-flex-pack: center;
-    -ms-flex-align: center;
-}
-
-.vote_up {
-    width: 50px;
-    margin: 5px;
-    margin-bottom: 2.5px;
-    cursor: pointer;
-}
-
-.count {
-    position: absolute;
-    width: 20px;
-    height: 25px;
-    left: 20px;
-    top: 20px;
-}
-
-.flaggedcount {
-    
-}
-
-.countnumber {
-    user-select: none;
-    cursor: default;
-}
-
-.vote_down {
-    width: 50px;
-    margin: 5px;
-    margin-top: 2.5px;
-    cursor: pointer;
-}
-
-.questionbuttoncontainer {
-    width: 50px;
-    padding-left: 10px;
-}
-
-.answeredquestionbuttoncontainer {
-    width: 50px;
-    margin: auto;
-}
-
-.questiontime {
-    padding: 5px;
-    cursor: default;
-    width: 60px;
-    min-width: 60px;
-}
-.question {
-    display: flex;
-    display: -moz-flex;
-    display: -ms-flexbox;
-    display: -o-flex;
-    display: -webkit-flex;
-    -ms-flex: 0 1 auto;
-    -webkit-flex-direction: column;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    align-items: flex-start;
-}
-    
-.questionunansweredtitle {
-    display: flex;
-    display: -moz-flex;
-    display: -ms-flexbox;
-    display: -o-flex;
-    display: -webkit-flex;
-    width: calc(100% - 30px);
-    font-size: 22px;
-    font-weight: bold;
-    padding: 5px;
-    padding-left: 10px;
-    flex: 1 1;
-    -ms-flex: 1 1 auto;
-    align-items: center;
-    cursor: pointer;
-    -webkit-user-select: all;
-    -moz-user-select: all;
-    -ms-user-select: all;
-}
-
-.questionansweredtitle {
-    display: flex;
-    display: -moz-flex;
-    display: -ms-flexbox;
-    display: -o-flex;
-    display: -webkit-flex;
-    width: calc(100% - 30px);
-    font-size: 22px;
-    font-weight: bold;
-    padding: 5px;
-    padding-left: 10px;
-    flex: 1 1;
-    -ms-flex: 1 1 auto;
-    align-items: center;
-    -webkit-user-select: all;
-    -moz-user-select: all;
-    -ms-user-select: all;
-}
-
-.infobar {
-    display: flex;
-    display: -moz-flex;
-    display: -ms-flexbox;
-    display: -o-flex;
-    display: -webkit-flex;
-}
-
-.info {
-    width: auto;
-    padding: 3px;
-    padding-left: 15px;
-    cursor: pointer;
-}
-
-.time {
-    width: auto;
-    padding: 3px;
-    padding-left: 15px;
-    cursor: default;
-}
-
-.deletecommentbutton {
-    height: 20px;
-    min-width: 20px;
-    cursor: pointer;
-    padding: 2.5px;
-}
-.deletequestionbutton {
-    height: 25px;
-    min-width: 20px;
-    cursor: pointer;
-    padding: 5px;
-}
-
-.markanswerbutton {
-    height: 20px;
-    min-width: 20px;
-    padding: 2px;
-    padding-left: 7px;
-}
-
-.countnumber {
-    font-size: 18;
-    color: #757575;
-    text-align: center;
-}
-
-p {
-    margin: 0px;
-    padding: 0px;
-}
-
-h1 {
-    margin: 0px;
-    padding: 0px;
-    width: 100%;
-}
-
-h2 {
-    margin: 5px;
-    padding: 0px;
-    font-size: 14;
-    font-weight: normal;
-}
-
-h3 {
-    margin: 5px;
-    padding: 0px;
-    font-size: 20;
-    font-weight: normal;
-}
-
-h4 {
-    font-size: 10;
-    margin: 0px;
-    padding: 0px;
-    text-align: center;
-}
-
-.flagcontainer {
-    /*display: none;  DISABLE */
-    display: flex;
-    display: -moz-flex;
-    display: -ms-flexbox;
-    display: -o-flex;
-    display: -webkit-flex;
-    justify-content: center;
-    -ms-flex-pack: center;
-    -ms-flex-align: center;
-    align-items: center;
-    cursor: pointer;
-}
-
-.deletecontainer {
-    display: flex;
-    justify-content: center;
-    -ms-flex-pack: center;
-    -ms-flex-align: center;
-    align-items: center;
-}
-.flag {
-    /*display: none; DISABLE */
-    height: 18px;
-}
-
-.flagtext {
-    margin: 0px;
-    padding: 0px;
-}
-
-.flagcommentbutton {
-    /* display: none;     DISABLED*/
-    min-width: 15px;
-    height: 15px;
-    cursor: pointer;
-    padding: 2px;
-}
-.commentcontainer {
-    height: auto;
-}
-.comment {
-    width: calc(100% - 52px);
-    position: relative;
-    display: flex;
-    display: -moz-flex;
-    display: -ms-flexbox;
-    display: -o-flex;
-    display: -webkit-flex;
-    align-items: center;
-    left: 50px;
-    border-bottom: 2px solid #000;
-    border-left: 2px solid #000;
-    vertical-align: middle;
-}
-
-.answeredcomment {
-    background: #C9C9C9;
-    position: relative;
-    display: flex;
-    display: -moz-flex;
-    display: -ms-flexbox;
-    display: -o-flex;
-    display: -webkit-flex;
-    align-items: center;
-    left: 50px;
-    border-bottom: 2px solid #000;
-    border-left: 2px solid #000;
-    vertical-align: middle;
-}
-
-.commenttext {
-    display: flex;
-    display: -moz-flex;
-    display: -ms-flexbox;
-    display: -o-flex;
-    display: -webkit-flex;
-    text-align: left;
-    padding-left: 2.5px;
-    -webkit-user-select: all;
-    -moz-user-select: all;
-    -ms-user-select: all;
-}
-
-.answer {
-    position: relative;
-    display: flex;
-    display: -moz-flex;
-    display: -ms-flexbox;
-    display: -o-flex;
-    display: -webkit-flex;
-    align-items: center;
-    left: 50px;
-    width: 100%;
-    height: auto;
-    border-bottom: 2px solid #000;
-    border-left: 2px solid #000;
-    vertical-align: middle;
-}
-
-.replytime {
-    margin-left: 5px;
-    margin-right: 5px;
-}
-
-.replyformcontainer {
-    display: none;
-}
-
-textarea {
-    width: 800px;
-    height: 100px;
-    margin: 5px;
-}
-
-.postbutton {
-    margin-left: 5px;
-    background-color: #6d9d41;
-    border-radius: 5px;
-    border: 2px solid #005200;
-    font-size: 14;
-    cursor: pointer;
-}
-
-.replypostbutton {
-    margin-left: 50px;
-    background-color: #6d9d41;
-    border-radius: 5px;
-    border: 2px solid #005200;
-    font-size: 14;
-    cursor: pointer;
-}
-
-.questionpostbutton {
-    margin-left: 50px;
-    margin-bottom: 20px;
-    background-color: #6d9d41;
-    border-radius: 5px;
-    border: 2px solid #005200;
-    font-size: 14;
-    cursor: pointer;
-}
-
-.commentpostbutton {
-    margin-left: 50px;
-    margin-bottom: 20px;
-    background-color: #6d9d41;
-    border-radius: 5px;
-    border: 2px solid #005200;
-    font-size: 14;
-    cursor: pointer;
-}
-
-.commentlabel {
-    margin: 5px;
-}
-
-form {
-    margin: 10px;
-    margin-left: 45px;
-    margin-top: 0px;
-}
-
-.commentvotecontainer  {
-    display: flex;
-    display: -moz-flex;
-    display: -ms-flexbox;
-    display: -o-flex;
-    display: -webkit-flex;
-    min-width: 30px;
-    -webkit-flex-direction: column;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    padding-right: 5px;
-}
-.commentup {
-    width: 25px;
-    height: 25px;
-    padding: 5px;
-    padding-bottom: 3px;
-    cursor: pointer;
-}
-
-.commentdown {
-    width: 25px;
-    height: 25px;
-    padding: 5px;
-    padding-top: 3px;
-    cursor: pointer;
-}
-
-.commentvotecount {
-    min-width: 20px;
-    padding: 5px;
-    cursor: default;
-}
-
-.commenttime {
-    min-width: 60px;
-    width: 60px;
-    cursor: default;
-    padding: 5px;
-    padding-right: 2.5px;
-}
-
-span {
-    text-align: left;
-}
-
-#errorcontainer {
-    display: flex;
-    display: -moz-flex;
-    display: -ms-flexbox;
-    display: -o-flex;
-    display: -webkit-flex;
-    align-items: center;
-    justify-content: center;
-    -ms-flex-pack: center;
-    -ms-flex-align: center;
-    position: fixed;
-    z-index: 1;
-    top: 0px;
-    width: 100%;
-    min-height: 30px;
-    background-color: #00ff00;
-    -webkit-user-select: all;
-    text-align: center;
-}
-
-.spinner {
-    height: 30px;
-    width: 30px;
-    padding-left: 50px;
-}
-
-a:link {
-    text-decoration: underline;
-    color: blue;
-}
-
-a:visited {
-    color: purple;
-    text-decoration: underline;
-}
-
-a:hover {
-    color: green;
-    text-decoration: underline;
-}
-
-a:active {
-    color: black;
-}
-
-#version {
-    position: absolute;
-    right: 10px;
-    top: 20px;
-    color: #949597;
-    font-weight: bold;
+.commentTimeAskedContainer {
+	position: relative;
+	float: left;
+	width: 25%;
+	top: 50%;
+	transform: translateY(-50%);
+	text-align:center;
+	color: 747474;
 }
