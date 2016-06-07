@@ -11,6 +11,7 @@
 $(document).ready(function() {
 	$(".newQuestionContainer").hide();
 	$(".content").hide();
+	$(".singleComment").hide();
 	
 	% for my $question (@$questions) {
 		% $question->{question} =~ s/\r\n/ NEWLINEPLEASE /g;
