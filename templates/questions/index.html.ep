@@ -1,17 +1,64 @@
 <html>
-    <head>
-        %# <meta http-equiv="refresh" content="20; URL=<%= url_for '/' %>">
-        %= javascript '/js/url_for.js'
-        % my $version = $self->config('version');
-        <link rel="stylesheet" type="text/css" href="/css/style.css">
-        <link href='https://fonts.googleapis.com/css?family=Noto+Sans:400,700' rel='stylesheet' type='text/css'>
-        <script language="javascript" type="text/javascript" src="/js/scripts.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-        <script src="/js/linkify.js"></script>
-        <script src="/js/linkify-jquery.js"></script>
-    </head>
-    <title>Ama</title>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+	<script src="/js/scripts.js"></script>
+	<link rel="stylesheet" media="screen and (max-device-width: 800px)" href="/css/style.css">
+	<link rel="stylesheet" media="screen and (min-device-width: 800px)" href="/css/desktop.css">
+</head>
+<title>Ask Me Anything</title>
+
+<script>
+$(document).ready(function() {
+	$(".newQuestionContainer").hide();
+	$(".content").hide();
+	
+	% for my $question (@$questions) {
+		% $question->{question} =~ s/\r\n/ NEWLINEPLEASE /g;
+        addQuestion(new Question(
+            <%=$question->{question_id}%>,
+            "<%=$question->{question}%>",
+            <%=$question->{votes}%>,
+            "<%=$question->{username}%>",
+            "<%=$question->{created}%>",
+            <%=$question->{flagged}%>,
+            <%=$question->{answered}%>,
+            '<%=$question->{my_vote}%>'));
+    %}
+    setCurrentUser("<%=session 'username'%>");
+    
+    var commentsLoaded = 0;
+    
+    var loading = $.Deferred();
+    
+    //loads all comments and stores them in the correct question
+    for(var i = 0; i < getQuestionCount(); i ++) {
+    	var id = getQuestion(i).getId();
+        $.get("/questions/" + id + "/comments", function(data){
+            $.each(data, function(i, v){
+                var current = new Comment(v.question_id + "_" + v.comment_id, v.comment, v.votes, v.username, v.created, v.flagged, v.answered, v.my_vote);
+                for(var j = 0; j < getQuestionCount(); j ++)
+                {
+                    if(getQuestion(j).getId() == current.getQuestId())
+                    {
+                        getQuestion(j).addComment(current);
+                    }
+                }
+            });
+            commentsLoaded ++;
+            if(commentsLoaded == getQuestionCount()){
+            	//after all of the comments are loaded, the rest of the page loads
+                initializeContent();
+                $(".content").show();
+            }
+        }, 'json');
+    }
+    
+});
+//hide all comment containers and reply containers here also
+</script>
+
 <body>
+<<<<<<< HEAD
         <a href='https://www.youtube.com/channel/UCwSuyK7EsrNN02Z92bI34gA/feed' target="_blank"><img id='youtube' src='/img/youtube.png' onmouseover='youtubehover(true);' onmouseout='youtubehover(false);' data-toggle='true' title='KSTN video blog on YouTube'></a>
     <div id="newquestion">
         <h3 id="newquestionbutton">+ New Question</h3>
@@ -677,3 +724,176 @@
         </div>
     </body>
 </html>
+=======
+	<div class="header">
+		<div class="logoContainer"> 
+			<img class="logoImg" src="img/logo.png" alt="LOGO">
+		</div>
+		<div class="version">
+			v<%=$self->config('version')%>
+		</div>
+		<div class="youtube">
+			<a href="https://www.youtube.com/channel/UCwSuyK7EsrNN02Z92bI34gA/feed" target="_blank">
+				<img class="youtubeImg" src="img/youtubehover.png" alt="YOUTUBE">
+			</a>
+		</div>
+	</div>
+	
+	<div class="padding"></div>
+	
+	<div class="newQuestion" onclick="toggleQuestionForm()">
+		Ask A Question
+	</div>
+	
+	<div class="newQuestionContainer">
+		<form id='newquestionform' action='/questions' method='POST'>
+			<br><label for='question' class="newPostTitle">New Question</label><br>
+			<textarea placeholder= "Enter question here" class="newPostTextarea" name='question' required></textarea><br>
+			<input class='postButton' type='submit' value='Create'>
+		</form>
+	</div>
+	
+	
+	
+	<div class="content">
+		<div class= "postContainer" id="postContainer_ID">
+			<div class="voteInfoContainer" id="voteInfoContainer_ID">
+				<div class="upvoteContainer">
+					<img class="containedImg" src="img/smalluparrow.png" alt="uparrow"
+					id="upvote_ID"
+					onmouseenter="changeVoteImg(ID, 'in', 'up')"
+					onmouseleave="changeVoteImg(ID, 'out', 'up')"
+					onclick="vote(ID, 'up')">
+				</div>
+				<div class="voteContainer" id="voteContainer_ID">
+					VOTES
+				</div>
+				<div class="downvoteContainer">
+					<img class="containedImg" src="img/smalldownarrow.png" alt="downarrow"
+					id="downvote_ID"
+					onmouseenter="changeVoteImg(ID, 'in', 'down')"
+					onmouseleave="changeVoteImg(ID, 'out', 'down')"
+					onclick="vote(ID, 'down')">
+				</div>
+			</div>
+			
+			<div class="buttonContainer" id="buttonContainer_ID">
+				<div class="deleteButtonContainer" id="deleteButtonContainer_ID">
+					<img class= "containedImg" src="img/trash.png" alt="Trash" 
+					onmouseenter="this.src='img/opentrash.png'" 
+					onmouseleave="this.src='img/trash.png'"
+					onclick="deletePost(ID)">
+				</div>
+				<div class="flagButtonContainer">
+					<img class= "containedImg" src="img/flag.png" alt="Flag" 
+					id="flagImg_ID"
+					onmouseenter="changeFlag(ID, 'in')" 
+					onmouseleave="changeFlag(ID, 'out')"
+					onclick="sendFlagReport(ID)">
+				</div>
+				<div class="answerButtonContainer" id="answerButtonContainer_ID">
+					<img class="containedImg" src="img/checkmark.png" alt="Checkmark"
+					id="answerImg_ID"
+					onmouseenter="changeCheckMark(ID, 'in')"
+					onmouseleave="changeCheckMark(ID, 'out')"
+					onclick="markAnswer(ID)">
+				</div>
+			</div>
+			
+			<div class="postTextAndInfoContainer" id="postTextAndInfoContainer_ID">
+				<div class="postTextContainer" id="postTextContainer_ID">
+					<div class="postText" id="textContainer_ID">
+					    TEXT
+					</div>
+				</div>
+				<div class="postInfoContainer">
+					<div class="postActionContainer" id="showCommentsButton_ID" onclick="toggleComments(ID)">
+						show comments<br>(NUMCOMMENTS)
+					</div>
+					<div class="postActionContainer" id="replyButton_ID" onclick="toggleReplyForm(ID)">
+						reply
+					</div>
+					<div class="timeAskedContainer">
+						TIMEASKED
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="replyContainer" id="replyContainer_ID">
+            <label class='newPostTitle' for='comment'>Reply</label>
+            <br><textarea class = "newPostTextArea" id="newPostTextArea_ID" placeholder= "Enter reply here"></textarea>
+            <input type='hidden' name='question_id' value='ID'><br>
+            <button class="postButton" onclick="sendReply(ID)">Post</button>
+		</div>
+			
+		<div class="commentsContainer" id="commentsContainer_ID">
+		</div>
+	</div>
+	<div class="singleComment">
+		<div class="commentPadding" id="commentPadding_ID">
+			word
+		</div>
+			
+		<div class="commentContainer" id="commentContainer_ID">
+			<div class="commentVoteInfoContainer" id="voteInfoContainer_ID">
+				<div class="commentUpvoteContainer">
+					<img class="containedImg" src="img/smalluparrow.png" alt="uparrow"
+					id="upvote_ID"
+					onmouseenter="changeVoteImg('ID', 'in', 'up')"
+					onmouseleave="changeVoteImg('ID', 'out', 'up')"
+					onclick="vote('ID', 'up')">
+				</div>
+				<div class="commentVoteContainer" id="voteContainer_ID">
+					VOTES
+				</div>
+				<div class="commentDownvoteContainer">
+					<img class="containedImg" src="img/smalldownarrow.png" alt="downarrow"
+					id="downvote_ID"
+					onmouseenter="changeVoteImg('ID', 'in', 'down')"
+					onmouseleave="changeVoteImg('ID', 'out', 'down')"
+					onclick="vote('ID', 'down')">
+				</div>
+			</div>
+			
+			<div class="commentPostTextAndInfoContainer" id="postTextAndInfoContainer_ID">
+				<div class="commentPostTextContainer" id="postTextContainer_ID">
+					<div class="commentPostText" id="textContainer_ID">
+					    TEXT
+					</div>
+				</div>
+					
+				<div class="commentPostInfoContainer">
+					<div class="commentDeleteButtonContainer" id="deleteButtonContainer_ID">
+						<img class= "containedImg" src="img/trash.png" alt="Trash" 
+						onmouseenter="this.src='img/opentrash.png'" 
+						onmouseleave="this.src='img/trash.png'"
+						onclick="deletePost('ID')">
+					</div>
+						
+					<div class="commentFlagButtonContainer">
+						<img class= "containedImg" src="img/flag.png" alt="Flag" 
+						id="flagImg_ID"
+						onmouseenter="changeFlag('ID', 'in')" 
+						onmouseleave="changeFlag('ID', 'out')"
+						onclick="sendFlagReport('ID')">
+					</div>
+						
+					<div class="commentAnswerButtonContainer" id="answerButtonContainer_ID">
+						<img class="containedImg" src="img/checkmark.png" alt="Checkmark"
+						id="answerImg_ID"
+						onmouseenter="changeCheckMark('ID', 'in')"
+						onmouseleave="changeCheckMark('ID', 'out')"
+						onclick="markAnswer('ID')">
+					</div>
+						
+					<div class="commentTimeAskedContainer">
+						TIMEASKED
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+>>>>>>> 0d29edfb7dabe528a1c1c55e9e8085068f6819be

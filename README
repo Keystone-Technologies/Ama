@@ -41,3 +41,7 @@ Enter new password:
 Enter it again: 
 postgres=# grant all on database ama to ama;
 GRANT
+
+EACH TIME RUN:
+sudo /etc/init.d/postgresql restart
+morbo -l http://*:8080 script/ama
