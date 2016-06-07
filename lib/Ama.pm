@@ -49,7 +49,7 @@ sub startup {
   $self->plugin('BrowserDetect');
   $r->get('/' => sub {
     my $self = shift;
-    $self->redirect_to($self->browser->mobile ? 'create_question' : 'questions');
+    $self->redirect_to($self->browser->mobile ? 'questions' : 'questions');
   });
   $r->get('/questions')->to('questions#index')->name('questions'); # Display all questions
   $r->get('/questions/create')->to('questions#create')->name('create_question'); # Display empty form
