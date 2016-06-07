@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <title>AMA</title>
     %= asset 'ama.js'
     <style>
       a, body { color: #2a2a2a }
