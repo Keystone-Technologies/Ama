@@ -65,7 +65,6 @@ function Comment(id_input, text_input, votes_input, creator_input, time_created_
     var id = id_input;
     var text = text_input;
     text = text.replace(/\n/g, '<br/>');
-    console.log(text);
     var votes = votes_input;
     var creator = creator_input;
     var time_created = time_created_input;
