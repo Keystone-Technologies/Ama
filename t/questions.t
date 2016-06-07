@@ -12,9 +12,9 @@ my $t = Test::Mojo->new('Ama');
 $t->get_ok('/')->status_is(302);
 $t->get_ok('/questions')->status_is(200)
     ->element_exists('div[class=header]')
-    ->element_exists('input[id=logo]')
-    ->element_exists('img[id=youtube]')
-    ->element_exists('div[id=newquestion]');
+    ->element_exists('div[class=logoContainer]')
+    ->element_exists('img[class=youtubeImg]')
+    ->element_exists('div[class=newQuestion]');
 
 $t = $t->post_ok('/questions' => {Accept => 'application/json'} => form => {'question' => '..test..'})
     ->status_is(200)
