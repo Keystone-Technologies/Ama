@@ -7,6 +7,7 @@ use Ama::Model::Answers;
 use Ama::Model::Votes;
 use Ama::Model::Flags;
 use Mojo::Pg;
+our $VERSION = '1.2';
 
 sub startup {
   my $self = shift;
@@ -33,6 +34,8 @@ sub startup {
     $c->flags->username($c->session->{username});
     return $next->();
   });
+  
+  $self->helper( 'version' => sub{$VERSION} );
 
   # Migrate to latest version if necessary
   my $path = $self->home->rel_file('migrations/ama.sql');

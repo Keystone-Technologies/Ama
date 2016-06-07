@@ -730,7 +730,7 @@ $(document).ready(function() {
 			<img class="logoImg" src="img/logo.png" alt="LOGO">
 		</div>
 		<div class="version">
-			v<%=$self->config('version')%>
+			v<%=$self->version%>
 		</div>
 		<div class="youtube">
 			<a href="https://www.youtube.com/channel/UCwSuyK7EsrNN02Z92bI34gA/feed" target="_blank">
