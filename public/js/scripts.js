@@ -177,7 +177,7 @@ function changeFlag(id, dir) {
     if(dir == 'out' && post.isFlagged())
         flagged = 'red';
     
-    $("#flagImg_" + id).attr("src", "img/" + flagged + "flag.png")
+    $("#flagImg_" + id).attr("src", "/img/" + flagged + "flag.png")
 }
 
 //changes vote image based on mouse position and post status
@@ -191,16 +191,16 @@ function changeVoteImg(id, dir, voteDir) {
     }
     
     if(dir == 'in' && post.getUsersVote() == voteDir) {
-        $("#" + voteDir + "vote_" + post.getId()).attr('src', 'img/small' + voteDir + 'arrow.png');
+        $("#" + voteDir + "vote_" + post.getId()).attr('src', '/img/small' + voteDir + 'arrow.png');
     }
     if(dir == 'out' && post.getUsersVote() == voteDir) {
-        $("#" + voteDir + "vote_" + post.getId()).attr('src', 'img/clickedsmall' + voteDir + 'arrow.png');
+        $("#" + voteDir + "vote_" + post.getId()).attr('src', '/img/clickedsmall' + voteDir + 'arrow.png');
     }
     if(dir == 'in' && post.getUsersVote() != voteDir) {
-        $("#" + voteDir + "vote_" + post.getId()).attr('src', 'img/clickedsmall' + voteDir + 'arrow.png');
+        $("#" + voteDir + "vote_" + post.getId()).attr('src', '/img/clickedsmall' + voteDir + 'arrow.png');
     }
     if(dir == 'out' && post.getUsersVote() != voteDir) {
-        $("#" + voteDir + "vote_" + post.getId()).attr('src', 'img/small' + voteDir + 'arrow.png');
+        $("#" + voteDir + "vote_" + post.getId()).attr('src', '/img/small' + voteDir + 'arrow.png');
     }
 }
 
@@ -208,9 +208,9 @@ function changeVoteImg(id, dir, voteDir) {
 function changeCheckMark(id, dir) {
     var comment = getQuestionById(id.substring(0, id.indexOf('_'))).getCommentById(id);
     if(dir == 'in')
-        $("#answerImg_" + comment.getId()).attr('src', 'img/checkedcheckmark.png');
+        $("#answerImg_" + comment.getId()).attr('src', '/img/checkedcheckmark.png');
     else
-        $("#answerImg_" + comment.getId()).attr('src', 'img/checkmark.png');
+        $("#answerImg_" + comment.getId()).attr('src', '/img/checkmark.png');
 }
 
 //shows or hides comment container for a specific question
@@ -242,7 +242,6 @@ function initializeContent() {
         if(question.isAnswered() && unanswered) {
             unanswered = false;
             $(".unansweredTab").html(contentHTML);
-            console.log($(".unansweredTab").html());
             contentHTML = "";
         }
         questionHTML = questionHTML.replace(/ID/g, question.getId());
@@ -300,10 +299,10 @@ function initializeLayout() {
         }
         
         if(question.getUsersVote() == "up") {
-            $("#upvote_" + question.getId()).attr('src', 'img/clickedsmalluparrow.png');
+            $("#upvote_" + question.getId()).attr('src', '/img/clickedsmalluparrow.png');
         }
         if(question.getUsersVote() == "down") {
-            $("#downvote_" + question.getId()).attr('src', 'img/clickedsmalldownarrow.png');
+            $("#downvote_" + question.getId()).attr('src', '/img/clickedsmalldownarrow.png');
         }
         
         for(var j = 0; j < question.getCommentCount(); j ++) {
@@ -318,10 +317,10 @@ function initializeLayout() {
                 $("#deleteButtonContainer_" + comment.getId()).css('visibility', 'hidden');
             }
             if(comment.getUsersVote() == "up") {
-                $("#upvote_" + comment.getId()).attr('src', 'img/clickedsmalluparrow.png');
+                $("#upvote_" + comment.getId()).attr('src', '/img/clickedsmalluparrow.png');
             }
             if(comment.getUsersVote() == "down") {
-                $("#downvote_" + comment.getId()).attr('src', 'img/clickedsmalldownarrow.png');
+                $("#downvote_" + comment.getId()).attr('src', '/img/clickedsmalldownarrow.png');
         }
         }
         
@@ -345,7 +344,7 @@ function initializeLayout() {
                 $("#flagImg_" + comment.getId()).remove()
                 $("#deleteButtonContainer_" + comment.getId()).remove();
                 if(comment.isAnswer()) {
-                    $("#answerImg_" + comment.getId()).attr({onmouseenter: "", onmouseleave: "", onclick: "", src:"img/checkedcheckmark.png"});
+                    $("#answerImg_" + comment.getId()).attr({onmouseenter: "", onmouseleave: "", onclick: "", src:"/img/checkedcheckmark.png"});
                 }
                 else {
                     $("#commentContainer_" + comment.getId()).css('background-color', 'd6d6d6');
@@ -354,6 +353,7 @@ function initializeLayout() {
             }
         }
     }
+    
     window.setTimeout(resizePosts, 0.0000000000000000000000001);
 }
 
@@ -364,7 +364,7 @@ function resizePosts() {
         var str = $("#textContainer_" + question.getId()).css('height');
         var num = parseInt(str);
         var contHeight = parseInt($("#postTextContainer_" + question.getId()).css('height'));
-        if(num >= contHeight) {
+        if(num > contHeight) {
             num = num + 110;
             num += "px";
             $("#postContainer_" + question.getId()).css('min-height', num);
@@ -432,7 +432,7 @@ function deletePost(id) {
 
 //hides a flagged question/comment
 function hide(id) {
-    $("#flagImg_" + id).attr('src', 'img/redflag.png');
+    $("#flagImg_" + id).attr('src', '/img/redflag.png');
     $("#upvote_" + id).css('visibility', 'hidden');
     $("#downvote_" + id).css('visibility', 'hidden');
     $("#replyButton_" + id).css('visibility', 'hidden');
@@ -447,7 +447,7 @@ function hide(id) {
 
 //shows a flagged question/comment
 function show(id) {
-    $("#flagImg_" + id).attr('src', 'img/flag.png');
+    $("#flagImg_" + id).attr('src', '/img/flag.png');
     $("#upvote_" + id).css('visibility', 'visible');
     $("#downvote_" + id).css('visibility', 'visible');
     $("#replyButton_" + id).css('visibility', 'visible');
@@ -589,7 +589,6 @@ function markAnswer(id) {
 }
 
 function switchTab(tabName) {
-    console.log("here");
     $('.tabButton').css('background-color', 'd6d6d6');
     $("#" + tabName + "TabButton").css('background-color', 'white');
     
@@ -601,4 +600,6 @@ function switchTab(tabName) {
         $(".unansweredTab").hide();
         $(".answeredTab").show();
     }
+    
+    window.setTimeout(resizePosts, 0.0000001);
 }

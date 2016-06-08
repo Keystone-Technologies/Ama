@@ -62,14 +62,14 @@ $(document).ready(function() {
 <body>
 	<div class="header">
 		<div class="logoContainer"> 
-			<img class="logoImg" src="img/logo.png" alt="LOGO">
+			<img class="logoImg" src="/img/logo.png" alt="LOGO">
 		</div>
 		<div class="version">
 			v<%=$self->version%>
 		</div>
 		<div class="youtube">
 			<a href="https://www.youtube.com/channel/UCwSuyK7EsrNN02Z92bI34gA/feed" target="_blank">
-				<img class="youtubeImg" src="img/youtubehover.png" alt="YOUTUBE">
+				<img class="youtubeImg" src="/img/youtubehover.png" alt="YOUTUBE">
 			</a>
 		</div>
 	</div>
@@ -111,7 +111,7 @@ $(document).ready(function() {
 		<div class= "postContainer" id="postContainer_ID">
 			<div class="voteInfoContainer" id="voteInfoContainer_ID">
 				<div class="upvoteContainer">
-					<img class="containedImg" src="img/smalluparrow.png" alt="uparrow"
+					<img class="containedImg" src="/img/smalluparrow.png" alt="uparrow"
 					id="upvote_ID"
 					onmouseenter="changeVoteImg(ID, 'in', 'up')"
 					onmouseleave="changeVoteImg(ID, 'out', 'up')"
@@ -121,7 +121,7 @@ $(document).ready(function() {
 					VOTES
 				</div>
 				<div class="downvoteContainer">
-					<img class="containedImg" src="img/smalldownarrow.png" alt="downarrow"
+					<img class="containedImg" src="/img/smalldownarrow.png" alt="downarrow"
 					id="downvote_ID"
 					onmouseenter="changeVoteImg(ID, 'in', 'down')"
 					onmouseleave="changeVoteImg(ID, 'out', 'down')"
@@ -131,20 +131,20 @@ $(document).ready(function() {
 			
 			<div class="buttonContainer" id="buttonContainer_ID">
 				<div class="deleteButtonContainer" id="deleteButtonContainer_ID">
-					<img class= "containedImg" src="img/trash.png" alt="Trash" 
-					onmouseenter="this.src='img/opentrash.png'" 
-					onmouseleave="this.src='img/trash.png'"
+					<img class= "containedImg" src="/img/trash.png" alt="Trash" 
+					onmouseenter="this.src='/img/opentrash.png'" 
+					onmouseleave="this.src='/img/trash.png'"
 					onclick="deletePost(ID)">
 				</div>
 				<div class="flagButtonContainer">
-					<img class= "containedImg" src="img/flag.png" alt="Flag" 
+					<img class= "containedImg" src="/img/flag.png" alt="Flag" 
 					id="flagImg_ID"
 					onmouseenter="changeFlag(ID, 'in')" 
 					onmouseleave="changeFlag(ID, 'out')"
 					onclick="sendFlagReport(ID)">
 				</div>
 				<div class="answerButtonContainer" id="answerButtonContainer_ID">
-					<img class="containedImg" src="img/checkmark.png" alt="Checkmark"
+					<img class="containedImg" src="/img/checkmark.png" alt="Checkmark"
 					id="answerImg_ID"
 					onmouseenter="changeCheckMark(ID, 'in')"
 					onmouseleave="changeCheckMark(ID, 'out')"
@@ -191,7 +191,7 @@ $(document).ready(function() {
 		<div class="commentContainer" id="commentContainer_ID">
 			<div class="commentVoteInfoContainer" id="voteInfoContainer_ID">
 				<div class="commentUpvoteContainer">
-					<img class="containedImg" src="img/smalluparrow.png" alt="uparrow"
+					<img class="containedImg" src="/img/smalluparrow.png" alt="uparrow"
 					id="upvote_ID"
 					onmouseenter="changeVoteImg('ID', 'in', 'up')"
 					onmouseleave="changeVoteImg('ID', 'out', 'up')"
@@ -201,7 +201,7 @@ $(document).ready(function() {
 					VOTES
 				</div>
 				<div class="commentDownvoteContainer">
-					<img class="containedImg" src="img/smalldownarrow.png" alt="downarrow"
+					<img class="containedImg" src="/img/smalldownarrow.png" alt="downarrow"
 					id="downvote_ID"
 					onmouseenter="changeVoteImg('ID', 'in', 'down')"
 					onmouseleave="changeVoteImg('ID', 'out', 'down')"
@@ -218,14 +218,14 @@ $(document).ready(function() {
 					
 				<div class="commentPostInfoContainer">
 					<div class="commentDeleteButtonContainer" id="deleteButtonContainer_ID">
-						<img class= "containedImg" src="img/trash.png" alt="Trash" 
-						onmouseenter="this.src='img/opentrash.png'" 
-						onmouseleave="this.src='img/trash.png'"
+						<img class= "containedImg" src="/img/trash.png" alt="Trash" 
+						onmouseenter="this.src='/img/opentrash.png'" 
+						onmouseleave="this.src='/img/trash.png'"
 						onclick="deletePost('ID')">
 					</div>
 						
 					<div class="commentFlagButtonContainer">
-						<img class= "containedImg" src="img/flag.png" alt="Flag" 
+						<img class= "containedImg" src="/img/flag.png" alt="Flag" 
 						id="flagImg_ID"
 						onmouseenter="changeFlag('ID', 'in')" 
 						onmouseleave="changeFlag('ID', 'out')"
@@ -233,7 +233,7 @@ $(document).ready(function() {
 					</div>
 						
 					<div class="commentAnswerButtonContainer" id="answerButtonContainer_ID">
-						<img class="containedImg" src="img/checkmark.png" alt="Checkmark"
+						<img class="containedImg" src="/img/checkmark.png" alt="Checkmark"
 						id="answerImg_ID"
 						onmouseenter="changeCheckMark('ID', 'in')"
 						onmouseleave="changeCheckMark('ID', 'out')"

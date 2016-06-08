@@ -199,7 +199,7 @@ body {
 
 .voteContainer {
 	position: absolute;
-	top: 40%;
+	top: 38%;
 	width: 100%;
 	text-align: center;
 	font-size: 1.5em;
@@ -222,6 +222,7 @@ body {
 	bottom: 0;
 	left: 10%;
 	max-height: 275px;
+	max-width: 38px;
 	width: 5%;
 	overflow: auto;
 }
