@@ -603,3 +603,15 @@ function switchTab(tabName) {
     
     window.setTimeout(resizePosts, 0.0000001);
 }
+
+function test() {
+    console.log("now testing answered url functions");
+    
+    $.get("/questions/1/votes/asc", function(data){
+        console.log(data);
+        $.each(data, function(i, v){
+            console.log("we got somes datas");
+            console.log(v.question_id);
+        });
+    }, 'json');
+}

@@ -66,6 +66,28 @@ sub all {
   limit 20;
 ], $self->username)->hashes->to_array }
 
+sub getQuestions {
+  my ($self, $answered, $orderby, $direction) = @_;
+  my $sql = 
+  'select '.
+    'question_id, '.
+    'question, '.
+    "to_char(questions.created, 'MM/DD/YYYY HH12:MI:SS') as created, ".
+    'username, '.
+    "votes('questions',questions.question_id) votes, ".
+    "(select vote from votes where entry_type = 'questions' and entry_id = questions.question_id and username = ?) as my_vote, ".
+    "flagged('questions',questions.question_id) flagged, ".
+    'answered(question_id)::int as answered, '.
+    'commentcount(question_id)::int as comment_count '.
+  'from '.
+    'questions '.
+  'where '.
+    'answered(question_id)::int = ? '.
+  'order by ' . $orderby . ' ' . $direction . ' ' .
+  'limit 50; ';
+  
+  $self->pg->db->query($sql, $self->username, $answered)->hashes->to_array }
+
 sub find { shift->pg->db->query('select * from questions where question_id = ?', shift)->hash }
 
 sub remove {

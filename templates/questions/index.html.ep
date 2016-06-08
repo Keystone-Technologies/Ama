@@ -28,6 +28,8 @@ $(document).ready(function() {
     %}
     setCurrentUser("<%=session 'username'%>");
     
+    test();
+    
     var commentsLoaded = 0;
     
     var loading = $.Deferred();

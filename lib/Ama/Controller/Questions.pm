@@ -29,6 +29,18 @@ sub index {
   );
 }
 
+sub get {
+  my $self = shift;
+  my $answered = $self->param('answered');
+  my $orderby = $self->param('orderby');
+  my $direction = $self->param('direction');
+  $self->stash(questions => $self->questions->getQuestions($answered, $orderby, $direction));
+  $self->respond_to(
+    json=> {json => $self->stash('questions')},
+    any => {},
+    );
+}
+
 sub remove {
   my $self = shift;
   my $question_id = $self->param('question_id');

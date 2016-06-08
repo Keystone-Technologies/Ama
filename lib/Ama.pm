@@ -71,6 +71,8 @@ sub startup {
   $r->put('/comments/:comment_id')->to('comments#update')->name('update_comment');
   $r->delete('/comments/:comment_id')->to('comments#remove')->name('remove_comment');
 
+  $r->get('/questions/:answered/:orderby/:direction')->to('questions#get')->name('get_answered');
+
   my $api = $r->under('/api'); # Require Ajax (need to do)
 
   $api->post('/answers/:question_id/:comment_id')->to('answers#mark')->name('mark_comment_as_answer');
