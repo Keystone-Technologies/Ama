@@ -45,3 +45,5 @@ GRANT
 EACH TIME RUN:
 sudo /etc/init.d/postgresql restart
 morbo -l http://*:8080 script/ama
+
+Github webhook for autoreload
