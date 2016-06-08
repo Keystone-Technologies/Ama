@@ -226,18 +226,25 @@ function toggleComments(id) {
 
 //adds all questions with proper html to the content div
 function initializeContent() {
-    HTMLforPost = $(".content").html()
-    $(".content").html("");
-    HTMLforComment = $(".singleComment").html()
+    HTMLforPost = $(".singlePost").html();
+    $(".singlePost").remove();
+    HTMLforComment = $(".singleComment").html();
     $(".singleComment").remove();
     var contentHTML = ""; //this will be the html inserted into content
     var questionHTML = ""; //this will be html representing a single question
     var commentsHTML = ""; //this is html for all comments for a single question
     var commentHTML = "";  //html for single comment on a question
+    var unanswered = true;
     
     for(var i = 0; i < getQuestionCount(); i ++) {
         questionHTML = HTMLforPost;
         var question = getQuestion(i);
+        if(question.isAnswered() && unanswered) {
+            unanswered = false;
+            $(".unansweredTab").html(contentHTML);
+            console.log($(".unansweredTab").html());
+            contentHTML = "";
+        }
         questionHTML = questionHTML.replace(/ID/g, question.getId());
         questionHTML = questionHTML.replace(/VOTES/g, question.getVotes());
         questionHTML = questionHTML.replace(/TEXT/g, question.getText());
@@ -246,7 +253,7 @@ function initializeContent() {
         contentHTML += questionHTML;
     }
     
-    $(".content").html(contentHTML);
+    $(".answeredTab").html(contentHTML);
     
     for(var i = 0; i < getQuestionCount(); i ++) {
         var question = getQuestion(i);
@@ -280,6 +287,9 @@ function initializeLayout() {
         
         //initialy hides all reply containers
         $("#replyContainer_" + question.getId()).hide();
+        
+        $(".answeredTab").hide();
+        $("#unansweredTabButton").css('background-color', 'white');
         
         if(getCurrentUser() != question.getCreator()) {
             $("#deleteButtonContainer_" + question.getId()).css('visibility', 'hidden');
@@ -321,7 +331,6 @@ function initializeLayout() {
         if(question.isAnswered()) {
             //hides or removes so containers to look neater
             $("#postContainer_" + question.getId()).css('height', '160px');
-            $("#postContainer_" + question.getId()).css('background-color', 'd6d6d6');
             $("#replyButton_" + question.getId()).remove();
             $("#upvote_" + question.getId()).remove();
             $("#voteInfoContainer_" + question.getId()).css('left', '0%');
@@ -574,8 +583,22 @@ function markAnswer(id) {
     // this cannot be undone, but in the future it would be nice to 
     // have a confirmation box pop up perhaps
     var question = getQuestionById(id.substring(0, id.indexOf('_')));
-    console.log(question);
     var comment = question.getCommentById(id);
     $.post("/api/answers/" + question.getId() + "/" + comment.getId().substring(comment.getId().indexOf('_') + 1));
     location.reload();
+}
+
+function switchTab(tabName) {
+    console.log("here");
+    $('.tabButton').css('background-color', 'd6d6d6');
+    $("#" + tabName + "TabButton").css('background-color', 'white');
+    
+    if(tabName == "unanswered") {
+        $(".unansweredTab").show();
+        $(".answeredTab").hide();
+    }
+    if(tabName == "answered") {
+        $(".unansweredTab").hide();
+        $(".answeredTab").show();
+    }
 }

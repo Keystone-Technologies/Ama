@@ -124,6 +124,24 @@ body {
 	height: 100px;
 }
 
+/*****tab container *****/
+
+.tabContainer {
+	max-width: 1200px;
+	min-width: 810px;
+	margin: auto;
+	background-color:d6d6d6;
+}
+
+.tabButton {
+	display: inline-block;
+	font-size: 2em;
+	font-weight: bold;
+	background-color: d6d6d6;
+	padding: 20px;
+	cursor: pointer;
+}
+
 .content {
 	max-width: 1200px;
 	min-width: 810px;

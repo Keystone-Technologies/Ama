@@ -2,7 +2,7 @@ body {
 	margin:0;
 	padding:0px;
 	height:100%;
-	background: #white; /* For browsers that do not support gradients */
+	background-color: d6d6d6; /* For browsers that do not support gradients */
 }
 
 * {
@@ -122,10 +122,37 @@ body {
 	height: 10px;
 }
 
-.content {
+.tabContainer {
 	max-width: 1200px;
 	min-width: 810px;
 	margin: auto;
+	background-color:d6d6d6;
+	border: 3px solid;
+	border-color:d6d6d6;
+	border-bottom: none;
+	box-sizing: border-box;
+}
+
+.tabButton {
+	display: inline-block;
+	font-size: 1em;
+	font-weight: bold;
+	background-color: d6d6d6;
+	padding: 10px;
+	cursor: pointer;
+}
+
+.content {
+	max-width: 1200px;
+	min-width: 810px;
+	min-height: 10px;
+	margin: auto;
+	border: 3px solid;
+	border-color: d6d6d6;
+	border-top:none;
+	box-sizing:border-box;
+	background-color:white;
+	padding: 15px;
 }
 
 /*question container contains info for a quesiton*/
@@ -283,6 +310,7 @@ body {
 
 .commentsContainer {
 	width:100%;
+	overflow:auto;
 }
 
 .commentPadding {

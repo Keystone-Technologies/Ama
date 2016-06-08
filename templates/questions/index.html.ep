@@ -12,6 +12,7 @@ $(document).ready(function() {
 	$(".newQuestionContainer").hide();
 	$(".content").hide();
 	$(".singleComment").hide();
+	$(".singlePost").hide();
 	
 	% for my $question (@$questions) {
 		% $question->{question} =~ s/\r\n/ NEWLINEPLEASE /g;
@@ -87,9 +88,26 @@ $(document).ready(function() {
 		</form>
 	</div>
 	
-	
+	<div class="tabContainer">
+		<div class="tabButton" id="unansweredTabButton" onclick="switchTab('unanswered')">
+			unanswered
+		</div>
+		<div class="tabButton" id="answeredTabButton" onclick="switchTab('answered')">
+			answered
+		</div>
+	</div>
 	
 	<div class="content">
+		<div class="unansweredTab">
+		
+		</div>
+		
+		<div class="answeredTab">
+		
+		</div>
+	</div>
+	
+	<div class="singlePost">
 		<div class= "postContainer" id="postContainer_ID">
 			<div class="voteInfoContainer" id="voteInfoContainer_ID">
 				<div class="upvoteContainer">
@@ -164,6 +182,7 @@ $(document).ready(function() {
 		<div class="commentsContainer" id="commentsContainer_ID">
 		</div>
 	</div>
+	
 	<div class="singleComment">
 		<div class="commentPadding" id="commentPadding_ID">
 			word
