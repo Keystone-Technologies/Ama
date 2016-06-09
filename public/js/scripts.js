@@ -298,7 +298,6 @@ function initializeLayout() {
 function initializeCommentLayout(id) {
     var question = getQuestionById(id);
     for(var j = 0; j < question.getCommentCount(); j ++) {
-        console.log("Here we are initializing the layout");
         var comment = question.getComment(j);
         $("#commentPadding_" + comment.getId()).css('visibility', 'hidden');
         

@@ -27,15 +27,8 @@ $(document).ready(function() {
 	
     setCurrentUser("<%=session 'username'%>");
     
+    //this is where it should set the last viewed options, something like that
     switchTab("unanswered", 0, "votes", "desc")
-    
-    //loads all comments and stores them in the correct question
-    /*
-    var commentsLoaded = 0;
-    for(var i = 0; i < getQuestionCount(); i ++) {
-    	var id = getQuestion(i).getId();
-    }
-    */
     
 });
 </script>
