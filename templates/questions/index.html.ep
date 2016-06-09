@@ -9,56 +9,35 @@
 
 <script>
 $(document).ready(function() {
+	//extracts html from page and stores it in global variables
+	HTMLforPost = $(".singlePost").html();
+    $(".singlePost").remove();
+    HTMLforComment = $(".singleComment").html();
+    $(".singleComment").remove();
+    
+    //hides all containers that are needed to be hidden
 	$(".newQuestionContainer").hide();
-	$(".content").hide();
-	$(".singleComment").hide();
-	$(".singlePost").hide();
+	$(".singleComment").remove();
+	$(".singlePost").remove();
 	
-	% for my $question (@$questions) {
-		% $question->{question} =~ s/\r\n/ NEWLINEPLEASE /g;
-        addQuestion(new Question(
-            <%=$question->{question_id}%>,
-            "<%=$question->{question}%>",
-            <%=$question->{votes}%>,
-            "<%=$question->{username}%>",
-            "<%=$question->{created}%>",
-            <%=$question->{flagged}%>,
-            <%=$question->{answered}%>,
-            '<%=$question->{my_vote}%>'));
-    %}
+	//this should be cookied to hide all but the one that was last viewed
+	console.log("answer tab is hidden here");
+	$(".answeredTab").hide();
+	$("#unansweredTabButton").css('background-color', 'white');
+	
     setCurrentUser("<%=session 'username'%>");
     
-    test();
-    
-    var commentsLoaded = 0;
-    
-    var loading = $.Deferred();
+    switchTab("unanswered", 0, "votes", "desc")
     
     //loads all comments and stores them in the correct question
+    /*
+    var commentsLoaded = 0;
     for(var i = 0; i < getQuestionCount(); i ++) {
     	var id = getQuestion(i).getId();
-        $.get("/questions/" + id + "/comments", function(data){
-            $.each(data, function(i, v){
-                var current = new Comment(v.question_id + "_" + v.comment_id, v.comment, v.votes, v.username, v.created, v.flagged, v.answered, v.my_vote);
-                for(var j = 0; j < getQuestionCount(); j ++)
-                {
-                    if(getQuestion(j).getId() == current.getQuestId())
-                    {
-                        getQuestion(j).addComment(current);
-                    }
-                }
-            });
-            commentsLoaded ++;
-            if(commentsLoaded == getQuestionCount()){
-            	//after all of the comments are loaded, the rest of the page loads
-                initializeContent();
-                $(".content").show();
-            }
-        }, 'json');
     }
+    */
     
 });
-//hide all comment containers and reply containers here also
 </script>
 
 <body>
@@ -91,20 +70,20 @@ $(document).ready(function() {
 	</div>
 	
 	<div class="tabContainer">
-		<div class="tabButton" id="unansweredTabButton" onclick="switchTab('unanswered')">
+		<div class="tabButton" id="unansweredTabButton" onclick="switchTab('unanswered', 0, 'votes', 'desc')">
 			unanswered
 		</div>
-		<div class="tabButton" id="answeredTabButton" onclick="switchTab('answered')">
+		<div class="tabButton" id="answeredTabButton" onclick="switchTab('answered', 1, 'created', 'desc')">
 			answered
 		</div>
 	</div>
 	
 	<div class="content">
-		<div class="unansweredTab">
+		<div class="tab" id="unansweredTab">
 		
 		</div>
 		
-		<div class="answeredTab">
+		<div class="tab" id="answeredTab">
 		
 		</div>
 	</div>

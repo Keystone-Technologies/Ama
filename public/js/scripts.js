@@ -1,4 +1,4 @@
-function Question(id_input, text_input, votes_input, creator_input, time_created_input, flagged_input, answered_input, users_vote_input) {
+function Question(id_input, text_input, votes_input, creator_input, time_created_input, comment_count_input, flagged_input, answered_input, users_vote_input) {
     var id = id_input;
     var text = text_input;
     text = text.replace(/NEWLINEPLEASE/g, '<br/>');
@@ -6,7 +6,7 @@ function Question(id_input, text_input, votes_input, creator_input, time_created
     var flagged = flagged_input;
     var creator = creator_input;
     var time_created = time_created_input;
-    var comment_count = 0;
+    var comment_count = comment_count_input;
     var comments = [];
     var answered = answered_input;
     var users_vote = users_vote_input;
@@ -22,6 +22,10 @@ function Question(id_input, text_input, votes_input, creator_input, time_created
     this.getTimeCreated = function() {return time_created;}
     this.getCommentCount = function() {return comment_count}
     this.getUsersVote = function() {return users_vote;}
+    
+    this.setCommentCount = function(count) {
+        comment_count = count;
+    }
     
     this.getComment = function(index) {
         return comments[index];
@@ -135,6 +139,12 @@ function getQuestionCount() {
     return questionCount;
 }
 
+function clearQuestions() {
+    questionCount = 0;
+    //again doesnt actually delete them but for all intents and purposes
+    //  this is totally fine I assume
+}
+
 //****************************************************************showing/hiding images or containers
 
 //shows/hides new question container
@@ -213,37 +223,14 @@ function changeCheckMark(id, dir) {
         $("#answerImg_" + comment.getId()).attr('src', '/img/checkmark.png');
 }
 
-//shows or hides comment container for a specific question
-function toggleComments(id) {
-    $("#commentsContainer_" + id).slideToggle("slow");
-    if($("#showCommentsButton_" + id).html().indexOf("hide") == -1) {
-        $("#showCommentsButton_" + id).html("hide comments<br> ");
-        resizeComments(id);
-    }
-    else
-        $("#showCommentsButton_" + id).html("show comments<br>(" + getQuestionById(id).getCommentCount() + ")");
-}
-
 //adds all questions with proper html to the content div
-function initializeContent() {
-    HTMLforPost = $(".singlePost").html();
-    $(".singlePost").remove();
-    HTMLforComment = $(".singleComment").html();
-    $(".singleComment").remove();
+function initializeTab(tabName) {
     var contentHTML = ""; //this will be the html inserted into content
     var questionHTML = ""; //this will be html representing a single question
-    var commentsHTML = ""; //this is html for all comments for a single question
-    var commentHTML = "";  //html for single comment on a question
-    var unanswered = true;
     
     for(var i = 0; i < getQuestionCount(); i ++) {
         questionHTML = HTMLforPost;
         var question = getQuestion(i);
-        if(question.isAnswered() && unanswered) {
-            unanswered = false;
-            $(".unansweredTab").html(contentHTML);
-            contentHTML = "";
-        }
         questionHTML = questionHTML.replace(/ID/g, question.getId());
         questionHTML = questionHTML.replace(/VOTES/g, question.getVotes());
         questionHTML = questionHTML.replace(/TEXT/g, question.getText());
@@ -251,23 +238,8 @@ function initializeContent() {
         questionHTML = questionHTML.replace(/TIMEASKED/g, question.getTimeCreated());
         contentHTML += questionHTML;
     }
-    
-    $(".answeredTab").html(contentHTML);
-    
-    for(var i = 0; i < getQuestionCount(); i ++) {
-        var question = getQuestion(i);
-        for(var j = 0; j < question.getCommentCount(); j ++) {
-            var comment = question.getComment(j);
-            commentHTML = HTMLforComment;
-            commentHTML = commentHTML.replace(/ID/g, comment.getId());
-            commentHTML = commentHTML.replace(/VOTES/g, comment.getVotes());
-            commentHTML = commentHTML.replace(/TEXT/g, comment.getText());
-            commentHTML = commentHTML.replace(/TIMEASKED/g, comment.getTimeCreated());
-            commentsHTML += commentHTML;
-        }
-        $("#commentsContainer_" + question.getId()).html(commentsHTML);
-        commentsHTML = "";
-    }
+
+    $(tabName).html(contentHTML);
     
     initializeLayout();
 }
@@ -287,9 +259,6 @@ function initializeLayout() {
         //initialy hides all reply containers
         $("#replyContainer_" + question.getId()).hide();
         
-        $(".answeredTab").hide();
-        $("#unansweredTabButton").css('background-color', 'white');
-        
         if(getCurrentUser() != question.getCreator()) {
             $("#deleteButtonContainer_" + question.getId()).css('visibility', 'hidden');
         }
@@ -301,27 +270,9 @@ function initializeLayout() {
         if(question.getUsersVote() == "up") {
             $("#upvote_" + question.getId()).attr('src', '/img/clickedsmalluparrow.png');
         }
+        
         if(question.getUsersVote() == "down") {
             $("#downvote_" + question.getId()).attr('src', '/img/clickedsmalldownarrow.png');
-        }
-        
-        for(var j = 0; j < question.getCommentCount(); j ++) {
-            var comment = question.getComment(j);
-            
-            $("#commentPadding_" + comment.getId()).css('visibility', 'hidden');
-            
-            if(comment.isFlagged()) {
-                hide(comment.getId());
-            }
-            if(comment.getCreator() != getCurrentUser()) {
-                $("#deleteButtonContainer_" + comment.getId()).css('visibility', 'hidden');
-            }
-            if(comment.getUsersVote() == "up") {
-                $("#upvote_" + comment.getId()).attr('src', '/img/clickedsmalluparrow.png');
-            }
-            if(comment.getUsersVote() == "down") {
-                $("#downvote_" + comment.getId()).attr('src', '/img/clickedsmalldownarrow.png');
-        }
         }
         
         //hides the answer button on questions for obvious reasons
@@ -337,24 +288,47 @@ function initializeLayout() {
             $("#buttonContainer_" + question.getId()).remove();
             $("#postTextAndInfoContainer_" + question.getId()).css('width', '90%');
             $("#postTextAndInfoContainer_" + question.getId()).css('left', '10%');
-            for(var j = 0; j < question.getCommentCount(); j ++) {
-                var comment = question.getComment(j);
-                $("#upvote_" + comment.getId()).css('visibility', 'hidden');
-                $("#downvote_" + comment.getId()).css('visibility', 'hidden');
-                $("#flagImg_" + comment.getId()).remove()
-                $("#deleteButtonContainer_" + comment.getId()).remove();
-                if(comment.isAnswer()) {
-                    $("#answerImg_" + comment.getId()).attr({onmouseenter: "", onmouseleave: "", onclick: "", src:"/img/checkedcheckmark.png"});
-                }
-                else {
-                    $("#commentContainer_" + comment.getId()).css('background-color', 'd6d6d6');
-                    $("#answerImg_" + comment.getId()).remove();
-                }
-            }
         }
     }
     
     window.setTimeout(resizePosts, 0.0000000000000000000000001);
+}
+
+//intitializes layout of all comments of a specific question
+function initializeCommentLayout(id) {
+    var question = getQuestionById(id);
+    for(var j = 0; j < question.getCommentCount(); j ++) {
+        console.log("Here we are initializing the layout");
+        var comment = question.getComment(j);
+        $("#commentPadding_" + comment.getId()).css('visibility', 'hidden');
+        
+        if(comment.isFlagged()) {
+            hide(comment.getId());
+        }
+        if(comment.getCreator() != getCurrentUser()) {
+            $("#deleteButtonContainer_" + comment.getId()).css('visibility', 'hidden');
+        }
+        if(comment.getUsersVote() == "up") {
+            $("#upvote_" + comment.getId()).attr('src', '/img/clickedsmalluparrow.png');
+        }
+        if(comment.getUsersVote() == "down") {
+            $("#downvote_" + comment.getId()).attr('src', '/img/clickedsmalldownarrow.png');
+        }
+        if(question.isAnswered()) {
+            var comment = question.getComment(j);
+            $("#upvote_" + comment.getId()).css('visibility', 'hidden');
+            $("#downvote_" + comment.getId()).css('visibility', 'hidden');
+            $("#flagImg_" + comment.getId()).remove()
+            $("#deleteButtonContainer_" + comment.getId()).remove();
+            if(comment.isAnswer()) {
+                $("#answerImg_" + comment.getId()).attr({onmouseenter: "", onmouseleave: "", onclick: "", src:"/img/checkedcheckmark.png"});
+            }
+            else {
+                $("#commentContainer_" + comment.getId()).css('background-color', 'd6d6d6');
+                $("#answerImg_" + comment.getId()).remove();
+            }
+        }
+    }
 }
 
 //resizes all questions so if they have a lot of text, a scroll bar does not appear
@@ -588,30 +562,71 @@ function markAnswer(id) {
     location.reload();
 }
 
-function switchTab(tabName) {
-    $('.tabButton').css('background-color', 'd6d6d6');
-    $("#" + tabName + "TabButton").css('background-color', 'white');
+function switchTab(tabName, answered, orderby, direction) {
+    //add spinner eventually
     
-    if(tabName == "unanswered") {
-        $(".unansweredTab").show();
-        $(".answeredTab").hide();
-    }
-    if(tabName == "answered") {
-        $(".unansweredTab").hide();
-        $(".answeredTab").show();
-    }
+    clearQuestions();
     
-    window.setTimeout(resizePosts, 0.0000001);
+    $.get("/questions/" + answered + "/" + orderby + "/" + direction, function(data){
+        $.each(data, function(i, v){
+        	var question = new Question(v.question_id, v.question, v.votes, v.creator, v.created, v.comment_count, v.flagged, v.answered, v.my_vote);
+        	addQuestion(question);
+        });
+    }, 'json').done(function() {
+        $(".tab").hide();
+        $(".tab").html("");
+    	initializeTab('#' + tabName + 'Tab');
+    	
+    	$('.tabButton').css('background-color', 'd6d6d6');
+        $("#" + tabName + "TabButton").css('background-color', 'white');
+    
+        $("#" + tabName + "Tab").show();
+    
+        window.setTimeout(resizePosts, 0.0000001);
+    });
 }
 
-function test() {
-    console.log("now testing answered url functions");
+function toggleComments(id) {
+    //resets the comment count each time because it increments it when you add a comment
+    var question = getQuestionById(id);
     
-    $.get("/questions/1/votes/asc", function(data){
-        console.log(data);
-        $.each(data, function(i, v){
-            console.log("we got somes datas");
-            console.log(v.question_id);
+    if($("#showCommentsButton_" + id).html().indexOf("hide") == -1) {
+        question.setCommentCount(0);
+        $.get("/questions/" + id + "/comments", function(data){
+            $.each(data, function(i, v){
+                var current = new Comment(v.question_id + "_" + v.comment_id, v.comment, v.votes, v.username, v.created, v.flagged, v.answered, v.my_vote);
+                for(var j = 0; j < getQuestionCount(); j ++)
+                {
+                    if(getQuestion(j).getId() == current.getQuestId())
+                    {
+                        getQuestion(j).addComment(current);
+                    }
+                }
+            });
+        
+        }, 'json').done(function() {
+            var commentsHTML = "";
+            var commentHTML = "";
+        
+            for(var j = 0; j < question.getCommentCount(); j ++) {
+                var comment = question.getComment(j);
+                commentHTML = HTMLforComment;
+                commentHTML = commentHTML.replace(/ID/g, comment.getId());
+                commentHTML = commentHTML.replace(/VOTES/g, comment.getVotes());
+                commentHTML = commentHTML.replace(/TEXT/g, comment.getText());
+                commentHTML = commentHTML.replace(/TIMEASKED/g, comment.getTimeCreated());
+                commentsHTML += commentHTML;
+            }
+            $("#commentsContainer_" + question.getId()).html(commentsHTML);
+        
+            $("#commentsContainer_" + id).slideToggle("slow");
+            $("#showCommentsButton_" + id).html("hide comments<br> ");
+            initializeCommentLayout(id);
+            resizeComments(id);
         });
-    }, 'json');
+    }
+    else {
+        $("#commentsContainer_" + id).slideToggle("slow");
+        $("#showCommentsButton_" + id).html("show comments<br>(" + getQuestionById(id).getCommentCount() + ")");
+    }
 }
