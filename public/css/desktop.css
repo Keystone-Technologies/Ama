@@ -122,7 +122,9 @@ body {
 	height: 10px;
 }
 
-.tabContainer {
+/*******filter container ******/
+
+.filterContainer {
 	max-width: 1200px;
 	min-width: 810px;
 	margin: auto;
@@ -133,7 +135,7 @@ body {
 	box-sizing: border-box;
 }
 
-.tabButton {
+.filterName {
 	display: inline-block;
 	font-size: 1em;
 	font-weight: bold;

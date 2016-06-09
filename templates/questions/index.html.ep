@@ -19,16 +19,14 @@ $(document).ready(function() {
 	$(".newQuestionContainer").hide();
 	$(".singleComment").remove();
 	$(".singlePost").remove();
-	
-	//this should be cookied to hide all but the one that was last viewed
-	console.log("answer tab is hidden here");
-	$(".answeredTab").hide();
-	$("#unansweredTabButton").css('background-color', 'white');
+	$(".sortMenuContainer").hide();
+	$(".backgroundCover").hide();
 	
     setCurrentUser("<%=session 'username'%>");
     
-    //this is where it should set the last viewed options, something like that
-    switchTab("unanswered", 0, "votes", "desc")
+    //this is where it should set the last viewed options, something like that with cookies
+    console.log("change to cookie here");
+    changeQuestions();
     
 });
 </script>
@@ -62,23 +60,74 @@ $(document).ready(function() {
 		</form>
 	</div>
 	
-	<div class="tabContainer">
-		<div class="tabButton" id="unansweredTabButton" onclick="switchTab('unanswered', 0, 'votes', 'desc')">
-			unanswered
+	<div class="backgroundCover">
+	 
+	</div>
+	
+	<div class="sortMenuContainer">
+		<div class="sortMenuTitle">
+			Sort Options
 		</div>
-		<div class="tabButton" id="answeredTabButton" onclick="switchTab('answered', 1, 'created', 'desc')">
-			answered
+		
+		<div class="sortMenuOptionsContainer">
+			<div class="sortMenuOption" id="creator_all" onclick="changeFilter('creator', 'all')">
+				all
+			</div><div class="sortMenuOption" id="creator_my" onclick="changeFilter('creator', 'my')">
+			mine</div>
+		</div>
+		
+		<div class="sortMenuOptionsContainer">
+			<div class="sortMenuOption" id="answered_1" onclick="changeFilter('answered', 1)">
+				answered
+			</div><div class="sortMenuOption" id="answered_0" onclick="changeFilter('answered', 0)">
+			unanswered</div>
+		</div>
+		
+		<div class= "sortMenuTitle">
+			votes
+		</div>
+		
+		<div class="sortMenuOptionsContainer">
+			<div class="sortMenuOption" id="votes_desc" onclick="changeFilter('orderby', 'votes');changeFilter('direction', 'desc')">
+				popular
+			</div><div class="sortMenuOption" id="votes_asc" onclick="changeFilter('orderby', 'votes');changeFilter('direction', 'asc')">
+			unpopular</div>
+		</div>
+		
+		<div class= "sortMenuTitle">
+			date
+		</div>
+		
+		<div class="sortMenuOptionsContainer">
+			<div class="sortMenuOption" id="created_asc" onclick="changeFilter('orderby', 'created');changeFilter('direction', 'asc')">
+				old
+			</div><div class="sortMenuOption" id="created_desc" onclick="changeFilter('orderby', 'created');changeFilter('direction', 'desc')">
+			new</div>
+		</div>
+		
+		<div class="sortMenuButton">
+			<div class="sortMenuButtonText" onclick="closeSortMenu()">
+				Cancel
+			</div>
+		</div><div class="sortMenuButton">
+			<div class="sortMenuButtonText" onclick="closeSortMenu();changeQuestions()">
+				OK
+			</div>
+		</div>
+		
+	</div>
+	
+	<div class="filterContainer">
+		<div class="sortMenuButtonContainer">
+			<img class="containedImg" src="/img/menubutton.png" alt="menu" onclick="showSortMenu()">
+		</div>
+		<div class="filterName">
+			unansweredadd change filter functions
 		</div>
 	</div>
 	
 	<div class="content">
-		<div class="tab" id="unansweredTab">
 		
-		</div>
-		
-		<div class="tab" id="answeredTab">
-		
-		</div>
 	</div>
 	
 	<div class="singlePost">

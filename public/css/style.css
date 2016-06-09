@@ -124,16 +124,86 @@ body {
 	height: 100px;
 }
 
-/*****tab container *****/
+.backgroundCover {
+	position:fixed;
+	background-color: white;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	z-index: 1;
+}
 
-.tabContainer {
+/************************sort menu container ********************/
+
+.sortMenuContainer {
+	background-color:white;
+	position:fixed;
+	left:10%;
+	top:10%;
+	width:80%;
+	height:80%;
+	z-index:2;
+	border: 5px solid black;
+	box-sizing: border-box;
+}
+
+.sortMenuTitle {
+	position:relative;
+	top:3%;
+	text-align: center;
+	font-size: 5em;
+	font-weight: bold;
+}
+
+.sortMenuOptionsContainer {
+	position: relative;
+	top: 3%;
+	height: 15%;
+	width: 100%;
+	border-bottom: 2px solid black;
+}
+
+.sortMenuOption {
+	position:relative;
+	top: 50%;
+	transform: translateY(-50%);
+	display: inline-block;
+	width:50%;
+	text-align: center;
+	font-size: 3em;
+	font-weight: bold;
+}
+
+.sortMenuButton {
+	position: relative;
+	display:inline-block;
+	height: 20%;
+	bottom:5px;
+	width: 50%;
+}
+
+.sortMenuButtonText {
+	position:relative;
+	top: 50%;
+	width:100%;
+	transform: translateY(-50%);
+	display: inline-block;
+	text-align: center;
+	font-size: 5em;
+}
+
+/*****filter container *****/
+
+.filterContainer {
+	position:relative;
 	max-width: 1200px;
 	min-width: 810px;
 	margin: auto;
 	background-color:d6d6d6;
 }
 
-.tabButton {
+.filterName {
 	-webkit-user-select: none; /* Chrome/Safari */        
 	-moz-user-select: none; /* Firefox */
 	-ms-user-select: none; /* IE10+ */
@@ -144,10 +214,18 @@ body {
 	
 	display: inline-block;
 	font-size: 2em;
-	font-weight: bold;
 	background-color: d6d6d6;
-	padding: 20px;
+	padding:20px;
 	cursor: pointer;
+}
+
+.sortMenuButtonContainer {
+	position: absolute;
+	display: inline-block;
+	right:2%;
+	top:0;
+	bottom:0;
+	height:100%;
 }
 
 .content {

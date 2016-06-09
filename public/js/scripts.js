@@ -105,6 +105,22 @@ var current_user = "007";
 var HTMLforPost = "uninitialized";
 var HTMLforComment = "uninitialized";
 
+//filter settings
+var filters = [];
+
+filters["creator"] = "all";
+filters["answered"] = 0;
+filters["orderby"] = "votes";
+filters["direction"] = "desc";
+
+function getFilter(type) {
+    return filters[type];
+}
+
+function setFilter(type, value) {
+    filters[type] = value;
+}
+
 //sets the username based on what the server gives us
 function setCurrentUser(name) {
     current_user = name;
@@ -224,7 +240,7 @@ function changeCheckMark(id, dir) {
 }
 
 //adds all questions with proper html to the content div
-function initializeTab(tabName) {
+function initializeContent() {
     var contentHTML = ""; //this will be the html inserted into content
     var questionHTML = ""; //this will be html representing a single question
     
@@ -239,7 +255,7 @@ function initializeTab(tabName) {
         contentHTML += questionHTML;
     }
 
-    $(tabName).html(contentHTML);
+    $(".content").html(contentHTML);
     
     initializeLayout();
 }
@@ -561,8 +577,13 @@ function markAnswer(id) {
     location.reload();
 }
 
-function switchTab(tabName, answered, orderby, direction) {
+function changeQuestions() {
     //add spinner eventually
+    
+    var creator = filters["creator"];
+    var answered = filters["answered"];
+    var orderby = filters["orderby"];
+    var direction = filters["direction"];
     
     clearQuestions();
     
@@ -572,16 +593,33 @@ function switchTab(tabName, answered, orderby, direction) {
         	addQuestion(question);
         });
     }, 'json').done(function() {
-        $(".tab").hide();
-        $(".tab").html("");
-    	initializeTab('#' + tabName + 'Tab');
-    	
-    	$('.tabButton').css('background-color', 'd6d6d6');
-        $("#" + tabName + "TabButton").css('background-color', 'white');
-    
-        $("#" + tabName + "Tab").show();
-    
+    	initializeContent();
         window.setTimeout(resizePosts, 0.0000001);
+        
+        var filter = "";
+        
+        filter += creator + " ";
+        
+        if(answered == 0)
+            filter += "un"
+        filter += "answered questions by "
+         
+        if(orderby == "votes") {
+            if(direction == "asc")
+                filter += "least ";
+            else
+                filter += "most ";
+                
+            filter += "votes";
+        }
+        else {
+            if(direction == "asc")
+                filter += "oldest";
+            else 
+                filter += "newest";
+        }
+        
+        $(".filterName").html(filter)
     });
 }
 
@@ -628,4 +666,31 @@ function toggleComments(id) {
         $("#commentsContainer_" + id).slideToggle("slow");
         $("#showCommentsButton_" + id).html("show comments<br>(" + getQuestionById(id).getCommentCount() + ")");
     }
+}
+
+function showSortMenu() {
+    $(".backgroundCover").fadeTo(1, 0);
+    $(".sortMenuContainer").fadeTo(1, 0);
+    $(".backgroundCover").show();
+    $(".sortMenuContainer").show();
+    $(".backgroundCover").fadeTo(400, 0.65);
+    $(".sortMenuContainer").fadeTo(400, 1, setFilterButtonColors());
+}
+
+function closeSortMenu() {
+    $(".sortMenuContainer").fadeTo(400, 0, function() {$(".sortMenuContainer").hide()} );
+    $(".backgroundCover").fadeTo(400, 0, function() {$(".backgroundCover").hide()});
+}
+
+function changeFilter(type, value) {
+    setFilter(type, value);
+    setFilterButtonColors();
+}
+
+function setFilterButtonColors() {
+    $(".sortMenuOption").css("color", "black");
+    
+    $("#creator_" + getFilter('creator')).css("color", "1f268b");
+    $("#answered_" + getFilter('answered')).css("color", "1f268b");
+    $("#" + getFilter('orderby') + "_" +  getFilter('direction')).css("color", "1f268b");
 }
