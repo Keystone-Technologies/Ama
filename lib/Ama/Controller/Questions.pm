@@ -71,11 +71,11 @@ sub store {
 
   my $question = $self->param('question');
   $self->stash(question => $self->questions->add($question));
-
   $self->respond_to(
     json => {json => $self->stash('question')},
     any => sub { $self->redirect_to('/') },
   );
+  
 }
 
 sub update {
