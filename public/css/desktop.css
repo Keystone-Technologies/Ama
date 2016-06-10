@@ -350,7 +350,6 @@ body {
 
 .postTextContainer {
 	position: absolute;
-	overflow: auto;
 	width: 100%;
 	top: 0;
 	bottom: 75px;

@@ -319,7 +319,7 @@ function initializeLayout() {
         }
     }
     
-    window.setTimeout(resizePosts, 0.0000000000000000000000001);
+    window.setTimeout(resizePosts, 0.00000000001);
 }
 
 //intitializes layout of all comments of a specific question
@@ -654,7 +654,6 @@ function changeQuestions() {
         });
     }, 'json').done(function() {
     	initializeContent();
-        window.setTimeout(resizePosts, 0.0000001);
         
         var filter = "";
         
