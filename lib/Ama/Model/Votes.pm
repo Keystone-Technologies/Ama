@@ -7,7 +7,7 @@ has 'username';
 sub cast {
   my ($self, $entry_type, $entry_id, $vote) = @_;
   my $results = eval {
-    $self->_uncast($entry_type, $entry_id);
+    $self->uncast($entry_type, $entry_id);
     my $sql;
     if ( $entry_type eq 'questions' ) {
       $sql = 'insert into votes (entry_type, entry_id, vote, username) select ?, ?, ?, ? where not answered(?) and not flagged(?, ?) returning *, votes(?, ?) as votes';
@@ -21,7 +21,7 @@ sub cast {
   $@ ? {error => $@} : $results;
 }
 
-sub _uncast {
+sub uncast {
   my ($self, $entry_type, $entry_id) = @_;
   my $results = eval {
     my $sql = 'delete from votes where entry_type = ? and entry_id = ? and username = ? returning *, votes(?, ?) as votes';

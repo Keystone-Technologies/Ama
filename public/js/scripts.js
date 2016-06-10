@@ -454,6 +454,7 @@ function vote(id, dir) {
     var type = "questions";
     var identity = id;
     var opp = "down";
+    var post;
     if(opp == dir)
         opp = "up";
     if(id.toString().indexOf('_') != -1) {
@@ -462,18 +463,30 @@ function vote(id, dir) {
     }
     
     if(type == "questions") {
-        var question = getQuestionById(id);
-        question.setUsersVote(dir);
+        post = getQuestionById(id);
     }
     else {
-        var comment = getQuestionById(id.substring(0, id.indexOf('_'))).getCommentById(id);
-        comment.setUsersVote(dir);
+        post = getQuestionById(id.substring(0, id.indexOf('_'))).getCommentById(id);
     }
     
-    changeVoteImg(id, 'out', opp);
+    if(post.getUsersVote() == dir) {
+        $.ajax({
+            url: "/api/" + type + "/vote/" + identity,
+            type: 'delete',
+            dataType: 'json'
+        }).done(function(data) {
+            $("#voteContainer_" + id).html(data.votes);
+            post.setUsersVote('none');
+            changeVoteImg(id, 'out', dir);
+        });
+        return;
+    }
     
     $.post("/api/" + type + "/vote/" + identity + "/" + dir, function(data){
         $("#voteContainer_" + id).html(data.votes);
+        post.setUsersVote(dir);
+        changeVoteImg(id, 'out', opp);
+        changeVoteImg(id, 'out', dir);
     }, 'json');
 }
 

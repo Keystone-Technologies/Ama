@@ -9,4 +9,11 @@ sub cast {
   $self->render(json => $self->votes->cast($entry_type, $entry_id, $vote));
 }
 
+sub uncast {
+  my $self = shift;
+  my $entry_type = $self->param('entry_type');
+  my $entry_id = $self->param('entry_id');
+  $self->render(json => $self->votes->uncast($entry_type, $entry_id));
+}
+
 1;

@@ -79,6 +79,7 @@ sub startup {
   $api->delete('/answers/:question_id/:comment_id')->to('answers#unmark')->name('unmark_comment_as_answer');
 
   $api->post('/:entry_type/vote/:entry_id/:vote', [vote => [qw(up down)]])->to('votes#cast')->name('cast_vote');
+  $api->delete('/:entry_type/vote/:entry_id')->to('votes#uncast')->name('uncast_vote');
 
   $api->post('/:entry_type/flag/:entry_id')->to('flags#raise')->name('raise_flag');
   $api->delete('/:entry_type/flag/:entry_id')->to('flags#remove')->name('remove_flag');
