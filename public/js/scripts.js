@@ -165,18 +165,29 @@ function clearQuestions() {
 
 //shows/hides new question container
 function toggleQuestionForm() {
-	$(".newQuestionContainer").slideToggle("slow");
-	if($(".newQuestion").html() != "Cancel")
-		$(".newQuestion").html("Cancel");
+	$(".newQuestionContainer").slideToggle("slow", function() {
+	    if($(".newQuestion").html() == "Cancel") {
+	        $("#newQuestionTextarea").focus();
+	    }
+	});
+	
+	if($(".newQuestion").html() != "Cancel") {
+	  	$(".newQuestion").html("Cancel");
+	}
 	else {
-		$(".newQuestion").html("Ask A Question");
-		$("#newQuestionTextarea").val("");
+        $(".newQuestion").html("Ask A Question");
+	    $("#newQuestionTextarea").val("");
+	    $("#newQuestionTextarea").focusout();
 	}
 }
 
 //shows/hides reply form container
 function toggleReplyForm(id) {
-	$("#replyContainer_" + id).slideToggle("slow");
+	$("#replyContainer_" + id).slideToggle("slow", function(){
+	    if($("#replyButton_" + id).html() == "cancel") {
+	        $("#newPostTextArea_" + id).focus();
+	    }
+	});
 	if($("#replyButton_" + id).html() != "cancel")
 		$("#replyButton_" + id).html("cancel");
 	else {
