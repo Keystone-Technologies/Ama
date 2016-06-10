@@ -560,9 +560,11 @@ function sendReply(id) {
         //if the data sent back has a comment id, the reply was successfully sent
         if(data.comment_id)
         {
-            //to have a reply sent without the page reloading, insert code here
-            // and take our location.reload
-            location.reload();
+            toggleReplyForm(id);
+            if($("#showCommentsButton_" + id).html().indexOf("hide") != -1) {
+                toggleComments(id);
+            }
+            toggleComments(id);
         }
     });
 }
