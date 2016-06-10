@@ -16,6 +16,7 @@ sub add {
     my $tx = $self->pg->db->begin;
     my $sql = 'insert into comments (question_id, comment, username) select ?, ?, ? where not answered(?) returning *';
     my $results = $self->pg->db->query($sql, $question_id, $comment, $self->username, $question_id)->hash;
+    $self->votes->username($self->username);
     $self->votes->cast('comments', $results->{comment_id}, 'up');
     $tx->commit;
     $results;
