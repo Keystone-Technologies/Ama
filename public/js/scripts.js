@@ -575,8 +575,15 @@ function markAnswer(id) {
     // have a confirmation box pop up perhaps
     var question = getQuestionById(id.substring(0, id.indexOf('_')));
     var comment = question.getCommentById(id);
-    $.post("/api/answers/" + question.getId() + "/" + comment.getId().substring(comment.getId().indexOf('_') + 1));
-    location.reload();
+    $.post("/api/answers/" + question.getId() + "/" + comment.getId().substring(comment.getId().indexOf('_') + 1)).done(function(data) {
+        if(data.question_id) {
+            setFilter('creator', 'all');
+            setFilter('answered', '1');
+            setFilter('orderby', 'created');
+            setFilter('direction', 'desc');
+            changeQuestions();
+        }
+    });
 }
 
 function changeQuestions() {
