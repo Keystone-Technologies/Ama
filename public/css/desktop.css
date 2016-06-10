@@ -2,7 +2,7 @@ body {
 	margin:0;
 	padding:0px;
 	height:100%;
-	background-color: d6d6d6; /* For browsers that do not support gradients */
+	background-color: eeeeee; /* For browsers that do not support gradients */
 }
 
 * {
@@ -214,7 +214,6 @@ body {
 	max-width: 1200px;
 	min-width: 810px;
 	margin: auto;
-	background-color:d6d6d6;
 }
 
 .filterName {
@@ -228,7 +227,6 @@ body {
 	
 	display: inline-block;
 	font-size: 1.5em;
-	background-color: d6d6d6;
 }
 
 .sortMenuButtonContainer {
@@ -245,10 +243,6 @@ body {
 	min-width: 810px;
 	min-height: 10px;
 	margin: auto;
-	border: 3px solid;
-	border-color: d6d6d6;
-	border-top:none;
-	box-sizing:border-box;
 	background-color:white;
 	padding: 15px;
 }
