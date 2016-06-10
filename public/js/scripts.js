@@ -170,6 +170,7 @@ function toggleQuestionForm() {
 		$(".newQuestion").html("Cancel");
 	else {
 		$(".newQuestion").html("Ask A Question");
+		$("#newQuestionTextarea").val("");
 	}
 }
 
@@ -535,20 +536,46 @@ function sendFlagReport(id) {
             
         }
         else
-            console.log("Oh no an error!");
+            console.log("Oh no an error!"); //hah probably make this more specific
     });
 }
 
-//submits a reply to a specific page
+function submitQuestion() {
+    var text = $("#newQuestionTextarea").val();
+    text = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    
+    var question = {
+        question: text
+    };
+    
+    $.ajax({
+        url:"/questions",
+        type: "POST",
+        contentType:"application/x-www-form-urlencoded",
+        dataType: 'json',
+        data: question
+    }).done(function(data) {
+        if(data.question_id) {
+            toggleQuestionForm();
+            setFilter('creator', 'all');
+            setFilter('answered', '0');
+            setFilter('orderby', 'created');
+            setFilter('direction', 'desc');
+            changeQuestions();
+        }
+    });
+}
+
+//submits a reply to a specific question
 function sendReply(id) {
     var text = $("#newPostTextArea_" + id).val();
-    text = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    text = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     
     //reply data to be sent
     var reply = {
         question_id: id,
         comment: text
-    }
+    };
     
     $.ajax({
         url:"/questions/" + id + "/comment",

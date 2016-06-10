@@ -67,11 +67,9 @@ $(document).ready(function() {
 	</div>
 	
 	<div class="newQuestionContainer">
-		<form id='newquestionform' action='/questions' method='POST'>
-			<br><label for='question' class="newPostTitle">New Question</label><br>
-			<textarea placeholder= "Enter question here" class="newPostTextarea" name='question' required></textarea><br>
-			<input class='postButton' type='submit' value='Create'>
-		</form>
+		<br><label for='question' class="newPostTitle">New Question</label><br>
+		<textarea placeholder= "Enter question here" class="newPostTextarea" id="newQuestionTextarea" required></textarea><br>
+		<button class='postButton' onclick="submitQuestion()">Create </button>
 	</div>
 	
 	<div class="backgroundCover" onclick="closeSortMenu('cancel')">
@@ -211,8 +209,7 @@ $(document).ready(function() {
 		
 		<div class="replyContainer" id="replyContainer_ID">
             <label class='newPostTitle' for='comment'>Reply</label>
-            <br><textarea class = "newPostTextArea" id="newPostTextArea_ID" placeholder= "Enter reply here"></textarea>
-            <input type='hidden' name='question_id' value='ID'><br>
+            <br><textarea class = "newPostTextArea" id="newPostTextArea_ID" placeholder= "Enter reply here"></textarea><br>
             <button class="postButton" onclick="sendReply(ID)">Post</button>
 		</div>
 			
