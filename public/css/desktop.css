@@ -122,26 +122,122 @@ body {
 	height: 10px;
 }
 
-/*******filter container ******/
+.backgroundCover {
+	position:fixed;
+	background-color: white;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	z-index: 1;
+}
+
+/************************sort menu container ********************/
+
+.sortMenuContainer {
+	background-color:white;
+	position:fixed;
+	left:50%;
+	top:25%;
+	margin-left: -200px;
+	width:50%;
+	height:50%;
+	max-width:400px;
+	min-height: 300px;
+	max-height: 320px;
+	z-index:2;
+	border: 5px solid black;
+	box-sizing: border-box;
+}
+
+.sortMenuTitle {
+	position:relative;
+	top:3%;
+	text-align: center;
+	font-size: 2em;
+	font-weight: bold;
+}
+
+.sortMenuOptionsContainer {
+	position: relative;
+	display: flex;
+	align-items: center;
+	top: 3%;
+	height: 10%;
+	width: 100%;
+	border-bottom: 2px solid black;
+	cursor: pointer;
+}
+
+.sortMenuOption {
+	position:relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width:50%;
+	height: 100%;
+	font-size: 1em;
+	font-weight: bold;
+}
+
+.sortMenuOption:hover {
+	font-size:1.15em;
+}
+
+.sortMenuButton {
+	position: relative;
+	display:inline-block;
+	height: 10%;
+	top: 20px;
+	width: 50%;
+	cursor: pointer;
+}
+
+.sortMenuButton:hover {
+	color: 1f268b;
+}
+
+.sortMenuButtonText {
+	position:relative;
+	top: 50%;
+	width:100%;
+	transform: translateY(-50%);
+	display: inline-block;
+	text-align: center;
+	font-size: 2em;
+}
+
+/*****filter container *****/
 
 .filterContainer {
+	position:relative;
 	max-width: 1200px;
 	min-width: 810px;
 	margin: auto;
 	background-color:d6d6d6;
-	border: 3px solid;
-	border-color:d6d6d6;
-	border-bottom: none;
-	box-sizing: border-box;
 }
 
 .filterName {
+	-webkit-user-select: none; /* Chrome/Safari */        
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* IE10+ */
+
+	/* Rules below not implemented in browsers yet */
+	-o-user-select: none;
+	user-select: none;
+	
 	display: inline-block;
-	font-size: 1em;
-	font-weight: bold;
+	font-size: 1.5em;
 	background-color: d6d6d6;
-	padding: 10px;
-	cursor: pointer;
+}
+
+.sortMenuButtonContainer {
+	position: absolute;
+	display: inline-block;
+	right:2%;
+	top:0;
+	bottom:0;
+	height:100%;
 }
 
 .content {

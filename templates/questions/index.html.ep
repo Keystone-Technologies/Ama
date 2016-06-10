@@ -15,6 +15,21 @@ $(document).ready(function() {
     HTMLforComment = $(".singleComment").html();
     $(".singleComment").remove();
     
+    /*
+    //sets the cookies apprporiately
+    //  this is very hard coded in and would be difficult to make dynamic
+    //  to add more cookies in the future
+    if(!(cookies == "")) {
+    	var cookies = document.cookie;
+    	var result = cookies.split("=");
+    
+    	setFilter("creator", result[1].substring(0, result[1].indexOf(';')));
+    	setFilter("answered", result[2].substring(0, result[2].indexOf(';')));
+    	setFilter("orderby", result[3].substring(0, result[3].indexOf(';')));
+    	setFilter("direction", result[4]);
+    }
+    */
+    
     //hides all containers that are needed to be hidden
 	$(".newQuestionContainer").hide();
 	$(".singleComment").remove();
@@ -25,7 +40,6 @@ $(document).ready(function() {
     setCurrentUser("<%=session 'username'%>");
     
     //this is where it should set the last viewed options, something like that with cookies
-    console.log("change to cookie here");
     changeQuestions();
     
 });
@@ -60,7 +74,7 @@ $(document).ready(function() {
 		</form>
 	</div>
 	
-	<div class="backgroundCover">
+	<div class="backgroundCover" onclick="closeSortMenu('cancel')">
 	 
 	</div>
 	
@@ -106,12 +120,12 @@ $(document).ready(function() {
 		</div>
 		
 		<div class="sortMenuButton">
-			<div class="sortMenuButtonText" onclick="closeSortMenu()">
+			<div class="sortMenuButtonText" onclick="closeSortMenu('cancel')">
 				Cancel
 			</div>
 		</div><div class="sortMenuButton">
-			<div class="sortMenuButtonText" onclick="closeSortMenu();changeQuestions()">
-				OK
+			<div class="sortMenuButtonText" onclick="closeSortMenu('save');changeQuestions()">
+				Apply
 			</div>
 		</div>
 		

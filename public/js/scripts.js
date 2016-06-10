@@ -589,7 +589,7 @@ function changeQuestions() {
     
     $.get("/questions/" + answered + "/" + orderby + "/" + direction, function(data){
         $.each(data, function(i, v){
-        	var question = new Question(v.question_id, v.question, v.votes, v.creator, v.created, v.comment_count, v.flagged, v.answered, v.my_vote);
+        	var question = new Question(v.question_id, v.question, v.votes, v.username, v.created, v.comment_count, v.flagged, v.answered, v.my_vote);
         	addQuestion(question);
         });
     }, 'json').done(function() {
@@ -677,9 +677,20 @@ function showSortMenu() {
     $(".sortMenuContainer").fadeTo(400, 1, setFilterButtonColors());
 }
 
-function closeSortMenu() {
+function closeSortMenu(type) {
     $(".sortMenuContainer").fadeTo(400, 0, function() {$(".sortMenuContainer").hide()} );
     $(".backgroundCover").fadeTo(400, 0, function() {$(".backgroundCover").hide()});
+    
+    /*
+    if (type == "save") {
+        document.cookie = "creator=" + getFilter('creator') + "; expires=Thu, 18 Dec 2050 12:00:00 UTC";
+        document.cookie = "answered=" + getFilter('answered') + "; expires=Thu, 18 Dec 2050 12:00:00 UTC";
+        document.cookie = "orderby=" + getFilter('orderby') + "; expires=Thu, 18 Dec 2050 12:00:00 UTC";
+        document.cookie = "direction=" + getFilter('direction') + "; expires=Thu, 18 Dec 2050 12:00:00 UTC";
+    } else {
+        //reload the cookies? maybe someday
+    }
+    */
 }
 
 function changeFilter(type, value) {
