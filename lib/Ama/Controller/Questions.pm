@@ -31,10 +31,11 @@ sub index {
 
 sub get {
   my $self = shift;
+  my $creator = $self->param('creator');
   my $answered = $self->param('answered');
   my $orderby = $self->param('orderby');
   my $direction = $self->param('direction');
-  $self->stash(questions => $self->questions->getQuestions($answered, $orderby, $direction));
+  $self->stash(questions => $self->questions->getQuestions($creator, $answered, $orderby, $direction));
   $self->respond_to(
     json=> {json => $self->stash('questions')},
     any => {},

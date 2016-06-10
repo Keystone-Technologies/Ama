@@ -67,7 +67,7 @@ sub all {
 ], $self->username)->hashes->to_array }
 
 sub getQuestions {
-  my ($self, $answered, $orderby, $direction) = @_;
+  my ($self, $creator, $answered, $orderby, $direction) = @_;
   my $sql = 
   'select '.
     'question_id, '.
@@ -81,8 +81,13 @@ sub getQuestions {
     'commentcount(question_id)::int as comment_count '.
   'from '.
     'questions '.
-  'where '.
-    'answered(question_id)::int = ? '.
+  'where ';
+  
+  if($creator eq 'my') {
+    $sql = $sql . 'username::int = ' . $self->username . ' and ';
+  }
+  
+  $sql = $sql .  'answered(question_id)::int = ? '.
   'order by ' . $orderby . ' ' . $direction . ' ' .
   'limit 50; ';
   

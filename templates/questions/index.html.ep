@@ -136,7 +136,7 @@ $(document).ready(function() {
 			<img class="containedImg" src="/img/menubutton.png" alt="menu" onclick="showSortMenu()">
 		</div>
 		<div class="filterName">
-			unansweredadd change filter functions
+			filter
 		</div>
 	</div>
 	
