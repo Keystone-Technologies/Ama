@@ -247,6 +247,18 @@ body {
 	padding: 15px;
 }
 
+.showMoreButton {
+	padding: 20px;
+	text-align: center;
+	font-size: 1.5em;
+	color:00004c;
+	cursor:pointer;
+}
+
+.showMoreButton:hover {
+	font-size: 1.6em;
+}
+
 /*question container contains info for a quesiton*/
 
 .postContainer {

@@ -113,6 +113,7 @@ filters["creator"] = "all";
 filters["answered"] = 0;
 filters["orderby"] = "votes";
 filters["direction"] = "desc";
+filters["limit"] = 25;
 
 function getFilter(type) {
     return filters[type];
@@ -654,10 +655,11 @@ function changeQuestions() {
     var answered = filters["answered"];
     var orderby = filters["orderby"];
     var direction = filters["direction"];
+    var limit = filters["limit"];
     
     clearQuestions();
     
-    $.get("/questions/" + creator + "/" + answered + "/" + orderby + "/" + direction, function(data){
+    $.get("/questions/" + creator + "/" + answered + "/" + orderby + "/" + direction + "/" + limit, function(data){
         $.each(data, function(i, v){
         	var question = new Question(v.question_id, v.question.replace(/\n/g, '</br>'), v.votes, v.username, v.created, v.comment_count, v.flagged, v.answered, v.my_vote);
         	addQuestion(question);
@@ -750,6 +752,9 @@ function closeSortMenu(type) {
     $(".sortMenuContainer").fadeTo(400, 0, function() {$(".sortMenuContainer").hide()} );
     $(".backgroundCover").fadeTo(400, 0, function() {$(".backgroundCover").hide()});
     
+    if(type == "save")
+        setFilter("limit", 25);
+    
     /*
     if (type == "save") {
         document.cookie = "creator=" + getFilter('creator') + "; expires=Thu, 18 Dec 2050 12:00:00 UTC";
@@ -773,4 +778,9 @@ function setFilterButtonColors() {
     $("#creator_" + getFilter('creator')).css("color", "1f268b");
     $("#answered_" + getFilter('answered')).css("color", "1f268b");
     $("#" + getFilter('orderby') + "_" +  getFilter('direction')).css("color", "1f268b");
+}
+
+function showMore() {
+    setFilter('limit', getFilter('limit') + 25);
+    changeQuestions();
 }

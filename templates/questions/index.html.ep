@@ -146,6 +146,10 @@ $(document).ready(function() {
 		
 	</div>
 	
+	<div class="showMoreButton" onclick="showMore()">
+		show more
+	</div>
+	
 	<div class="singlePost">
 		<div class= "postContainer" id="postContainer_ID">
 			<div class="voteInfoContainer" id="voteInfoContainer_ID">
