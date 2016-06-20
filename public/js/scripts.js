@@ -104,6 +104,7 @@ var questionCount = 0;
 var current_user = "007";
 var HTMLforPost = "uninitialized";
 var HTMLforComment = "uninitialized";
+var defaultPostSize = 0;
 
 //filter settings
 var filters = [];
@@ -362,14 +363,29 @@ function initializeCommentLayout(id) {
 function resizePosts() {
     for(var i = 0; i < getQuestionCount(); i ++) {
         var question = getQuestion(i);
+        
+        if(defaultPostSize == 0) {
+            defaultPostSize = parseInt($("#postContainer_" + question.getId()).css('height'));
+        }
+        
         var str = $("#textContainer_" + question.getId()).css('height');
         var num = parseInt(str);
         var contHeight = parseInt($("#postTextContainer_" + question.getId()).css('height'));
+        /*
         if(num > contHeight) {
             num = num + 110;
             num += "px";
             $("#postContainer_" + question.getId()).css('min-height', num);
         }
+        */
+        num = num + 110;
+        
+        if(num < defaultPostSize) {
+            num = defaultPostSize;
+        }
+        
+        num += "px";
+        $("#postContainer_" + question.getId()).css('min-height', num);
     }
 }
 

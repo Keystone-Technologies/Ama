@@ -42,6 +42,10 @@ $(document).ready(function() {
     //this is where it should set the last viewed options, something like that with cookies
     changeQuestions();
     
+    $(window).resize(function() {
+    	resizePosts();
+    });
+    
 });
 </script>
 
