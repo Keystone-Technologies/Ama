@@ -408,7 +408,7 @@ function deletePost(id) {
             if (data.question_id || data.comment_id){
                 if(type == "questions") {
                     $("#postContainer_" + id).remove();
-                    $("#commentContainer_" + id).remove();
+                    $("#commentsContainer_" + id).remove();
                     $("#replyContainer_" + id).remove();
                 }
                 else {
