@@ -317,6 +317,7 @@ function initializeLayout() {
             $("#buttonContainer_" + question.getId()).remove();
             $("#postTextAndInfoContainer_" + question.getId()).css('width', '90%');
             $("#postTextAndInfoContainer_" + question.getId()).css('left', '10%');
+            $("#timeAskedContainer_" + question.getId()).html("Answered on " + question.getTimeCreated());
         }
     }
     
@@ -371,13 +372,6 @@ function resizePosts() {
         var str = $("#textContainer_" + question.getId()).css('height');
         var num = parseInt(str);
         var contHeight = parseInt($("#postTextContainer_" + question.getId()).css('height'));
-        /*
-        if(num > contHeight) {
-            num = num + 110;
-            num += "px";
-            $("#postContainer_" + question.getId()).css('min-height', num);
-        }
-        */
         num = num + 110;
         
         if(num < defaultPostSize) {

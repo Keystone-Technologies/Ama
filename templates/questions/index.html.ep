@@ -204,7 +204,7 @@ $(document).ready(function() {
 					<div class="postActionContainer" id="replyButton_ID" onclick="toggleReplyForm(ID)">
 						reply
 					</div>
-					<div class="timeAskedContainer">
+					<div class="timeAskedContainer" id="timeAskedContainer_ID">
 						TIMEASKED
 					</div>
 				</div>
