@@ -270,6 +270,7 @@ body {
 	left: 0%;
 	max-height: 275px;
 	width: 5%;
+	min-width: 60px;
 }
 
 .containedImg {
