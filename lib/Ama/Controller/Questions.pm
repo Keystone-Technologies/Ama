@@ -29,7 +29,7 @@ sub index {
   );
 }
 
-sub get {
+sub getQuestions {
   my $self = shift;
   my $creator = $self->param('creator');
   my $answered = $self->param('answered');
