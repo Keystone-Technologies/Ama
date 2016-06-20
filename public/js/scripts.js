@@ -105,6 +105,7 @@ var current_user = "007";
 var HTMLforPost = "uninitialized";
 var HTMLforComment = "uninitialized";
 var defaultPostSize = 0;
+var defaultLimit = 15;
 
 //filter settings
 var filters = [];
@@ -113,7 +114,7 @@ filters["creator"] = "all";
 filters["answered"] = 0;
 filters["orderby"] = "votes";
 filters["direction"] = "desc";
-filters["limit"] = 25;
+filters["limit"] = defaultLimit;
 
 function getFilter(type) {
     return filters[type];
@@ -753,7 +754,7 @@ function closeSortMenu(type) {
     $(".backgroundCover").fadeTo(400, 0, function() {$(".backgroundCover").hide()});
     
     if(type == "save")
-        setFilter("limit", 25);
+        setFilter("limit", defaultLimit);
     
     /*
     if (type == "save") {
@@ -781,6 +782,6 @@ function setFilterButtonColors() {
 }
 
 function showMore() {
-    setFilter('limit', getFilter('limit') + 25);
+    setFilter('limit', getFilter('limit') + defaultLimit);
     changeQuestions();
 }

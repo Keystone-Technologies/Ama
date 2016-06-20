@@ -46,6 +46,12 @@ $(document).ready(function() {
     	resizePosts();
     });
     
+    $(window).scroll(function() {
+		if($(window).scrollTop() + $(window).height() == $(document).height()) {
+    	showMore();
+	}
+});
+    
 });
 </script>
 
