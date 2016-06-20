@@ -1,12 +1,23 @@
 <html>
 <head>
+
+	
+	<meta name="google-signin-client_id" content="156728782684-3v8c4suoku9kqcqoe0ghoouahuukqv1m.apps.googleusercontent.com">
+	<script src="https://apis.google.com/js/api.js"></script>
+	<script src="https://apis.google.com/js/platform.js" async defer></script>
+	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 	<script src="/js/scripts.js"></script>
+	
 	<link rel="stylesheet" media="screen and (max-device-width: 800px)" href="/css/style.css">
 	<link rel="stylesheet" media="screen and (min-device-width: 800px)" href="/css/desktop.css">
 </head>
 <title>Ask Me Anything</title>
-
+<script>
+gapi.load('auth2', function() {
+		gapi.auth2.init();
+	});
+</script>
 <script>
 $(document).ready(function() {
 	//extracts html from page and stores it in global variables
@@ -45,6 +56,8 @@ $(document).ready(function() {
 });
 </script>
 
+
+
 <body>
 	<div class="header">
 		<div class="logoContainer"> 
@@ -53,11 +66,13 @@ $(document).ready(function() {
 		<div class="version">
 			v<%=$self->version%>
 		</div>
+
 		<div class="youtube">
 			<a href="https://www.youtube.com/channel/UCwSuyK7EsrNN02Z92bI34gA/feed" target="_blank">
 				<img class="youtubeImg" src="/img/youtubehover.png" alt="YOUTUBE">
 			</a>
 		</div>
+		
 	</div>
 	
 	<div class="padding"></div>
@@ -71,7 +86,7 @@ $(document).ready(function() {
 		<textarea placeholder= "Enter question here" class="newPostTextarea" id="newQuestionTextarea" required></textarea><br>
 		<button class='postButton' onclick="submitQuestion()">Create </button>
 	</div>
-	
+
 	<div class="backgroundCover" onclick="closeSortMenu('cancel')">
 	 
 	</div>
@@ -141,6 +156,12 @@ $(document).ready(function() {
 	<div class="content">
 		
 	</div>
+	
+	 % if ($c->session('id')){
+		<a href="/logout" > Logout , <%= $user->{first_name}%> </a>
+	% } else {
+	<a href="/login" > Login  </a>
+	% }
 	
 	<div class="singlePost">
 		<div class= "postContainer" id="postContainer_ID">
