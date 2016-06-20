@@ -659,7 +659,7 @@ function changeQuestions() {
     
     $.get("/questions/" + creator + "/" + answered + "/" + orderby + "/" + direction, function(data){
         $.each(data, function(i, v){
-        	var question = new Question(v.question_id, v.question, v.votes, v.username, v.created, v.comment_count, v.flagged, v.answered, v.my_vote);
+        	var question = new Question(v.question_id, v.question.replace(/\n/g, '</br>'), v.votes, v.username, v.created, v.comment_count, v.flagged, v.answered, v.my_vote);
         	addQuestion(question);
         });
     }, 'json').done(function() {
