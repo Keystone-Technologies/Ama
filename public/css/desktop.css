@@ -432,6 +432,7 @@ body {
 	width: 5%;
 	height: 100%;
 	max-height: 100px;
+	min-width: 53px;
 }
 
 .commentUpVoteContainer {
