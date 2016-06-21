@@ -35,10 +35,6 @@ $(document).ready(function() {
     });
     
     $(window).scroll(function() {
-		if($(window).scrollTop() + $(window).height() == $(document).height()) {
-    		showMore();
-		}
-		
 		if(deviceType == "mobile") {
 			if($(window).scrollTop() > 500 && $(".newQuestionContainer").css('display') != 'none') {
 				$(".padding").css('height','200px');
@@ -243,10 +239,6 @@ $(document).ready(function() {
 	</div>
 	
 	<div class="singleComment">
-		<div class="commentPadding" id="commentPadding_ID">
-			word
-		</div>
-			
 		<div class="commentContainer" id="commentContainer_ID">
 			<div class="commentVoteInfoContainer" id="voteInfoContainer_ID">
 				<div class="commentUpvoteContainer">

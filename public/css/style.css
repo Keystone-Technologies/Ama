@@ -454,17 +454,11 @@ body {
 	width:100%;
 }
 
-.commentPadding {
-	position: relative;
-	float:left;
-	width:10%;
-}
-
 .commentContainer {
 	position:relative;
-	float:left;
+	left: 10%;
 	height: 150px;
-	width:88%;
+	width:90%;
 	border-bottom: 1px solid black;
 	border-left: 1px solid black;
 	box-sizing:border-box;
