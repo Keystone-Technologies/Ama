@@ -280,7 +280,7 @@ body {
 .content {
 	max-width: 1200px;
 	min-width: 810px;
-	min-height: 10px;
+	height: auto;
 	margin: auto;
 	background-color:white;
 	padding: 15px;
@@ -454,20 +454,14 @@ body {
 
 .commentsContainer {
 	width:100%;
-	overflow:visible;
-}
-
-.commentPadding {
-	position:relative;
-	float:left;
-	width:10%;
+	height: auto;
 }
 
 .commentContainer {
 	position:relative;
-	float:left;
 	height: 100px;
-	width:88%;
+	left:10%;
+	width:90%;
 	border-bottom: 1px solid;
 	border-bottom-color: 747474;
 	border-left: 1px solid;
