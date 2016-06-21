@@ -105,6 +105,7 @@ var current_user = "007";
 var HTMLforPost = "uninitialized";
 var HTMLforComment = "uninitialized";
 var defaultPostSize = 0;
+var deviceType = "mobile";
 var defaultLimit = 15;
 var openMenu = "none";
 
@@ -372,6 +373,8 @@ function resizePosts() {
         
         if(defaultPostSize == 0) {
             defaultPostSize = parseInt($("#postContainer_" + question.getId()).css('height'));
+            if(defaultPostSize < 275)
+                deviceType = "desktop";
         }
         
         var str = $("#textContainer_" + question.getId()).css('height');
@@ -696,10 +699,16 @@ function changeQuestions() {
         }
         
         if(keyword != 'none') {
-            filter += "</br>search: " + keyword;
+            if(deviceType == "desktop")
+                filter += " | ";
+            else
+                filter += "</br>";
+            filter += "search: " + keyword;
         }
         
-        $(".filterName").html(filter)
+        $(".filterName").html(filter);
+        console.log("Set content to display no results here is question count is 0");
+        console.log("Also add a clear search button");
     });
 }
 
@@ -795,9 +804,11 @@ function showMore() {
 function toggleSearchBar() {
     if(openMenu != "search") {
         openMenu = "search";
-        $(".backgroundCover").fadeTo(1, 0);
-        $(".backgroundCover").show();
-        $(".backgroundCover").fadeTo(400, 0.65);
+        if(deviceType == "mobile") {
+            $(".backgroundCover").fadeTo(1, 0);
+            $(".backgroundCover").show();
+            $(".backgroundCover").fadeTo(400, 0.65);   
+        }
     }
         
     else {
@@ -815,5 +826,6 @@ function search() {
     if(keyword == "")
         keyword = "none";
     setFilter('keyword', keyword);
+    setFilter('limit', defaultLimit);
     changeQuestions();
 }
