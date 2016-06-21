@@ -115,6 +115,7 @@ filters["creator"] = "all";
 filters["answered"] = 0;
 filters["orderby"] = "votes";
 filters["direction"] = "desc";
+filters["keyword"] = "none";
 filters["limit"] = defaultLimit;
 
 function getFilter(type) {
@@ -659,10 +660,11 @@ function changeQuestions() {
     var orderby = filters["orderby"];
     var direction = filters["direction"];
     var limit = filters["limit"];
+    var keyword = filters["keyword"];
     
     clearQuestions();
     
-    $.get("/questions/" + creator + "/" + answered + "/" + orderby + "/" + direction + "/" + limit, function(data){
+    $.get("/questions/" + creator + "/" + answered + "/" + orderby + "/" + direction + "/" + limit + "/" + keyword, function(data){
         $.each(data, function(i, v){
         	var question = new Question(v.question_id, v.question.replace(/\n/g, '</br>'), v.votes, v.username, v.created, v.comment_count, v.flagged, v.answered, v.my_vote);
         	addQuestion(question);
@@ -691,6 +693,10 @@ function changeQuestions() {
                 filter += "oldest";
             else 
                 filter += "newest";
+        }
+        
+        if(keyword != 'none') {
+            filter += "</br>search: " + keyword;
         }
         
         $(".filterName").html(filter)
@@ -794,8 +800,20 @@ function toggleSearchBar() {
         $(".backgroundCover").fadeTo(400, 0.65);
     }
         
-    else
+    else {
         openMenu = "none";
+        setFilter('keyword', 'none');
+    }
         
     $(".searchBar").slideToggle('fast', function() {$("#searchTextarea").focus();});
+}
+
+function search() {
+    closeMenu();
+    var keyword = $(".searchTextarea").val();
+    keyword = keyword.trim();
+    if(keyword == "")
+        keyword = "none";
+    setFilter('keyword', keyword);
+    changeQuestions();
 }
