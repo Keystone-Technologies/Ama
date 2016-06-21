@@ -320,6 +320,7 @@ function initializeLayout() {
             $("#postTextAndInfoContainer_" + question.getId()).css('width', '90%');
             $("#postTextAndInfoContainer_" + question.getId()).css('left', '10%');
             $("#timeAskedContainer_" + question.getId()).html("Answered on " + question.getTimeCreated());
+            $("#timeAskedContainer_" + question.getId()).css('width', '65%');
         }
     }
     
