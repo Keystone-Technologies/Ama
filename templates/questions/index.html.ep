@@ -36,6 +36,19 @@ $(document).ready(function() {
 		if($(window).scrollTop() + $(window).height() == $(document).height()) {
     		showMore();
 		}
+		
+		if($(window).scrollTop() > 500 && $(".newQuestionContainer").css('display') != 'none') {
+			$(".padding").css('height','200px');
+			$(".filterContainer").css({"position":"fixed", "top":"100"});
+		}
+		else if($(window).scrollTop() > 100 && $(".newQuestionContainer").css('display') == 'none') {
+			$(".padding").css('height','200px');
+			$(".filterContainer").css({"position":"fixed", "top":"100"});
+		}
+		else {
+			$(".padding").css('height','100px');
+			$(".filterContainer").css({"position":"relative", "top":"0"});
+		}
 	});
     
 });
