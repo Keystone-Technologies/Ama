@@ -106,6 +106,7 @@ var HTMLforPost = "uninitialized";
 var HTMLforComment = "uninitialized";
 var defaultPostSize = 0;
 var defaultLimit = 15;
+var openMenu = "none";
 
 //filter settings
 var filters = [];
@@ -742,6 +743,7 @@ function toggleComments(id) {
 }
 
 function showSortMenu() {
+    openMenu = "sort";
     $(".backgroundCover").fadeTo(1, 0);
     $(".sortMenuContainer").fadeTo(1, 0);
     $(".backgroundCover").show();
@@ -750,23 +752,20 @@ function showSortMenu() {
     $(".sortMenuContainer").fadeTo(400, 1, setFilterButtonColors());
 }
 
-function closeSortMenu(type) {
-    $(".sortMenuContainer").fadeTo(400, 0, function() {$(".sortMenuContainer").hide()} );
-    $(".backgroundCover").fadeTo(400, 0, function() {$(".backgroundCover").hide()});
+function closeMenu(type) {
+    if(openMenu == "sort") {
+        $(".sortMenuContainer").fadeTo(400, 0, function() {$(".sortMenuContainer").hide()} );
     
-    if(type == "save")
-        setFilter("limit", defaultLimit);
-    
-    /*
-    if (type == "save") {
-        document.cookie = "creator=" + getFilter('creator') + "; expires=Thu, 18 Dec 2050 12:00:00 UTC";
-        document.cookie = "answered=" + getFilter('answered') + "; expires=Thu, 18 Dec 2050 12:00:00 UTC";
-        document.cookie = "orderby=" + getFilter('orderby') + "; expires=Thu, 18 Dec 2050 12:00:00 UTC";
-        document.cookie = "direction=" + getFilter('direction') + "; expires=Thu, 18 Dec 2050 12:00:00 UTC";
-    } else {
-        //reload the cookies? maybe someday
+        if(type == "save")
+            setFilter("limit", defaultLimit);
+            
+        openMenu = "none";
     }
-    */
+    
+    if(openMenu == "search")
+        toggleSearchBar();
+        
+    $(".backgroundCover").fadeTo(400, 0, function() {$(".backgroundCover").hide()});
 }
 
 function changeFilter(type, value) {
@@ -785,4 +784,18 @@ function setFilterButtonColors() {
 function showMore() {
     setFilter('limit', getFilter('limit') + defaultLimit);
     changeQuestions();
+}
+
+function toggleSearchBar() {
+    if(openMenu != "search") {
+        openMenu = "search";
+        $(".backgroundCover").fadeTo(1, 0);
+        $(".backgroundCover").show();
+        $(".backgroundCover").fadeTo(400, 0.65);
+    }
+        
+    else
+        openMenu = "none";
+        
+    $(".searchBar").slideToggle('fast', function() {$("#searchTextarea").focus();});
 }
