@@ -216,6 +216,13 @@ body {
 	cursor: pointer;
 }
 
+.clearButton {
+	display: inline-block;
+	text-decoration: underline;
+	font-size:1.1em;
+	border-radius:15px;
+}
+
 .sortMenuButtonContainer {
 	position: absolute;
 	display: inline-block;

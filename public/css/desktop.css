@@ -217,16 +217,15 @@ body {
 }
 
 .filterName {
-	-webkit-user-select: none; /* Chrome/Safari */        
-	-moz-user-select: none; /* Firefox */
-	-ms-user-select: none; /* IE10+ */
-
-	/* Rules below not implemented in browsers yet */
-	-o-user-select: none;
-	user-select: none;
-	
 	display: inline-block;
 	font-size: 1.5em;
+}
+
+.clearButton {
+	display: inline-block;
+	text-decoration: underline;
+	border-radius:15px;
+	cursor: pointer;
 }
 
 .sortMenuButtonContainer {

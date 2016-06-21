@@ -704,11 +704,10 @@ function changeQuestions() {
             else
                 filter += "</br>";
             filter += "search: " + keyword;
+            filter += " <div class='clearButton' onclick='setFilter(\"keyword\", \"none\");changeQuestions()'>clear</div>";
         }
         
         $(".filterName").html(filter);
-        console.log("Set content to display no results here is question count is 0");
-        console.log("Also add a clear search button");
     });
 }
 
@@ -813,14 +812,13 @@ function toggleSearchBar() {
         
     else {
         openMenu = "none";
-        setFilter('keyword', 'none');
+        $(".searchTextarea").val('');
     }
         
     $(".searchBar").slideToggle('fast', function() {$("#searchTextarea").focus();});
 }
 
 function search() {
-    closeMenu();
     var keyword = $(".searchTextarea").val();
     keyword = keyword.trim();
     if(keyword == "")
@@ -828,4 +826,5 @@ function search() {
     setFilter('keyword', keyword);
     setFilter('limit', defaultLimit);
     changeQuestions();
+    closeMenu();
 }
