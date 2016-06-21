@@ -15,32 +15,46 @@ $(document).ready(function() {
     HTMLforComment = $(".singleComment").html();
     $(".singleComment").remove();
     
-    /*
-    //sets the cookies apprporiately
-    //  this is very hard coded in and would be difficult to make dynamic
-    //  to add more cookies in the future
-    if(!(cookies == "")) {
-    	var cookies = document.cookie;
-    	var result = cookies.split("=");
-    
-    	setFilter("creator", result[1].substring(0, result[1].indexOf(';')));
-    	setFilter("answered", result[2].substring(0, result[2].indexOf(';')));
-    	setFilter("orderby", result[3].substring(0, result[3].indexOf(';')));
-    	setFilter("direction", result[4]);
-    }
-    */
-    
     //hides all containers that are needed to be hidden
 	$(".newQuestionContainer").hide();
 	$(".singleComment").remove();
 	$(".singlePost").remove();
 	$(".sortMenuContainer").hide();
 	$(".backgroundCover").hide();
+	$(".searchBar").hide();
+	
+	console.log("Set content to display no results here is question count is 0");
 	
     setCurrentUser("<%=session 'username'%>");
     
     //this is where it should set the last viewed options, something like that with cookies
     changeQuestions();
+    
+    $(window).resize(function() {
+    	resizePosts();
+    });
+    
+    $(window).scroll(function() {
+    
+		//if($(window).scrollTop() + $(window).height() == $(document).height()) {
+    	//	showMore();
+		//}
+		
+		if(deviceType == "mobile") {
+			if($(window).scrollTop() > 500 && $(".newQuestionContainer").css('display') != 'none') {
+				$(".padding").css('height','200px');
+				$(".filterContainer").css({"position":"fixed", "top":"100"});
+			}
+			else if($(window).scrollTop() > 100 && $(".newQuestionContainer").css('display') == 'none') {
+				$(".padding").css('height','200px');
+				$(".filterContainer").css({"position":"fixed", "top":"100"});
+			}
+			else {
+				$(".padding").css('height','100px');
+				$(".filterContainer").css({"position":"relative", "top":"0"});
+			}
+		}
+	});
     
 });
 </script>
@@ -72,7 +86,7 @@ $(document).ready(function() {
 		<button class='postButton' onclick="submitQuestion()">Create </button>
 	</div>
 	
-	<div class="backgroundCover" onclick="closeSortMenu('cancel')">
+	<div class="backgroundCover" onclick="closeMenu('none')">
 	 
 	</div>
 	
@@ -118,11 +132,11 @@ $(document).ready(function() {
 		</div>
 		
 		<div class="sortMenuButton">
-			<div class="sortMenuButtonText" onclick="closeSortMenu('cancel')">
+			<div class="sortMenuButtonText" onclick="closeMenu('cancel')">
 				Cancel
 			</div>
 		</div><div class="sortMenuButton">
-			<div class="sortMenuButtonText" onclick="closeSortMenu('save');changeQuestions()">
+			<div class="sortMenuButtonText" onclick="closeMenu('save');changeQuestions()">
 				Apply
 			</div>
 		</div>
@@ -136,10 +150,22 @@ $(document).ready(function() {
 		<div class="filterName">
 			filter
 		</div>
+		<div class="searchButtonContainer">
+			<img class="containedImg" src="/img/searchbutton.png" alt="search" onclick="toggleSearchBar()">
+		</div>
+	</div>
+	
+	<div class="searchBar">
+		<textarea rows="1" placeholder="search" class="searchTextArea" id="searchTextarea" required></textarea>
+		<button class="searchButton" onclick="search()">search</button>
 	</div>
 	
 	<div class="content">
 		
+	</div>
+	
+	<div class="showMoreButton" onclick="showMore()">
+		show more
 	</div>
 	
 	<div class="singlePost">
@@ -200,7 +226,7 @@ $(document).ready(function() {
 					<div class="postActionContainer" id="replyButton_ID" onclick="toggleReplyForm(ID)">
 						reply
 					</div>
-					<div class="timeAskedContainer">
+					<div class="timeAskedContainer" id="timeAskedContainer_ID">
 						TIMEASKED
 					</div>
 				</div>
@@ -218,10 +244,6 @@ $(document).ready(function() {
 	</div>
 	
 	<div class="singleComment">
-		<div class="commentPadding" id="commentPadding_ID">
-			word
-		</div>
-			
 		<div class="commentContainer" id="commentContainer_ID">
 			<div class="commentVoteInfoContainer" id="voteInfoContainer_ID">
 				<div class="commentUpvoteContainer">
