@@ -75,6 +75,26 @@ body {
 .newQuestion:hover {
 	background-color:00CC00;
 }
+.feedback {
+	position:fixed;
+	right:0px;
+	width:300px;
+	height:40px;
+	top: 0px;
+	text-align: center;
+	font-size: 1.5em;
+	font-weight: bold;
+	background-color:green;
+	cursor: pointer;
+	border: 3px solid black;
+	border-radius: 10px;
+	box-sizing: border-box;
+	z-index: 1;
+}
+.feedback:hover {
+	background-color:00CC00;
+}
+
 
 /*container that pops up when you push button to make new question */
 
@@ -85,7 +105,14 @@ body {
 	z-index: 1;
 	background-color: white;
 }
-
+.feedbackContainer {
+	position: fixed;
+	right:0px;
+	width: 300px;
+	top: 40px;
+	z-index: 1;
+	background-color: white;
+}
 .newPostTitle {
 	display:block;
 	text-align: center;
@@ -93,6 +120,13 @@ body {
 }
 
 .newPostTextarea {
+	display:block;
+	font-size: 1em;
+	margin:auto;
+	width: 75%;
+	height: 200px;
+}
+.feedbackTextarea {
 	display:block;
 	font-size: 1em;
 	margin:auto;

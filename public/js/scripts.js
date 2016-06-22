@@ -180,7 +180,24 @@ function toggleQuestionForm() {
 	    $("#newQuestionTextarea").focusout();
 	}
 }
-
+//shows/hides feedback container
+function togglefeedbackForm() {
+	$(".feedbackContainer").slideToggle("slow", function() {
+	    if($(".feedback").html() == "Cancel") {
+	        $("#feedbackTextarea").focus();
+	    }
+	});
+	
+	if($(".feedback").html() != "Cancel") {
+	  	$(".feedback").html("Cancel");
+	}
+	else {
+        $(".feedback").html("Leave Your Feedback");
+	    $("#feedbackTextarea").val("");
+	    $("#feedbackTextarea").focusout();
+	}
+}
+//
 //shows/hides reply form container
 function toggleReplyForm(id) {
 	$("#replyContainer_" + id).slideToggle("slow", function(){
@@ -591,6 +608,13 @@ function submitQuestion() {
 }
 
 //submits a reply to a specific question
+//function submitfeedback(){
+        //var email = ("ajin@keystone_it.com");
+        //var subject = ('Feedback for AMA');
+        //var body = ('feedbackTextarea');
+        //$(".feedbackContainer").html('<a href="mailto:' + email + '?subject=' +subject+ '&body=' +body+ '">text</a>');
+//}
+//submits a feedback
 function sendReply(id) {
     var text = $("#newPostTextArea_" + id).val();
     text = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');

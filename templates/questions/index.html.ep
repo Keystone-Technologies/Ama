@@ -40,6 +40,7 @@ $(document).ready(function() {
     
     //hides all containers that are needed to be hidden
 	$(".newQuestionContainer").hide();
+	$(".feedbackContainer").hide();
 	$(".singleComment").remove();
 	$(".singlePost").remove();
 	$(".sortMenuContainer").hide();
@@ -80,6 +81,15 @@ $(document).ready(function() {
 		<button class='postButton' onclick="submitQuestion()">Create </button>
 	</div>
 	
+	<div class="feedback" onclick="javascript:togglefeedbackForm();">
+		leave Your Feedback
+	</div>
+	
+	<div class="feedbackContainer">
+		<br><label for='feedback' class="newPostTitle">What could we do to make our AMA better?</label><br>
+		<textarea placeholder= "We appreciate your feedback" class="feedbackTextarea" id="feedbackTextarea" required></textarea><br>
+		<button class='postButton' onclick="feedback.cgi">Submit </button>
+	</div>
 	<div class="backgroundCover" onclick="closeSortMenu('cancel')">
 	 
 	</div>
@@ -238,7 +248,8 @@ $(document).ready(function() {
 					id="upvote_ID"
 					onmouseenter="changeVoteImg('ID', 'in', 'up')"
 					onmouseleave="changeVoteImg('ID', 'out', 'up')"
-					onclick="vote('ID', 'up')">
+					onclick="vote(
+					'ID', 'up')">
 				</div>
 				<div class="commentVoteContainer" id="voteContainer_ID">
 					VOTES
