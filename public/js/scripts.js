@@ -431,9 +431,17 @@ function deletePost(id) {
         if (data) {
             if (data.question_id || data.comment_id){
                 if(type == "questions") {
-                    $("#postContainer_" + id).remove();
-                    $("#commentsContainer_" + id).remove();
-                    $("#replyContainer_" + id).remove();
+                    $("#postContainer_" + id).css('height', $("#postContainer_" + id).css('min-height'));
+                    $("#postContainer_" + id).css('min-height', '0px');
+                    $("#postContainer_" + id).hide(2000, function() {
+                        $("#postContainer_" + id).remove();
+                    });
+                    $("#commentsContainer_" + id).hide(2000, function() {
+                        $("#commentsContainer_" + id).remove();
+                    })
+                    $("#replyContainer_" + id).hide(2000, function() {
+                        $("#replyContainer_" + id).remove();
+                    });
                 }
                 else {
                     getQuestionById(id.substring(0, id.indexOf("_"))).deleteComment();

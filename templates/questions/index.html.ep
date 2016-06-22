@@ -202,13 +202,6 @@ $(document).ready(function() {
 					onmouseleave="changeFlag(ID, 'out')"
 					onclick="sendFlagReport(ID)">
 				</div>
-				<div class="answerButtonContainer" id="answerButtonContainer_ID">
-					<img class="containedImg" src="/img/checkmark.png" alt="Checkmark"
-					id="answerImg_ID"
-					onmouseenter="changeCheckMark(ID, 'in')"
-					onmouseleave="changeCheckMark(ID, 'out')"
-					onclick="markAnswer(ID)">
-				</div>
 			</div>
 			
 			<div class="postTextAndInfoContainer" id="postTextAndInfoContainer_ID">

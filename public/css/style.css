@@ -291,9 +291,8 @@ body {
 /*question container contains info for a quesiton*/
 
 .postContainer {
-	display:inline-block;
 	position: relative;
-	height: auto;
+	overflow:hidden;
 	width: 100%;
 	min-height: 275px;
 	max-width: 100%;
@@ -360,19 +359,15 @@ body {
 .deleteButtonContainer {
 	position: absolute;
 	height: 25%;
+	width:100%;
 	top: 15%;
 }
 
 .flagButtonContainer {
 	position: absolute;
 	height: 25%;
+	width:100%;
 	bottom: 15%;
-}
-
-.answerButtonContainer {
-	position: absolute;
-	height:25%;
-	top: 75%;
 }
 
 /*post text and info contains post text, time created... */
