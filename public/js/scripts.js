@@ -445,9 +445,9 @@ function deletePost(id) {
                 }
                 else {
                     getQuestionById(id.substring(0, id.indexOf("_"))).deleteComment();
-                    $("#commentContainer_" + id).remove();
-                    $("#commentPadding_" + id).remove();
-                    
+                    $("#commentContainer_" + id).hide(2000, function() {
+                        $("#commentContainer_" + id).remove();
+                    });
                 }
             }
             else if (data.error){
