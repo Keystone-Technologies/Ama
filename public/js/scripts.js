@@ -408,7 +408,7 @@ function resizeComments(id) {
         if(num >= contHeight) {
             num = num + 50;
             num += "px";
-            $("#commentContainer_" + comment.getId()).css('min-height', num);
+            $("#commentContainer_" + comment.getId()).css('height', num);
         }
     }
 }
