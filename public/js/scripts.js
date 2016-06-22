@@ -743,11 +743,12 @@ function toggleComments(id) {
                 commentsHTML += commentHTML;
             }
             $("#commentsContainer_" + question.getId()).html(commentsHTML);
-        
+            $("#commentsContainer_" + question.getId()).show();
+            resizeComments(id);
+            $("#commentsContainer_" + question.getId()).hide();
             $("#commentsContainer_" + id).slideToggle("slow");
             $("#showCommentsButton_" + id).html("hide comments<br> ");
             initializeCommentLayout(id);
-            resizeComments(id);
         });
     }
     else {
