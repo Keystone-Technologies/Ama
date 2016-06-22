@@ -262,19 +262,22 @@ function initializeContent() {
     var contentHTML = ""; //this will be the html inserted into content
     var questionHTML = ""; //this will be html representing a single question
     
-    for(var i = 0; i < getQuestionCount(); i ++) {
-        questionHTML = HTMLforPost;
-        var question = getQuestion(i);
-        questionHTML = questionHTML.replace(/ID/g, question.getId());
-        questionHTML = questionHTML.replace(/VOTES/g, question.getVotes());
-        questionHTML = questionHTML.replace(/TEXT/g, question.getText());
-        questionHTML = questionHTML.replace(/NUMCOMMENTS/g, question.getCommentCount());
-        questionHTML = questionHTML.replace(/TIMEASKED/g, question.getTimeCreated());
-        contentHTML += questionHTML;
+    if(getQuestionCount() == "0"){
+        $(".content").html('no result found, please search again!');
     }
-
-    $(".content").html(contentHTML);
-    
+    else{
+        for(var i = 0; i < getQuestionCount(); i ++) {
+            questionHTML = HTMLforPost;
+            var question = getQuestion(i);
+            questionHTML = questionHTML.replace(/ID/g, question.getId());
+            questionHTML = questionHTML.replace(/VOTES/g, question.getVotes());
+            questionHTML = questionHTML.replace(/TEXT/g, question.getText());
+            questionHTML = questionHTML.replace(/NUMCOMMENTS/g, question.getCommentCount());
+            questionHTML = questionHTML.replace(/TIMEASKED/g, question.getTimeCreated());
+            contentHTML += questionHTML;
+        }
+       $(".content").html(contentHTML); 
+    }    
     initializeLayout();
 }
 
@@ -821,8 +824,9 @@ function toggleSearchBar() {
 function search() {
     var keyword = $(".searchTextarea").val();
     keyword = keyword.trim();
-    if(keyword == "")
+    if(keyword == ""){
         keyword = "none";
+    }
     setFilter('keyword', keyword);
     setFilter('limit', defaultLimit);
     changeQuestions();
