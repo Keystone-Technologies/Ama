@@ -212,7 +212,7 @@ body {
 .filterContainer {
 	position:relative;
 	max-width: 1200px;
-	min-width: 810px;
+	min-width: 700px;
 	margin: auto;
 }
 
@@ -252,7 +252,7 @@ body {
 	background-color: f4f4f4;
 	width: 100%;
 	max-width:1200px;
-	min-width:810px;
+	min-width:700px;
 	margin:auto;
 	top: 0px;
 	height: 30px;
@@ -279,7 +279,7 @@ body {
 
 .content {
 	max-width: 1200px;
-	min-width: 810px;
+	min-width: 700px;
 	min-height: 10px;
 	margin: auto;
 	background-color:white;

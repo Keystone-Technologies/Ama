@@ -8,6 +8,7 @@ function Question(id_input, text_input, votes_input, creator_input, time_created
     var time_created = time_created_input;
     var comment_count = comment_count_input;
     var comments = [];
+    var comments_shown = false;
     var answered = answered_input;
     var users_vote = users_vote_input;
     if(users_vote != "up" && users_vote != "down")
@@ -20,7 +21,8 @@ function Question(id_input, text_input, votes_input, creator_input, time_created
     this.isFlagged = function() {return flagged;}
     this.isAnswered = function() {return answered;}
     this.getTimeCreated = function() {return time_created;}
-    this.getCommentCount = function() {return comment_count}
+    this.getCommentCount = function() {return comment_count;}
+    this.getCommentsShown = function() {return comments_shown;}
     this.getUsersVote = function() {return users_vote;}
     
     this.setCommentCount = function(count) {
@@ -43,6 +45,10 @@ function Question(id_input, text_input, votes_input, creator_input, time_created
     
     this.addComment = function(comment) {
         comments[comment_count ++] = comment;
+    }
+    
+    this.setCommentsShown = function(shown) {
+        comments_shown = shown;
     }
     
     this.setFlagged = function(flag) {
@@ -742,6 +748,7 @@ function toggleComments(id) {
                 commentHTML = commentHTML.replace(/TIMEASKED/g, comment.getTimeCreated());
                 commentsHTML += commentHTML;
             }
+            question.setCommentsShown(true);
             $("#commentsContainer_" + question.getId()).html(commentsHTML);
             $("#commentsContainer_" + question.getId()).show();
             resizeComments(id);
@@ -754,6 +761,7 @@ function toggleComments(id) {
     else {
         $("#commentsContainer_" + id).slideToggle("slow");
         $("#showCommentsButton_" + id).html("show comments<br>(" + getQuestionById(id).getCommentCount() + ")");
+        question.setCommentsShown(false);
     }
 }
 

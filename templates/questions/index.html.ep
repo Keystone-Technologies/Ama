@@ -23,8 +23,6 @@ $(document).ready(function() {
 	$(".backgroundCover").hide();
 	$(".searchBar").hide();
 	
-	console.log("Set content to display no results here is question count is 0");
-	
     setCurrentUser("<%=session 'username'%>");
     
     //this is where it should set the last viewed options, something like that with cookies
@@ -32,6 +30,11 @@ $(document).ready(function() {
     
     $(window).resize(function() {
     	resizePosts();
+    	for(var i = 0; i < getQuestionCount(); i ++) {
+    		if(getQuestion(i).getCommentsShown()) {
+    			resizeComments(getQuestion(i).getId());
+    		}
+    	}
     });
     
     $(window).scroll(function() {
