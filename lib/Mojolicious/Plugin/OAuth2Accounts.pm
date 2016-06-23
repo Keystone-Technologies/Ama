@@ -70,7 +70,6 @@ sub register {
 
   $app->routes->get('/logout' => sub {
     my $c = shift;
-    warn "LOGOUT\nLOGOUT\nLOGOUT\nLOGOUT\nLOGOUT\n";
     my $token = $c->session('token') || {};
     delete $c->session->{$_} foreach keys %{$c->session};
     $token->{$_} = {} foreach keys %$token;
@@ -81,13 +80,9 @@ sub register {
     $app->routes->get('/login/:provider' => {provider => ''} => sub {
     my $c = shift;
     #return $c->render($c->session('id') ? 'logout' : 'login') unless $c->param('provider');
-    warn "\n\nCheckpo0int 1";
     return $c->render('login') unless $c->param('provider');
-    warn "\n\nCHeckpoint 2";
     return $c->redirect_to('connectprovider', {provider => $c->param('provider')}) ; #removed "unless $c->session('id')"
-    warn "\n\nCheckpoint 3\n\n";
     $c->redirect_to($config->{on_success});
-    warn "\n\nCheckpoint 4\n\n";
   })->name('login');
   
 
@@ -124,7 +119,6 @@ sub register {
         # If already connected to $provider, no reason to go through this again
         # All this does is pull down basic info / email and store locally
         return $c->redirect_to($success) if $connect->($c, $c->session('id'), $provider); # on_connect Form #1
-        warn "\n\nForm 1";
         unless ( $data->{access_token} ) {
           $c->flash(error => "Could not obtain access token: $err");
           return $c->redirect_to($error);
@@ -142,9 +136,7 @@ sub register {
             return $c->redirect_to($error);
           }
           $c->session(id => $connect->($c, $json->get($map->{id}))) unless $c->session('id'); # on_connect Form #2
-          warn "\n\nForm 2";
           $connect->($c, $c->session('id'), $provider, $tx->res->json, {map { $_ => $json->get($map->{$_}) } keys %$map}); # on_connect Form #3
-          warn "\n\nForm 3";
           $c->redirect_to($success);
         });
       },

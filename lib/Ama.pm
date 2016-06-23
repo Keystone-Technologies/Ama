@@ -39,20 +39,10 @@ sub startup {
     return $next->();
   });
   
-  $self->hook(before_routes => sub {
-    my ($c, $action, $last) = @_;
-    warn Data::Dumper::Dumper({session => $c->session , request => $c->req->url->to_string});
-  });
-
-  $self->hook(after_build_tx => sub {
-    my ($tx, $app) = @_;
-    warn Data::Dumper::Dumper({request => $tx->req->url->to_string});
-    });
-  
 $self->plugin("OAuth2Accounts" => {
   on_logout => '/',
   on_success => 'questions',
-  on_error => 'helo',
+  on_error => 'login',
   on_connect => sub { shift->model->oauth2->store(@_) },
   providers => $config->{oauth2},
   });
@@ -70,10 +60,6 @@ $self->plugin("OAuth2Accounts" => {
 
   # Controller
   my $r = $self->routes;
-  $r->get('/helo' => sub {
-    shift->reply->exception('error')
-  });
-    
   $r->get('/' => sub {
     my $self = shift;
     $self->redirect_to('questions');

@@ -159,6 +159,8 @@ $(document).ready(function() {
 	
 	 % if ($c->session('id')){
 		<a href="/logout" > Logout , <%= $user->{first_name}%> </a>
+		<p>or</p>
+		<a href="/login" > Sign in to another service</a>
 	% } else {
 	<a href="/login" > Login  </a>
 	% }
