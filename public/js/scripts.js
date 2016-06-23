@@ -203,7 +203,7 @@ function toggleReplyForm(id) {
 //changes the flag image based on mouse position and post status
 //  type is the type of post ('comment' or 'question')
 //  id is id
-//  dir is the direction of the mouse (if the mouse is going in or our)
+//  dir is the direction of the mouse (if the mouse is going in or out)
 function changeFlag(type, id, dir) {
     var flagged = "";  //if left blank, image will be normal flag. If changed to 'red' image will be redflag
     var post;          //post to change the flag color on
@@ -216,10 +216,6 @@ function changeFlag(type, id, dir) {
     //determines what color the flag must be based on if it is flagged and where the mouse is
     if(dir == 'in' && !post.isFlagged())
         flagged = "red";
-    //if(dir == 'in' && post.isFlagged())
-    //    flagged = "";                         these 4 lines are commented out because i think they are unnecessary, should be removed if this function still works without them
-    //if(dir == 'out' && !post.isFlagged())
-    //    flagged = "";
     if(dir == 'out' && post.isFlagged())
         flagged = 'red';
     
@@ -227,27 +223,25 @@ function changeFlag(type, id, dir) {
 }
 
 //changes vote image based on mouse position and post status
-function changeVoteImg(id, dir, voteDir) {
-    var post;
-    if(id.toString().indexOf('_') == -1) {
-        post = getQuestionById(id);
-    }
-    else {
-        post = getQuestionById(id.substring(0, id.indexOf('_'))).getCommentById(id);
-    }
+//  type is the type of post ('comment' or 'question')
+//  id is id
+//  dir is the direction of the mouse (if the mouse is going in or out)
+//  voteDir is if the image being hovered over is for the upvote or downvote ('up' or 'down')
+function changeVoteImg(type, id, dir, voteDir) {
+    var post;          //post to change the vote color on
+    var clicked = "";  //if the image needs to become the clicked version of it, this string becomes "clicked"
     
-    if(dir == 'in' && post.getUsersVote() == voteDir) {
-        $("#" + voteDir + "vote_" + post.getId()).attr('src', '/img/small' + voteDir + 'arrow.png');
-    }
-    if(dir == 'out' && post.getUsersVote() == voteDir) {
-        $("#" + voteDir + "vote_" + post.getId()).attr('src', '/img/clickedsmall' + voteDir + 'arrow.png');
-    }
-    if(dir == 'in' && post.getUsersVote() != voteDir) {
-        $("#" + voteDir + "vote_" + post.getId()).attr('src', '/img/clickedsmall' + voteDir + 'arrow.png');
-    }
-    if(dir == 'out' && post.getUsersVote() != voteDir) {
-        $("#" + voteDir + "vote_" + post.getId()).attr('src', '/img/small' + voteDir + 'arrow.png');
-    }
+    if(type == "question")
+        post = getQuestionById(id);
+    else
+        post = getCommentById(id);
+    
+    if(dir == 'out' && post.getUsersVote() == voteDir)
+        clicked = "clicked";
+    if(dir == 'in' && post.getUsersVote() != voteDir)
+        clicked = "clicked";
+    
+    $("#" + voteDir + "vote_" + post.getId()).attr('src', '/img/' + clicked + 'small' + voteDir + 'arrow.png');
 }
 
 //changes the answer button image based on mouse position
