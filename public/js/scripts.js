@@ -201,28 +201,29 @@ function toggleReplyForm(id) {
 }
 
 //changes the flag image based on mouse position and post status
+//  type is the type of post ('comment' or 'question')
+//  id is id
+//  dir is the direction of the mouse (if the mouse is going in or our)
 function changeFlag(type, id, dir) {
-    var flagged = "";
-    var post;
+    var flagged = "";  //if left blank, image will be normal flag. If changed to 'red' image will be redflag
+    var post;          //post to change the flag color on
     
-    var question = getQuestionById();
-    
-    if(id.toString().indexOf('_') != -1) {
-        post = getQuestionById(id.substring(0, id.indexOf('_'))).getCommentById(id);
-    }
-    else
+    if(type == "question")
         post = getQuestionById(id);
+    else
+        post = getCommentById(id);
     
+    //determines what color the flag must be based on if it is flagged and where the mouse is
     if(dir == 'in' && !post.isFlagged())
         flagged = "red";
-    if(dir == 'in' && post.isFlagged())
-        flagged = "";
-    if(dir == 'out' && !post.isFlagged())
-        flagged = "";
+    //if(dir == 'in' && post.isFlagged())
+    //    flagged = "";                         these 4 lines are commented out because i think they are unnecessary, should be removed if this function still works without them
+    //if(dir == 'out' && !post.isFlagged())
+    //    flagged = "";
     if(dir == 'out' && post.isFlagged())
         flagged = 'red';
     
-    $("#flagImg_" + id).attr("src", "/img/" + flagged + "flag.png")
+    $("#flagImg_" + id).attr("src", "/img/" + flagged + "flag.png"); //sets the flag image accordingly
 }
 
 //changes vote image based on mouse position and post status
