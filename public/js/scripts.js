@@ -86,21 +86,20 @@ function Post(question_id_input, comment_id_input, text_input, votes_input, crea
     this.isAnswer = function() {return answer;};
 }
 
-//STATIC VARIABLES hold all of the current database questions and number of questions
-//also sets the post html to correct container
-var questions = [];
-var questionCount = 0;
-var current_user = "007";
-var HTMLforPost = "uninitialized";
-var HTMLforComment = "uninitialized";
-var defaultPostSize = 0;
-var deviceType = "mobile";
-var defaultLimit = 15;
-var openMenu = "none";
+//STATIC VARIABLES
+var questions = [];                     //holds all questions currently loaded
+var questionCount = 0;                  //holds the total number of questions loaded
+var current_user = "007";               //holds the username assigned to the user by the server, used to determine if a user can delete stuff, etc...
+var HTMLforPost = "uninitialized";      //html to be extracted from index page and stored in memory used on each new question
+var HTMLforComment = "uninitialized";   //same but for one comment
+var defaultPostSize = 0;                //Default height of a post, used to determine if the user is on mobile or desktop
+var deviceType = "mobile";              //Initially assumes mobile and is changed further down if the user is on desktop
+var defaultLimit = 15;                  //default limit on number of questions to display
+var openMenu = "none";                  //currently opened menu (ex. 'sort', 'search', etc...) used in close menu function
 
 //filter settings
-var filters = [];
-
+var filters = [];                       //holds all of the current filters used, seen below
+                                        //used when reloading the questions
 filters["creator"] = "all";
 filters["answered"] = 0;
 filters["orderby"] = "votes";
@@ -139,8 +138,22 @@ function getQuestion(loc) {
 //retrieves a question by its id
 function getQuestionById(id) {
     for(var i = 0; i < getQuestionCount(); i ++) {
-        if(getQuestion(i).getId() == id)
+        if(getQuestion(i).getQuestionId() == id)
             return getQuestion(i);
+    }
+    return null;
+}
+
+//checks all the comments on each question, only if the comments are visible
+function getCommentById(id) {
+    for(var i = 0; i < getQuestionCount(); i ++) {
+        if(getQuestion(i).getCommentsShown()) {
+            for(var j = 0; j < getQuestion(i).getCommentCount(); j ++) {
+                if(getQuestion(i).getComment(j).getId() == id) {
+                    return getQuestion(i).getComment(j);
+                }
+            }
+        }
     }
     return null;
 }
@@ -152,8 +165,8 @@ function getQuestionCount() {
 
 function clearQuestions() {
     questionCount = 0;
-    //again doesnt actually delete them but for all intents and purposes
-    //  this is totally fine I assume
+    //simulates clearing the questions
+    //  as of now there is no reason to actually remove them all from memory
 }
 
 //****************************************************************showing/hiding images or containers
@@ -161,9 +174,8 @@ function clearQuestions() {
 //shows/hides new question container
 function toggleQuestionForm() {
 	$(".newQuestionContainer").slideToggle("slow", function() {
-	    if($(".newQuestion").html() == "Cancel") {
-	        $("#newQuestionTextarea").focus();
-	    }
+	    //when the animation is done playing, focuses the keyboard on the textarea
+	    $("#newQuestionTextarea").focus();
 	});
 	
 	if($(".newQuestion").html() != "Cancel") {
@@ -172,16 +184,13 @@ function toggleQuestionForm() {
 	else {
         $(".newQuestion").html("Ask A Question");
 	    $("#newQuestionTextarea").val("");
-	    $("#newQuestionTextarea").focusout();
 	}
 }
 
 //shows/hides reply form container
 function toggleReplyForm(id) {
 	$("#replyContainer_" + id).slideToggle("slow", function(){
-	    if($("#replyButton_" + id).html() == "cancel") {
-	        $("#newPostTextArea_" + id).focus();
-	    }
+	    $("#newPostTextArea_" + id).focus();
 	});
 	if($("#replyButton_" + id).html() != "cancel")
 		$("#replyButton_" + id).html("cancel");
@@ -192,9 +201,12 @@ function toggleReplyForm(id) {
 }
 
 //changes the flag image based on mouse position and post status
-function changeFlag(id, dir) {
+function changeFlag(type, id, dir) {
     var flagged = "";
     var post;
+    
+    var question = getQuestionById();
+    
     if(id.toString().indexOf('_') != -1) {
         post = getQuestionById(id.substring(0, id.indexOf('_'))).getCommentById(id);
     }
