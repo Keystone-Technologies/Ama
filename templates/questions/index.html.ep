@@ -1,12 +1,21 @@
 <html>
 <head>
+
+	
+	<meta name="google-signin-client_id" content="156728782684-3v8c4suoku9kqcqoe0ghoouahuukqv1m.apps.googleusercontent.com">
+	<script src="https://apis.google.com/js/api.js"></script>
+	<script src="https://apis.google.com/js/platform.js" async defer></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 	<script src="/js/scripts.js"></script>
 	<link rel="stylesheet" media="screen and (max-device-width: 800px)" href="/css/style.css">
 	<link rel="stylesheet" media="screen and (min-device-width: 800px)" href="/css/desktop.css">
 </head>
 <title>Ask Me Anything</title>
-
+<script>
+gapi.load('auth2', function() {
+		gapi.auth2.init();
+	});
+</script>
 <script>
 function ConfirmDelete()
     {
@@ -107,7 +116,6 @@ $(document).ready(function() {
 			</div><div class="sortMenuOption" id="creator_my" onclick="changeFilter('creator', 'my')">
 			mine</div>
 		</div>
-		
 		<div class="sortMenuOptionsContainer">
 			<div class="sortMenuOption" id="answered_1" onclick="changeFilter('answered', 1)">
 				answered
@@ -170,10 +178,18 @@ $(document).ready(function() {
 		
 	</div>
 	
+	% if ($c->session('id')){
+		<a href="/logout" > Logout , <%= $user->{first_name}%> </a>
+		<p>or</p>
+		<a href="/login" > Sign in to another service</a>
+	% } else {
+	<a href="/login" > Login  </a>
+	% }
+	
 	<div class="showMoreButton" onclick="showMore()">
 		show more
 	</div>
-	
+
 	<div class="singlePost">
 		<div class= "postContainer" id="postContainer_ID">
 			<div class="voteInfoContainer" id="voteInfoContainer_ID">

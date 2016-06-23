@@ -7,13 +7,15 @@ use Ama::Model::Answers;
 use Ama::Model::Votes;
 use Ama::Model::Flags;
 use Mojo::Pg;
+use Ama::Model::OAuth2;
 our $VERSION = '1.2';
 
 sub startup {
   my $self = shift;
 
   # Configuration
-  $self->plugin('Config');
+  my $config = $self->plugin('Config');
+ 
   $self->secrets($self->config('secrets'));
   $self->sessions->default_expiration(86400*365*10); # 10yr cookie
 
@@ -24,15 +26,25 @@ sub startup {
   $self->helper(answers => sub { state $votes = Ama::Model::Answers->new(pg => shift->pg) });
   $self->helper(votes => sub { state $votes = Ama::Model::Votes->new(pg => shift->pg) });
   $self->helper(flags => sub { state $votes = Ama::Model::Flags->new(pg => shift->pg) });
+  $self->helper('model.oauth2' => sub { state $votes = Ama::Model::OAuth2->new(pg => shift->pg) });
   $self->hook(around_action => sub {
     my ($next, $c, $action, $last) = @_;
     $c->session->{username} ||= time;
+    $c->session->{username} = $c->session('id') if $c->session('id');
     $c->questions->username($c->session->{username});
     $c->comments->username($c->session->{username});
     $c->answers->username($c->session->{username});
     $c->votes->username($c->session->{username});
     $c->flags->username($c->session->{username});
     return $next->();
+  });
+  
+$self->plugin("OAuth2Accounts" => {
+  on_logout => '/',
+  on_success => 'questions',
+  on_error => 'login',
+  on_connect => sub { shift->model->oauth2->store(@_) },
+  providers => $config->{oauth2},
   });
   
   $self->helper( 'version' => sub{$VERSION} );
@@ -48,12 +60,18 @@ sub startup {
 
   # Controller
   my $r = $self->routes;
-
-  $self->plugin('BrowserDetect');
   $r->get('/' => sub {
     my $self = shift;
-    $self->redirect_to($self->browser->mobile ? 'questions' : 'questions');
+    $self->redirect_to('questions');
   });
+  
+   $r->get('/connect/:provider' => sub {
+    my $self = shift;
+    warn $self->session('id');
+    return $self->redirect_to('connectprovider', {provider => $self->param('provider')}) unless $self->session('id');
+    $self->redirect_to('questions');
+  });
+  
   $r->get('/questions')->to('questions#index')->name('questions'); # Display all questions
   $r->get('/questions/create')->to('questions#create')->name('create_question'); # Display empty form
   $r->post('/questions')->to('questions#store')->name('store_question'); # Insert into DB and redirect to show_question
