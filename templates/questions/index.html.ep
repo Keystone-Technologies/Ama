@@ -23,8 +23,6 @@ $(document).ready(function() {
 	$(".backgroundCover").hide();
 	$(".searchBar").hide();
 	
-	console.log("Set content to display no results here is question count is 0");
-	
     setCurrentUser("<%=session 'username'%>");
     
     //this is where it should set the last viewed options, something like that with cookies
@@ -32,6 +30,11 @@ $(document).ready(function() {
     
     $(window).resize(function() {
     	resizePosts();
+    	for(var i = 0; i < getQuestionCount(); i ++) {
+    		if(getQuestion(i).getCommentsShown()) {
+    			resizeComments(getQuestion(i).getId());
+    		}
+    	}
     });
     
     $(window).scroll(function() {
@@ -192,20 +195,7 @@ $(document).ready(function() {
 					onmouseleave="this.src='/img/trash.png'"
 					onclick="deletePost(ID)">
 				</div>
-				<div class="flagButtonContainer">
-					<img class= "containedImg" src="/img/flag.png" alt="Flag" 
-					id="flagImg_ID"
-					onmouseenter="changeFlag(ID, 'in')" 
-					onmouseleave="changeFlag(ID, 'out')"
-					onclick="sendFlagReport(ID)">
-				</div>
-				<div class="answerButtonContainer" id="answerButtonContainer_ID">
-					<img class="containedImg" src="/img/checkmark.png" alt="Checkmark"
-					id="answerImg_ID"
-					onmouseenter="changeCheckMark(ID, 'in')"
-					onmouseleave="changeCheckMark(ID, 'out')"
-					onclick="markAnswer(ID)">
-				</div>
+
 			</div>
 			
 			<div class="postTextAndInfoContainer" id="postTextAndInfoContainer_ID">

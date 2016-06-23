@@ -8,6 +8,7 @@ function Question(id_input, text_input, votes_input, creator_input, time_created
     var time_created = time_created_input;
     var comment_count = comment_count_input;
     var comments = [];
+    var comments_shown = false;
     var answered = answered_input;
     var users_vote = users_vote_input;
     if(users_vote != "up" && users_vote != "down")
@@ -20,7 +21,8 @@ function Question(id_input, text_input, votes_input, creator_input, time_created
     this.isFlagged = function() {return flagged;}
     this.isAnswered = function() {return answered;}
     this.getTimeCreated = function() {return time_created;}
-    this.getCommentCount = function() {return comment_count}
+    this.getCommentCount = function() {return comment_count;}
+    this.getCommentsShown = function() {return comments_shown;}
     this.getUsersVote = function() {return users_vote;}
     
     this.setCommentCount = function(count) {
@@ -43,6 +45,10 @@ function Question(id_input, text_input, votes_input, creator_input, time_created
     
     this.addComment = function(comment) {
         comments[comment_count ++] = comment;
+    }
+    
+    this.setCommentsShown = function(shown) {
+        comments_shown = shown;
     }
     
     this.setFlagged = function(flag) {
@@ -402,7 +408,7 @@ function resizeComments(id) {
         if(num >= contHeight) {
             num = num + 50;
             num += "px";
-            $("#commentContainer_" + comment.getId()).css('min-height', num);
+            $("#commentContainer_" + comment.getId()).css('height', num);
         }
     }
 }
@@ -425,15 +431,23 @@ function deletePost(id) {
         if (data) {
             if (data.question_id || data.comment_id){
                 if(type == "questions") {
-                    $("#postContainer_" + id).remove();
-                    $("#commentsContainer_" + id).remove();
-                    $("#replyContainer_" + id).remove();
+                    $("#postContainer_" + id).css('height', $("#postContainer_" + id).css('min-height'));
+                    $("#postContainer_" + id).css('min-height', '0px');
+                    $("#postContainer_" + id).hide(2000, function() {
+                        $("#postContainer_" + id).remove();
+                    });
+                    $("#commentsContainer_" + id).hide(2000, function() {
+                        $("#commentsContainer_" + id).remove();
+                    })
+                    $("#replyContainer_" + id).hide(2000, function() {
+                        $("#replyContainer_" + id).remove();
+                    });
                 }
                 else {
                     getQuestionById(id.substring(0, id.indexOf("_"))).deleteComment();
-                    $("#commentContainer_" + id).remove();
-                    $("#commentPadding_" + id).remove();
-                    
+                    $("#commentContainer_" + id).hide(2000, function() {
+                        $("#commentContainer_" + id).remove();
+                    });
                 }
             }
             else if (data.error){
@@ -742,17 +756,20 @@ function toggleComments(id) {
                 commentHTML = commentHTML.replace(/TIMEASKED/g, comment.getTimeCreated());
                 commentsHTML += commentHTML;
             }
+            question.setCommentsShown(true);
             $("#commentsContainer_" + question.getId()).html(commentsHTML);
-        
+            $("#commentsContainer_" + question.getId()).show();
+            resizeComments(id);
+            $("#commentsContainer_" + question.getId()).hide();
             $("#commentsContainer_" + id).slideToggle("slow");
             $("#showCommentsButton_" + id).html("hide comments<br> ");
             initializeCommentLayout(id);
-            resizeComments(id);
         });
     }
     else {
         $("#commentsContainer_" + id).slideToggle("slow");
         $("#showCommentsButton_" + id).html("show comments<br>(" + getQuestionById(id).getCommentCount() + ")");
+        question.setCommentsShown(false);
     }
 }
 
