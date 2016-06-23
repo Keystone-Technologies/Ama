@@ -1,9 +1,9 @@
 //Post object could be a Question or a Comment
-function Post(question_id_input, comment_id_input, text_input, votes_input, creator_input, time_created_input, flagged_input, users_vote_input, type_input,//shared
+function Post(id_input, text_input, votes_input, creator_input, time_created_input, flagged_input, users_vote_input,//shared
                 comment_count_input, answered_input, //question specific
-                answer_input) { //comment specific
+                question_id_input, answer_input) { //comment specific
     //Paramters that both questions and comments share
-    var question_id = question_id_input;
+    var id = id_input;
     var text = text_input; //holds the text for question/comment
     text = text.replace(/\n/g, '<br/>');
     var votes = votes_input;
@@ -13,7 +13,6 @@ function Post(question_id_input, comment_id_input, text_input, votes_input, crea
     var users_vote = users_vote_input;
     if(users_vote != "up" && users_vote != "down")
         users_vote = "none";
-    var type = type_input; //type can be 'question' or 'comment'
     
     //Parameters specific to a Question
     var comment_count = comment_count_input; //number of comments on a question
@@ -22,17 +21,16 @@ function Post(question_id_input, comment_id_input, text_input, votes_input, crea
     var answered = answered_input;           //if the question is answered
     
     //Parameters specific to a Comment
-    var comment_id = comment_id_input;
+    var question_id = question_id_input;
     var answer = answer_input;               //true if this is the answer to its question
     
-    this.getQuestionId = function() {return question_id;};
+    this.getId = function() {return id;};
     this.getText = function() {return text;};
     this.getVotes = function() {return votes;};
     this.getCreator = function() {return creator;};
     this.isFlagged = function() {return flagged;};
     this.getTimeCreated = function() {return time_created;};
     this.getUsersVote = function() {return users_vote;};
-    this.getType = function() {return type;};
     
     //functions
     this.setFlagged = function(flag) {
@@ -82,7 +80,7 @@ function Post(question_id_input, comment_id_input, text_input, votes_input, crea
     }
     
     //************************************************************Comment Specific Functions
-    this.getCommentId = function() {return comment_id;};
+    this.getQuestionId = function() {return question_id;};
     this.isAnswer = function() {return answer;};
 }
 
@@ -138,7 +136,7 @@ function getQuestion(loc) {
 //retrieves a question by its id
 function getQuestionById(id) {
     for(var i = 0; i < getQuestionCount(); i ++) {
-        if(getQuestion(i).getQuestionId() == id)
+        if(getQuestion(i).getId() == id)
             return getQuestion(i);
     }
     return null;
@@ -148,11 +146,7 @@ function getQuestionById(id) {
 function getCommentById(id) {
     for(var i = 0; i < getQuestionCount(); i ++) {
         if(getQuestion(i).getCommentsShown()) {
-            for(var j = 0; j < getQuestion(i).getCommentCount(); j ++) {
-                if(getQuestion(i).getComment(j).getId() == id) {
-                    return getQuestion(i).getComment(j);
-                }
-            }
+            return getQuestion(i).getCommentById();
         }
     }
     return null;
@@ -269,7 +263,7 @@ function initializeContent() {
         for(var i = 0; i < getQuestionCount(); i ++) {
             questionHTML = HTMLforPost;    //resets html for one question
             var question = getQuestion(i);
-            questionHTML = questionHTML.replace(/ID/g, question.getQuestionId());
+            questionHTML = questionHTML.replace(/ID/g, question.getId());
             questionHTML = questionHTML.replace(/VOTES/g, question.getVotes());
             questionHTML = questionHTML.replace(/TEXT/g, question.getText());
             questionHTML = questionHTML.replace(/NUMCOMMENTS/g, question.getCommentCount());
@@ -313,7 +307,7 @@ function initializeLayout() {
         }
         
         if(question.isAnswered()) {
-            //hides or removes so containers to look neater
+            //hides/removes/ changes css to make an answered question look different
             $("#postContainer_" + question.getId()).css('height', '160px');
             $("#replyButton_" + question.getId()).remove();
             $("#upvote_" + question.getId()).remove();
