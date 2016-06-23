@@ -8,6 +8,14 @@
 <title>Ask Me Anything</title>
 
 <script>
+function ConfirmDelete()
+    {
+      var x = confirm("Are you sure you want to delete?");
+      if (x)
+          return true;
+      else
+        return false;
+    }
 $(document).ready(function() {
 	//extracts html from page and stores it in global variables
 	HTMLforPost = $(".singlePost").html();
@@ -190,10 +198,11 @@ $(document).ready(function() {
 			
 			<div class="buttonContainer" id="buttonContainer_ID">
 				<div class="deleteButtonContainer" id="deleteButtonContainer_ID">
-					<img class= "containedImg" src="/img/trash.png" alt="Trash" 
+					<img class= "containedImg" src="/img/trash.png" alt="delete" 
 					onmouseenter="this.src='/img/opentrash.png'" 
-					onmouseleave="this.src='/img/trash.png'"
-					onclick="deletePost(ID)">
+					onmouseleave="this.src='/img/trash.png'" onclick="if( ConfirmDelete() == true){deletePost(ID)}"                                      
+					type="submit" name="actiondelete" value="1">
+
 				</div>
 
 			</div>
@@ -259,10 +268,11 @@ $(document).ready(function() {
 					
 				<div class="commentPostInfoContainer">
 					<div class="commentDeleteButtonContainer" id="deleteButtonContainer_ID">
-						<img class= "containedImg" src="/img/trash.png" alt="Trash" 
+						<img class= "containedImg" src="/img/trash.png" alt="delete" 
 						onmouseenter="this.src='/img/opentrash.png'" 
-						onmouseleave="this.src='/img/trash.png'"
-						onclick="deletePost('ID')">
+						onmouseleave="this.src='/img/trash.png'" onclick="if( ConfirmDelete() == true){deletePost('ID')}"
+                        type="submit" name="actiondelete" value="1">
+
 					</div>
 						
 					<div class="commentFlagButtonContainer">
