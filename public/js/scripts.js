@@ -321,7 +321,9 @@ function initializeLayout() {
         }
     }
     
-    window.setTimeout(resizePosts, 0.00000000001);
+    //if there is not timeout, the resizePosts function DOES NOT WORK
+    // even if the timeout is very very very very very small
+    window.setTimeout(resizePosts, 0.00000000000001);
 }
 
 //intitializes layout of all comments of a specific question
@@ -329,7 +331,6 @@ function initializeCommentLayout(id) {
     var question = getQuestionById(id);
     for(var j = 0; j < question.getCommentCount(); j ++) {
         var comment = question.getComment(j);
-        $("#commentPadding_" + comment.getId()).css('visibility', 'hidden');
         
         if(comment.isFlagged()) {
             hide(comment.getId());
@@ -350,6 +351,7 @@ function initializeCommentLayout(id) {
             $("#flagImg_" + comment.getId()).remove()
             $("#deleteButtonContainer_" + comment.getId()).remove();
             if(comment.isAnswer()) {
+                //if the comment is the answer, moving the mouse over the answer button, and clicking it, does not do anything
                 $("#answerImg_" + comment.getId()).attr({onmouseenter: "", onmouseleave: "", onclick: "", src:"/img/checkedcheckmark.png"});
             }
             else {
@@ -365,21 +367,23 @@ function resizePosts() {
     for(var i = 0; i < getQuestionCount(); i ++) {
         var question = getQuestion(i);
         
+        //sets the default post size if it has never been set. This helps the program determine whether or not the use is on mobile or on desktop version
         if(defaultPostSize == 0) {
             defaultPostSize = parseInt($("#postContainer_" + question.getId()).css('height'));
             if(defaultPostSize < 275)
                 deviceType = "desktop";
         }
         
-        var str = $("#textContainer_" + question.getId()).css('height');
-        var num = parseInt(str);
-        var contHeight = parseInt($("#postTextContainer_" + question.getId()).css('height'));
+        //Parse int because the .css('height') will return a string, '100px' or something like that
+        var num = parseInt($("#textContainer_" + question.getId()).css('height'));
         num = num + 110;
         
+        //automatically assumes the size needs to increase. If it is too small, sets it back to default
         if(num < defaultPostSize) {
             num = defaultPostSize;
         }
         
+        //adds the px back to the end so the css knows what unit of measurement to use(different ones being %, em, px, vw, vh, etc...)
         num += "px";
         $("#postContainer_" + question.getId()).css('min-height', num);
     }
@@ -390,9 +394,15 @@ function resizeComments(id) {
     var question = getQuestionById(id);
     for(var j = 0; j < question.getCommentCount(); j ++) {
         var comment = question.getComment(j);
-        var str = $("#textContainer_" + comment.getId()).css('height');
-        var num = parseInt(str);
+        
+        //see above for why parsing the int
+        var num = parseInt($("#textContainer_" + comment.getId()).css('height'));
         var contHeight = parseInt($("#postTextContainer_" + question.getId()).css('height'));
+        
+        //if the size of the container holding the comment tex
+        //  is greater than the size of the container holding
+        //  the container holding the question text,
+        //  the container holding container holding the container... needs to increase its height
         if(num >= contHeight) {
             num = num + 50;
             num += "px";
@@ -401,24 +411,26 @@ function resizeComments(id) {
     }
 }
 
-//removes a question from the database and from users screen
-function deletePost(id) {
-    //maybe josh it is a good idea to remove the comment from the question as well but as long as everyting works for now i will leave that in there cause
-    //   dont look like leaving it in will harm anything for now yeah uhasufh uhauh yeah
-    var type = "questions";
+//removes a question/comment from users screen, if the server responds with an 'ok'(sort of)
+function deletePost(type, id) {
     var identy = id;
-    if(id.toString().indexOf('_') != -1) {
-        type = "comments";
-        identy = id.substring(id.indexOf('_') + 1);
-    }
     $.ajax({
         url: "/" + type + "/" + identy,
         type: 'DELETE',
         dataType: 'json'
     }).done(function(data){
+        //if the server does not respond with any data, that is an error
         if (data) {
+            //we are expecting the data to have some sort of id, meaning it successfully deleted the post
             if (data.question_id || data.comment_id){
+                
+                //the .hide(2000) function below is what animates the post being deleted, 2000 is the time in ms. 
+                
                 if(type == "questions") {
+                    
+                    //necessary to reset min-height so the hide function works
+                    //  if you wanted to remove the animations, take out ALL code beneath
+                    //  to the next else statement EXCEPT the ones that end in .remove
                     $("#postContainer_" + id).css('height', $("#postContainer_" + id).css('min-height'));
                     $("#postContainer_" + id).css('min-height', '0px');
                     $("#postContainer_" + id).hide(2000, function() {
@@ -426,12 +438,13 @@ function deletePost(id) {
                     });
                     $("#commentsContainer_" + id).hide(2000, function() {
                         $("#commentsContainer_" + id).remove();
-                    })
+                    });
                     $("#replyContainer_" + id).hide(2000, function() {
                         $("#replyContainer_" + id).remove();
                     });
                 }
                 else {
+                    //deletes the comment from the questions storage and hides it then removes
                     getQuestionById(id.substring(0, id.indexOf("_"))).deleteComment();
                     $("#commentContainer_" + id).hide(2000, function() {
                         $("#commentContainer_" + id).remove();
@@ -451,7 +464,7 @@ function deletePost(id) {
     });
 }
 
-//hides a flagged question/comment
+//blacks out a flagged question/comment
 function hide(id) {
     $("#flagImg_" + id).attr('src', '/img/redflag.png');
     $("#upvote_" + id).css('visibility', 'hidden');
