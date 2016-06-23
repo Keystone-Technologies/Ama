@@ -5,10 +5,8 @@
 	<meta name="google-signin-client_id" content="156728782684-3v8c4suoku9kqcqoe0ghoouahuukqv1m.apps.googleusercontent.com">
 	<script src="https://apis.google.com/js/api.js"></script>
 	<script src="https://apis.google.com/js/platform.js" async defer></script>
-	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 	<script src="/js/scripts.js"></script>
-	
 	<link rel="stylesheet" media="screen and (max-device-width: 800px)" href="/css/style.css">
 	<link rel="stylesheet" media="screen and (min-device-width: 800px)" href="/css/desktop.css">
 </head>
@@ -56,8 +54,6 @@ $(document).ready(function() {
 });
 </script>
 
-
-
 <body>
 	<div class="header">
 		<div class="logoContainer"> 
@@ -66,13 +62,11 @@ $(document).ready(function() {
 		<div class="version">
 			v<%=$self->version%>
 		</div>
-
 		<div class="youtube">
 			<a href="https://www.youtube.com/channel/UCwSuyK7EsrNN02Z92bI34gA/feed" target="_blank">
 				<img class="youtubeImg" src="/img/youtubehover.png" alt="YOUTUBE">
 			</a>
 		</div>
-		
 	</div>
 	
 	<div class="padding"></div>
@@ -102,7 +96,6 @@ $(document).ready(function() {
 			</div><div class="sortMenuOption" id="creator_my" onclick="changeFilter('creator', 'my')">
 			mine</div>
 		</div>
-		
 		<div class="sortMenuOptionsContainer">
 			<div class="sortMenuOption" id="answered_1" onclick="changeFilter('answered', 1)">
 				answered
@@ -164,7 +157,6 @@ $(document).ready(function() {
 	% } else {
 	<a href="/login" > Login  </a>
 	% }
-	
 	<div class="singlePost">
 		<div class= "postContainer" id="postContainer_ID">
 			<div class="voteInfoContainer" id="voteInfoContainer_ID">
