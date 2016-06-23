@@ -195,13 +195,7 @@ $(document).ready(function() {
 					onmouseleave="this.src='/img/trash.png'"
 					onclick="deletePost(ID)">
 				</div>
-				<div class="flagButtonContainer">
-					<img class= "containedImg" src="/img/flag.png" alt="Flag" 
-					id="flagImg_ID"
-					onmouseenter="changeFlag(ID, 'in')" 
-					onmouseleave="changeFlag(ID, 'out')"
-					onclick="sendFlagReport(ID)">
-				</div>
+
 			</div>
 			
 			<div class="postTextAndInfoContainer" id="postTextAndInfoContainer_ID">
