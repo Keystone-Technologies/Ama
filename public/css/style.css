@@ -234,6 +234,14 @@ body {
 	margin: auto;
 }
 
+.showMoreButton {
+	padding: 50px;
+	text-align: center;
+	font-size: 2.5em;
+	color:00004c;
+	cursor:pointer;
+}
+
 /*question container contains info for a quesiton*/
 
 .postContainer {

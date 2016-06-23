@@ -67,7 +67,7 @@ sub all {
 ], $self->username)->hashes->to_array }
 
 sub getQuestions {
-  my ($self, $creator, $answered, $orderby, $direction) = @_;
+  my ($self, $creator, $answered, $orderby, $direction, $limit) = @_;
   my $sql = 
   'select '.
     'question_id, '.
@@ -89,9 +89,9 @@ sub getQuestions {
   
   $sql = $sql .  'answered(question_id)::int = ? '.
   'order by ' . $orderby . ' ' . $direction . ' ' .
-  'limit 50; ';
+  'limit ?; ';
   
-  $self->pg->db->query($sql, $self->username, $answered)->hashes->to_array }
+  $self->pg->db->query($sql, $self->username, $answered, $limit)->hashes->to_array }
 
 sub find { shift->pg->db->query('select * from questions where question_id = ?', shift)->hash }
 

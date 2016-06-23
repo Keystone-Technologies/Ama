@@ -42,6 +42,16 @@ $(document).ready(function() {
     //this is where it should set the last viewed options, something like that with cookies
     changeQuestions();
     
+    $(window).resize(function() {
+    	resizePosts();
+    });
+    
+    $(window).scroll(function() {
+		if($(window).scrollTop() + $(window).height() == $(document).height()) {
+    	showMore();
+	}
+});
+    
 });
 </script>
 
@@ -142,6 +152,10 @@ $(document).ready(function() {
 		
 	</div>
 	
+	<div class="showMoreButton" onclick="showMore()">
+		show more
+	</div>
+	
 	<div class="singlePost">
 		<div class= "postContainer" id="postContainer_ID">
 			<div class="voteInfoContainer" id="voteInfoContainer_ID">
@@ -200,7 +214,7 @@ $(document).ready(function() {
 					<div class="postActionContainer" id="replyButton_ID" onclick="toggleReplyForm(ID)">
 						reply
 					</div>
-					<div class="timeAskedContainer">
+					<div class="timeAskedContainer" id="timeAskedContainer_ID">
 						TIMEASKED
 					</div>
 				</div>
