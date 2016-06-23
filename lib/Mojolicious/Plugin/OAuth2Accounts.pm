@@ -22,14 +22,13 @@ has providers => sub {
       args => {
         scope => 'public_profile email',
       },
-      fetch_user_url => 'https://graph.facebook.com/v2.6/me?access_token=%token%',
+      fetch_user_url => 'https://graph.facebook.com/v2.6/me?fields=email,first_name,last_name&access_token=%token%',
       map => {
         error => '/error/message',
         id => '/id',
         email => '/email',
-        name => '/name',
-        first_name => '/name',
-        last_name => '/name',
+        first_name => '/first_name',
+        last_name => '/last_name',
       },
     },
     google => {
@@ -40,7 +39,7 @@ has providers => sub {
       map => {
         error => '/error/message',
         id => '/id',
-        email => '/emails/value',
+        email => '/emails/0/value',
         first_name => '/name/givenName',
         last_name => '/name/familyName',
       },
