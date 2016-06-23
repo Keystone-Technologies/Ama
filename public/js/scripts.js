@@ -267,53 +267,50 @@ function initializeContent() {
     }
     else{
         for(var i = 0; i < getQuestionCount(); i ++) {
-            questionHTML = HTMLforPost;
+            questionHTML = HTMLforPost;    //resets html for one question
             var question = getQuestion(i);
-            questionHTML = questionHTML.replace(/ID/g, question.getId());
+            questionHTML = questionHTML.replace(/ID/g, question.getQuestionId());
             questionHTML = questionHTML.replace(/VOTES/g, question.getVotes());
             questionHTML = questionHTML.replace(/TEXT/g, question.getText());
             questionHTML = questionHTML.replace(/NUMCOMMENTS/g, question.getCommentCount());
             questionHTML = questionHTML.replace(/TIMEASKED/g, question.getTimeCreated());
-            contentHTML += questionHTML;
+            contentHTML += questionHTML;  //adds the html for one new question filled with infoto content
         }
        $(".content").html(contentHTML); 
-    }    
+    }
     initializeLayout();
 }
 
 //will hide all unnecessary containers, 
 // such as trash cans, answer buttons, reply forms etc
 // not all containers are hidden is this function though,
-// .content and .newQuestionContainer are hidden at top of
-// index file
-//also initializes flagged questions and answered questions etc..
+// check top of index file for more default hidden containers
 function initializeLayout() {
+    //hides all comments and reply containers
     $(".commentsContainer").hide();
+    $(".replyContainer").hide();
+    
+    //iterates through each question and hides certain containers within it
     for(var i = 0; i < getQuestionCount(); i ++)
     {
         var question = getQuestion(i);
         
-        //initialy hides all reply containers
-        $("#replyContainer_" + question.getId()).hide();
-        
+        //hides all trash cans on questions the current user does not own
         if(getCurrentUser() != question.getCreator()) {
-            $("#deleteButtonContainer_" + question.getId()).css('visibility', 'hidden');
+            $("#deleteButtonContainer_" + question.getId()).css('visibility', 'hidden'); //changing css visibility to hidden hides the div but lets it keep space where it was
         }
         
         if(question.isFlagged()) {
             hide(question.getId());
         }
         
+        //sets the initial image for what the users vote is
         if(question.getUsersVote() == "up") {
             $("#upvote_" + question.getId()).attr('src', '/img/clickedsmalluparrow.png');
         }
-        
         if(question.getUsersVote() == "down") {
             $("#downvote_" + question.getId()).attr('src', '/img/clickedsmalldownarrow.png');
         }
-        
-        //hides the answer button on questions for obvious reasons
-        $("#answerButtonContainer_" + question.getId()).css('visibility', 'hidden');
         
         if(question.isAnswered()) {
             //hides or removes so containers to look neater
