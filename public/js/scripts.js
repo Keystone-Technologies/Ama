@@ -1,37 +1,60 @@
-function Question(id_input, text_input, votes_input, creator_input, time_created_input, comment_count_input, flagged_input, answered_input, users_vote_input) {
-    var id = id_input;
-    var text = text_input;
-    text = text.replace(/NEWLINEPLEASE/g, '<br/>');
+//Post object could be a Question or a Comment
+function Post(question_id_input, comment_id_input, text_input, votes_input, creator_input, time_created_input, flagged_input, users_vote_input, type_input,//shared
+                comment_count_input, answered_input, //question specific
+                answer_input) { //comment specific
+    //Paramters that both questions and comments share
+    var question_id = question_id_input;
+    var text = text_input; //holds the text for question/comment
+    text = text.replace(/\n/g, '<br/>');
     var votes = votes_input;
-    var flagged = flagged_input;
-    var creator = creator_input;
+    var creator = creator_input; 
     var time_created = time_created_input;
-    var comment_count = comment_count_input;
-    var comments = [];
-    var comments_shown = false;
-    var answered = answered_input;
+    var flagged = flagged_input;
     var users_vote = users_vote_input;
     if(users_vote != "up" && users_vote != "down")
         users_vote = "none";
+    var type = type_input; //type can be 'question' or 'comment'
     
-    this.getId = function() {return id;}
-    this.getText = function() {return text;}
-    this.getVotes = function() {return votes;}
-    this.getCreator = function() {return creator;}
-    this.isFlagged = function() {return flagged;}
-    this.isAnswered = function() {return answered;}
-    this.getTimeCreated = function() {return time_created;}
-    this.getCommentCount = function() {return comment_count;}
-    this.getCommentsShown = function() {return comments_shown;}
-    this.getUsersVote = function() {return users_vote;}
+    //Parameters specific to a Question
+    var comment_count = comment_count_input; //number of comments on a question
+    var comments = [];                       //array to hold comments when loaded
+    var comments_shown = false;              //variable telling whether or not the comments are currently shown on screen
+    var answered = answered_input;           //if the question is answered
+    
+    //Parameters specific to a Comment
+    var comment_id = comment_id_input;
+    var answer = answer_input;               //true if this is the answer to its question
+    
+    this.getQuestionId = function() {return question_id;};
+    this.getText = function() {return text;};
+    this.getVotes = function() {return votes;};
+    this.getCreator = function() {return creator;};
+    this.isFlagged = function() {return flagged;};
+    this.getTimeCreated = function() {return time_created;};
+    this.getUsersVote = function() {return users_vote;};
+    this.getType = function() {return type;};
+    
+    //functions
+    this.setFlagged = function(flag) {
+        flagged = flag; 
+    };
+    
+    this.setUsersVote = function(vote) {
+        users_vote = vote;
+    };
+    
+    //*************************************************************Question Specific Funtions
+    this.isAnswered = function() {return answered;};
+    this.getCommentCount = function() {return comment_count;};
+    this.getCommentsShown = function() {return comments_shown;};
     
     this.setCommentCount = function(count) {
         comment_count = count;
-    }
+    };
     
     this.getComment = function(index) {
         return comments[index];
-    }
+    };
     
     this.getCommentById = function(id) {
         for(var i = 0; i < comment_count; i ++) {
@@ -41,66 +64,26 @@ function Question(id_input, text_input, votes_input, creator_input, time_created
         }
         
         return null;
-    }
+    };
     
     this.addComment = function(comment) {
         comments[comment_count ++] = comment;
-    }
+    };
     
     this.setCommentsShown = function(shown) {
         comments_shown = shown;
-    }
-    
-    this.setFlagged = function(flag) {
-        flagged = flag; 
-    }
-    
-    this.setUsersVote = function(vote) {
-        users_vote = vote;
-    }
+    };
     
     this.deleteComment = function() {
         comment_count --;
-        //doesnt actually remove the question
-        // but for the purposes of my webpage this works 100% fine
-        // because after the page is initialized you wont need to 
-        // loop through all the comments anymore
-        // all you need to be able to do is get them by their id
-        // but if for some reason someone changes this and actually removes
-        // the question that is totally fine with me man
-    }
-}
-
-function Comment(id_input, text_input, votes_input, creator_input, time_created_input, flagged_input, answer_input, users_vote_input) {
-    var id = id_input;
-    var text = text_input;
-    text = text.replace(/\n/g, '<br/>');
-    var votes = votes_input;
-    var creator = creator_input;
-    var time_created = time_created_input;
-    var flagged = flagged_input;
-    var answer = answer_input;
-    var users_vote = users_vote_input;
-    if(users_vote != "up" && users_vote != "down")
-        users_vote = "none";
-    
-    this.getQuestId = function() {return id.substring(0, id.indexOf('_'));}
-    this.getId = function() {return id;}
-    this.getText = function() {return text;}
-    this.getVotes = function() {return votes;}
-    this.getCreator = function() {return creator;}
-    this.getTimeCreated = function() {return time_created;}
-    this.isAnswer = function() {return answer;}
-    this.isFlagged = function() {return flagged;}
-    this.getUsersVote = function() {return users_vote;}
-    
-    this.setFlagged = function(flag) {
-        flagged = flag; 
+        //doesnt actually remove the comment from memory 
+        //  only changes comment count for accurate display 
+        //  for show comments(commentcount)
     }
     
-    this.setUsersVote = function(vote) {
-        users_vote = vote;
-    }
+    //************************************************************Comment Specific Functions
+    this.getCommentId = function() {return comment_id;};
+    this.isAnswer = function() {return answer;};
 }
 
 //STATIC VARIABLES hold all of the current database questions and number of questions
