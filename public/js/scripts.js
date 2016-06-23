@@ -245,12 +245,16 @@ function changeVoteImg(type, id, dir, voteDir) {
 }
 
 //changes the answer button image based on mouse position
+//  id is id
+//  dir is if mouse is going in or out
 function changeCheckMark(id, dir) {
-    var comment = getQuestionById(id.substring(0, id.indexOf('_'))).getCommentById(id);
+    var comment = getCommentById(id);  //comment that checkmark img is chaning
+    var checked = "";                  //changes to 'checked' if the img needs to be checkedcheckmark
+    
     if(dir == 'in')
-        $("#answerImg_" + comment.getId()).attr('src', '/img/checkedcheckmark.png');
-    else
-        $("#answerImg_" + comment.getId()).attr('src', '/img/checkmark.png');
+        checked = "checked";
+        
+    $("#answerImg_" + comment.getId()).attr('src', '/img/' + checked + 'checkmark.png');
 }
 
 //adds all questions with proper html to the content div
