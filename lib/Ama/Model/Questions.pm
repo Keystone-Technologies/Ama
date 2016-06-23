@@ -67,7 +67,7 @@ sub all {
 ], $self->username)->hashes->to_array }
 
 sub getQuestions {
-  my ($self, $creator, $answered, $orderby, $direction, $limit) = @_;
+  my ($self, $creator, $answered, $orderby, $direction, $limit, $keyword) = @_;
   my $sql = 
   'select '.
     'question_id, '.
@@ -85,6 +85,10 @@ sub getQuestions {
   
   if($creator eq 'my') {
     $sql = $sql . 'username::int = ' . $self->username . ' and ';
+  }
+  
+  if($keyword ne 'none') {
+    $sql = $sql . "question like '%" . $keyword . "%' and ";
   }
   
   $sql = $sql .  'answered(question_id)::int = ? '.

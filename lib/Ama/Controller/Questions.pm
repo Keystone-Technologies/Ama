@@ -36,7 +36,8 @@ sub getQuestions {
   my $orderby = $self->param('orderby');
   my $direction = $self->param('direction');
   my $limit = $self->param('limit');
-  $self->stash(questions => $self->questions->getQuestions($creator, $answered, $orderby, $direction, $limit));
+  my $keyword = $self->param('keyword');
+  $self->stash(questions => $self->questions->getQuestions($creator, $answered, $orderby, $direction, $limit, $keyword));
   $self->respond_to(
     json=> {json => $self->stash('questions')},
     any => {},

@@ -217,25 +217,64 @@ body {
 }
 
 .filterName {
-	-webkit-user-select: none; /* Chrome/Safari */        
-	-moz-user-select: none; /* Firefox */
-	-ms-user-select: none; /* IE10+ */
-
-	/* Rules below not implemented in browsers yet */
-	-o-user-select: none;
-	user-select: none;
-	
 	display: inline-block;
 	font-size: 1.5em;
+}
+
+.clearButton {
+	display: inline-block;
+	text-decoration: underline;
+	border-radius:15px;
+	cursor: pointer;
 }
 
 .sortMenuButtonContainer {
 	position: absolute;
 	display: inline-block;
-	right:2%;
+	right:8%;
 	top:0;
 	bottom:0;
 	height:100%;
+}
+
+.searchButtonContainer {
+	position: absolute;
+	right: 1%;
+	top: 0;
+	bottom: 0;
+	height: 100%;
+}
+
+/*************search bar****************/
+
+.searchBar {
+	position: relative;
+	background-color: f4f4f4;
+	width: 100%;
+	max-width:1200px;
+	min-width:810px;
+	margin:auto;
+	top: 0px;
+	height: 30px;
+	padding: 10px;
+	display: flex;
+    justify-content: center; /* align horizontal */
+    align-items: center; /* align vertical */
+}
+
+.searchTextArea {
+	display: inline-block;
+	border:none;
+	width: 75%;
+	height: auto;
+	font-size:1.5em;
+}
+
+.searchButton {
+	display: inline-block;
+	text-align: center;
+	margin: auto;
+	font-size: 1em;
 }
 
 .content {
@@ -418,17 +457,11 @@ body {
 	overflow:visible;
 }
 
-.commentPadding {
-	position:relative;
-	float:left;
-	width:10%;
-}
-
 .commentContainer {
 	position:relative;
-	float:left;
+	left:10%;
 	height: 100px;
-	width:88%;
+	width:90%;
 	border-bottom: 1px solid;
 	border-bottom-color: 747474;
 	border-left: 1px solid;
