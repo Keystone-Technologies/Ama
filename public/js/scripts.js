@@ -531,7 +531,6 @@ function vote(type, id, dir) {
             type: 'delete',
             dataType: 'json'
         }).done(function(data) {
-            console.log(data);
             $("#voteContainer_" + type + id).html(data.votes);
             post.setUsersVote('none');
             changeVoteImg(type, id, 'out', dir);
@@ -539,8 +538,7 @@ function vote(type, id, dir) {
         return;
     }
     
-    $.post("/api/" + type + "/vote/" + id + "/" + dir, function(data){
-        console.log(data);
+    $.post("/api/" + type + "s/vote/" + id + "/" + dir, function(data){
         $("#voteContainer_" + type + id).html(data.votes);
         post.setUsersVote(dir);
         changeVoteImg(type, id, 'out', opp);  //changes the opposite vote image incase that was the last vote
