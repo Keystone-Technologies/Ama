@@ -71,7 +71,7 @@ function Question(id_input, text_input, votes_input, creator_input, time_created
     }
 }
 
-function Comment(id_input, text_input, votes_input, creator_input, time_created_input, flagged_input, answer_input, users_vote_input) {
+function Comment(id_input, text_input, votes_input, creator_input, time_created_input, flagged_input, answer_input, users_vote_input, link_input) {
     var id = id_input;
     var text = text_input;
     text = text.replace(/\n/g, '<br/>');
@@ -83,6 +83,7 @@ function Comment(id_input, text_input, votes_input, creator_input, time_created_
     var users_vote = users_vote_input;
     if(users_vote != "up" && users_vote != "down")
         users_vote = "none";
+    var link = link_input;
     
     this.getQuestId = function() {return id.substring(0, id.indexOf('_'));}
     this.getId = function() {return id;}
@@ -93,6 +94,7 @@ function Comment(id_input, text_input, votes_input, creator_input, time_created_
     this.isAnswer = function() {return answer;}
     this.isFlagged = function() {return flagged;}
     this.getUsersVote = function() {return users_vote;}
+    this.getLink = function() {return link;}
     
     this.setFlagged = function(flag) {
         flagged = flag; 
@@ -114,6 +116,7 @@ var defaultPostSize = 0;
 var deviceType = "desktop";
 var defaultLimit = 15;
 var openMenu = "none";
+var acceptableLinkCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuwxyz.:/?=";  //characters that are allowed in a video link
 
 //filter settings
 var filters = [];
@@ -629,11 +632,15 @@ function submitQuestion() {
 function sendReply(id) {
     var text = $("#newPostTextArea_" + id).val();
     text = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    var link = extractLink(text);
+    text = text.replace(link + '\n', "");
+    text = text.replace(link, "");
     
     //reply data to be sent
     var reply = {
         question_id: id,
-        comment: text
+        comment: text,
+        video_link: link
     };
     
     $.ajax({
@@ -736,7 +743,8 @@ function toggleComments(id) {
         question.setCommentCount(0);
         $.get("/questions/" + id + "/comments", function(data){
             $.each(data, function(i, v){
-                var current = new Comment(v.question_id + "_" + v.comment_id, v.comment, v.votes, v.username, v.created, v.flagged, v.answered, v.my_vote);
+                var current = new Comment(v.question_id + "_" + v.comment_id, v.comment, v.votes, v.username, v.created, v.flagged, v.answered, v.my_vote, v.video_link);
+                console.log(current.getLink());
                 for(var j = 0; j < getQuestionCount(); j ++)
                 {
                     if(getQuestion(j).getId() == current.getQuestId())
@@ -851,4 +859,21 @@ function search() {
     setFilter('limit', defaultLimit);
     changeQuestions();
     closeMenu();
+}
+
+function extractLink(text) {
+    var link = "";
+    
+    var begin = text.indexOf("https://youtu.be/");
+    if(begin != -1) {
+        var end = begin;
+        
+        while(acceptableLinkCharacters.indexOf(text.charAt(begin)) != -1 && begin < text.length) {
+            begin ++;
+        }
+        
+        link = text.substring(begin, end);
+    }
+    
+    return link;
 }
