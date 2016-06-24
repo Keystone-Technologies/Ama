@@ -146,7 +146,9 @@ function getQuestionById(id) {
 function getCommentById(id) {
     for(var i = 0; i < getQuestionCount(); i ++) {
         if(getQuestion(i).getCommentsShown()) {
-            return getQuestion(i).getCommentById();
+            var comment = getQuestion(i).getCommentById(id);
+            if(comment != null)
+                return comment;
         }
     }
     return null;
@@ -183,14 +185,15 @@ function toggleQuestionForm() {
 
 //shows/hides reply form container
 function toggleReplyForm(id) {
-	$("#replyContainer_" + id).slideToggle("slow", function(){
-	    $("#newPostTextArea_" + id).focus();
+    var type = "question";
+	$("#replyContainer_" + type + id).slideToggle("slow", function(){
+	    $("#newPostTextArea_" + type + id).focus();
 	});
-	if($("#replyButton_" + id).html() != "cancel")
-		$("#replyButton_" + id).html("cancel");
+	if($("#replyButton_" + type + id).html() != "cancel")
+		$("#replyButton_" + type + id).html("cancel");
 	else {
-		$("#replyButton_" + id).html("reply");
-		$("#newPostTextArea_" + id).val("");
+		$("#replyButton_" + type + id).html("reply");
+		$("#newPostTextArea_" + type + id).val("");
 	}
 }
 
@@ -198,7 +201,7 @@ function toggleReplyForm(id) {
 //  type is the type of post ('comment' or 'question')
 //  id is id
 //  dir is the direction of the mouse (if the mouse is going in or out)
-function changeFlag(type, id, dir) {
+function changeFlagImg(type, id, dir) {
     var flagged = "";  //if left blank, image will be normal flag. If changed to 'red' image will be redflag
     var post;          //post to change the flag color on
     
@@ -213,7 +216,7 @@ function changeFlag(type, id, dir) {
     if(dir == 'out' && post.isFlagged())
         flagged = 'red';
     
-    $("#flagImg_" + id).attr("src", "/img/" + flagged + "flag.png"); //sets the flag image accordingly
+    $("#flagImg_" + type + id).attr("src", "/img/" + flagged + "flag.png"); //sets the flag image accordingly
 }
 
 //changes vote image based on mouse position and post status
@@ -235,7 +238,7 @@ function changeVoteImg(type, id, dir, voteDir) {
     if(dir == 'in' && post.getUsersVote() != voteDir)
         clicked = "clicked";
     
-    $("#" + voteDir + "vote_" + post.getId()).attr('src', '/img/' + clicked + 'small' + voteDir + 'arrow.png');
+    $("#" + voteDir + "vote_" + type + post.getId()).attr('src', '/img/' + clicked + 'small' + voteDir + 'arrow.png');
 }
 
 //changes the answer button image based on mouse position
@@ -244,11 +247,12 @@ function changeVoteImg(type, id, dir, voteDir) {
 function changeCheckMark(id, dir) {
     var comment = getCommentById(id);  //comment that checkmark img is chaning
     var checked = "";                  //changes to 'checked' if the img needs to be checkedcheckmark
+    var type = "comment";
     
     if(dir == 'in')
         checked = "checked";
         
-    $("#answerImg_" + comment.getId()).attr('src', '/img/' + checked + 'checkmark.png');
+    $("#answerImg_" + type + comment.getId()).attr('src', '/img/' + checked + 'checkmark.png');
 }
 
 //adds all questions with proper html to the content div
@@ -264,6 +268,7 @@ function initializeContent() {
             questionHTML = HTMLforPost;    //resets html for one question
             var question = getQuestion(i);
             questionHTML = questionHTML.replace(/ID/g, question.getId());
+            questionHTML = questionHTML.replace(/TYPE/g, 'question');
             questionHTML = questionHTML.replace(/VOTES/g, question.getVotes());
             questionHTML = questionHTML.replace(/TEXT/g, question.getText());
             questionHTML = questionHTML.replace(/NUMCOMMENTS/g, question.getCommentCount());
@@ -283,6 +288,7 @@ function initializeLayout() {
     //hides all comments and reply containers
     $(".commentsContainer").hide();
     $(".replyContainer").hide();
+    var type = "question";
     
     //iterates through each question and hides certain containers within it
     for(var i = 0; i < getQuestionCount(); i ++)
@@ -291,7 +297,7 @@ function initializeLayout() {
         
         //hides all trash cans on questions the current user does not own
         if(getCurrentUser() != question.getCreator()) {
-            $("#deleteButtonContainer_" + question.getId()).css('visibility', 'hidden'); //changing css visibility to hidden hides the div but lets it keep space where it was
+            $("#deleteButtonContainer_" + type + question.getId()).css('visibility', 'hidden'); //changing css visibility to hidden hides the div but lets it keep space where it was
         }
         
         if(question.isFlagged()) {
@@ -300,24 +306,24 @@ function initializeLayout() {
         
         //sets the initial image for what the users vote is
         if(question.getUsersVote() == "up") {
-            $("#upvote_" + question.getId()).attr('src', '/img/clickedsmalluparrow.png');
+            $("#upvote_" + type + question.getId()).attr('src', '/img/clickedsmalluparrow.png');
         }
         if(question.getUsersVote() == "down") {
-            $("#downvote_" + question.getId()).attr('src', '/img/clickedsmalldownarrow.png');
+            $("#downvote_" + type + question.getId()).attr('src', '/img/clickedsmalldownarrow.png');
         }
         
         if(question.isAnswered()) {
             //hides/removes/ changes css to make an answered question look different
-            $("#postContainer_" + question.getId()).css('height', '160px');
-            $("#replyButton_" + question.getId()).remove();
-            $("#upvote_" + question.getId()).remove();
-            $("#voteInfoContainer_" + question.getId()).css('left', '0%');
-            $("#downvote_" + question.getId()).remove();
-            $("#buttonContainer_" + question.getId()).remove();
-            $("#postTextAndInfoContainer_" + question.getId()).css('width', '90%');
-            $("#postTextAndInfoContainer_" + question.getId()).css('left', '10%');
-            $("#timeAskedContainer_" + question.getId()).html("Answered on " + question.getTimeCreated());
-            $("#timeAskedContainer_" + question.getId()).css('width', '65%');
+            $("#postContainer_" + type + question.getId()).css('height', '160px');
+            $("#replyButton_" + type + question.getId()).remove();
+            $("#upvote_" + type + question.getId()).remove();
+            $("#voteInfoContainer_" + type + question.getId()).css('left', '0%');
+            $("#downvote_" + type + question.getId()).remove();
+            $("#buttonContainer_" + type + question.getId()).remove();
+            $("#postTextAndInfoContainer_" + type + question.getId()).css('width', '90%');
+            $("#postTextAndInfoContainer_" + type + question.getId()).css('left', '10%');
+            $("#timeAskedContainer_" + type + question.getId()).html("Answered on " + question.getTimeCreated());
+            $("#timeAskedContainer_" + type + question.getId()).css('width', '65%');
         }
     }
     
@@ -329,6 +335,7 @@ function initializeLayout() {
 //intitializes layout of all comments of a specific question
 function initializeCommentLayout(id) {
     var question = getQuestionById(id);
+    var type = "comment";
     for(var j = 0; j < question.getCommentCount(); j ++) {
         var comment = question.getComment(j);
         
@@ -336,27 +343,27 @@ function initializeCommentLayout(id) {
             hide(comment.getId());
         }
         if(comment.getCreator() != getCurrentUser()) {
-            $("#deleteButtonContainer_" + comment.getId()).css('visibility', 'hidden');
+            $("#deleteButtonContainer_" + type + comment.getId()).css('visibility', 'hidden');
         }
         if(comment.getUsersVote() == "up") {
-            $("#upvote_" + comment.getId()).attr('src', '/img/clickedsmalluparrow.png');
+            $("#upvote_" + type + comment.getId()).attr('src', '/img/clickedsmalluparrow.png');
         }
         if(comment.getUsersVote() == "down") {
-            $("#downvote_" + comment.getId()).attr('src', '/img/clickedsmalldownarrow.png');
+            $("#downvote_" + type + comment.getId()).attr('src', '/img/clickedsmalldownarrow.png');
         }
         if(question.isAnswered()) {
             var comment = question.getComment(j);
-            $("#upvote_" + comment.getId()).css('visibility', 'hidden');
-            $("#downvote_" + comment.getId()).css('visibility', 'hidden');
-            $("#flagImg_" + comment.getId()).remove()
-            $("#deleteButtonContainer_" + comment.getId()).remove();
+            $("#upvote_" + type + comment.getId()).css('visibility', 'hidden');
+            $("#downvote_" + type + comment.getId()).css('visibility', 'hidden');
+            $("#flagImg_" + type + comment.getId()).remove()
+            $("#deleteButtonContainer_" + type + comment.getId()).remove();
             if(comment.isAnswer()) {
                 //if the comment is the answer, moving the mouse over the answer button, and clicking it, does not do anything
-                $("#answerImg_" + comment.getId()).attr({onmouseenter: "", onmouseleave: "", onclick: "", src:"/img/checkedcheckmark.png"});
+                $("#answerImg_" + type + comment.getId()).attr({onmouseenter: "", onmouseleave: "", onclick: "", src:"/img/checkedcheckmark.png"});
             }
             else {
-                $("#commentContainer_" + comment.getId()).css('background-color', 'd6d6d6');
-                $("#answerImg_" + comment.getId()).remove();
+                $("#commentContainer_" + type + comment.getId()).css('background-color', 'd6d6d6');
+                $("#answerImg_" + type + comment.getId()).remove();
             }
         }
     }
@@ -364,18 +371,19 @@ function initializeCommentLayout(id) {
 
 //resizes all questions so if they have a lot of text, a scroll bar does not appear
 function resizePosts() {
+    var type = "question";
     for(var i = 0; i < getQuestionCount(); i ++) {
         var question = getQuestion(i);
         
         //sets the default post size if it has never been set. This helps the program determine whether or not the use is on mobile or on desktop version
         if(defaultPostSize == 0) {
-            defaultPostSize = parseInt($("#postContainer_" + question.getId()).css('height'));
+            defaultPostSize = parseInt($("#postContainer_" + type + question.getId()).css('height'));
             if(defaultPostSize < 275)
                 deviceType = "desktop";
         }
         
         //Parse int because the .css('height') will return a string, '100px' or something like that
-        var num = parseInt($("#textContainer_" + question.getId()).css('height'));
+        var num = parseInt($("#textContainer_" + type + question.getId()).css('height'));
         num = num + 110;
         
         //automatically assumes the size needs to increase. If it is too small, sets it back to default
@@ -385,19 +393,20 @@ function resizePosts() {
         
         //adds the px back to the end so the css knows what unit of measurement to use(different ones being %, em, px, vw, vh, etc...)
         num += "px";
-        $("#postContainer_" + question.getId()).css('min-height', num);
+        $("#postContainer_" + type + question.getId()).css('min-height', num);
     }
 }
 
 //resizes comments
 function resizeComments(id) {
     var question = getQuestionById(id);
+    var type = "comment";
     for(var j = 0; j < question.getCommentCount(); j ++) {
         var comment = question.getComment(j);
         
         //see above for why parsing the int
-        var num = parseInt($("#textContainer_" + comment.getId()).css('height'));
-        var contHeight = parseInt($("#postTextContainer_" + question.getId()).css('height'));
+        var num = parseInt($("#textContainer_" + type + comment.getId()).css('height'));
+        var contHeight = parseInt($("#postTextContainer_" + type + question.getId()).css('height'));
         
         //if the size of the container holding the comment tex
         //  is greater than the size of the container holding
@@ -406,16 +415,22 @@ function resizeComments(id) {
         if(num >= contHeight) {
             num = num + 50;
             num += "px";
-            $("#commentContainer_" + comment.getId()).css('height', num);
+            $("#commentContainer_" + type + comment.getId()).css('height', num);
         }
     }
 }
 
 //removes a question/comment from users screen, if the server removes it from db
-//  in this case, to use this function, type must be 'questions' or 'comments' for the URL to work
+//  in this case, to use this function, type must be 'question' or 'comment' for the URL to work
 function deletePost(type, id) {
+    
+    //confirms if the user wants to delete
+    if(!confirm("Are you sure you want to delete?"))
+        return;
+        
     $.ajax({
-        url: "/" + type + "/" + id,
+        //add an 's' because the url for deleting is 'questions' and not 'question' or 'comments' and not 'comment'
+        url: "/" + type + "s/" + id,
         type: 'DELETE',
         dataType: 'json'
     }).done(function(data){
@@ -426,28 +441,28 @@ function deletePost(type, id) {
                 
                 //the .hide(2000) function below is what animates the post being deleted, 2000 is the time in ms. 
                 
-                if(type == "questions") {
+                if(type == "question") {
                     
                     //necessary to reset min-height so the hide function works
                     //  if you wanted to remove the animations, take out ALL code beneath
                     //  to the next else statement EXCEPT the ones that end in .remove
-                    $("#postContainer_" + id).css('height', $("#postContainer_" + id).css('min-height'));
-                    $("#postContainer_" + id).css('min-height', '0px');
-                    $("#postContainer_" + id).hide(2000, function() {
-                        $("#postContainer_" + id).remove();
+                    $("#postContainer_" + type + id).css('height', $("#postContainer_" + type + id).css('min-height'));
+                    $("#postContainer_" + type + id).css('min-height', '0px');
+                    $("#postContainer_" + type + id).hide(2000, function() {
+                        $("#postContainer_" + type + id).remove();
                     });
-                    $("#commentsContainer_" + id).hide(2000, function() {
-                        $("#commentsContainer_" + id).remove();
+                    $("#commentsContainer_" + type + id).hide(2000, function() {
+                        $("#commentsContainer_" + type + id).remove();
                     });
-                    $("#replyContainer_" + id).hide(2000, function() {
-                        $("#replyContainer_" + id).remove();
+                    $("#replyContainer_" + type + id).hide(2000, function() {
+                        $("#replyContainer_" + type + id).remove();
                     });
                 }
                 else {
                     //deletes the comment from the questions storage and hides it then removes
                     getQuestionById(getCommentById(id).getQuestionId()).deleteComment();
-                    $("#commentContainer_" + id).hide(2000, function() {
-                        $("#commentContainer_" + id).remove();
+                    $("#commentContainer_" + type + id).hide(2000, function() {
+                        $("#commentContainer_" + type + id).remove();
                     });
                 }
             }
@@ -465,36 +480,36 @@ function deletePost(type, id) {
 }
 
 //blacks out a flagged question/comment
-function hide(id) {
-    $("#flagImg_" + id).attr('src', '/img/redflag.png');
-    $("#upvote_" + id).css('visibility', 'hidden');
-    $("#downvote_" + id).css('visibility', 'hidden');
-    $("#replyButton_" + id).css('visibility', 'hidden');
-    $("#postTextContainer_" + id).css('background-color', 'black');
-    $("#textContainer_" + id).html("nice try");
+function hide(type, id) {
+    $("#flagImg_" + type + id).attr('src', '/img/redflag.png');
+    $("#upvote_" + type + id).css('visibility', 'hidden');
+    $("#downvote_" + type + id).css('visibility', 'hidden');
+    $("#replyButton_" + type + id).css('visibility', 'hidden');
+    $("#postTextContainer_" + type + id).css('background-color', 'black');
+    $("#textContainer_" + type + id).html("nice try");
     
-    if($("#replyContainer_" + id).is(":visible")) {
-        $("#replyButton_" + id).html("Reply");
-        $("#replyContainer_" + id).hide();
+    if($("#replyContainer_" + type + id).is(":visible")) {
+        $("#replyButton_" + type + id).html("Reply");
+        $("#replyContainer_" + type + id).hide();
     }
 }
 
 //shows a flagged question/comment
 function show(type, id) {
-    $("#flagImg_" + id).attr('src', '/img/flag.png');
-    $("#upvote_" + id).css('visibility', 'visible');
-    $("#downvote_" + id).css('visibility', 'visible');
-    $("#replyButton_" + id).css('visibility', 'visible');
-    $("#postTextContainer_" + id).css('background-color', 'transparent');
+    $("#flagImg_" + type + id).attr('src', '/img/flag.png');
+    $("#upvote_" + type + id).css('visibility', 'visible');
+    $("#downvote_" + type + id).css('visibility', 'visible');
+    $("#replyButton_" + type + id).css('visibility', 'visible');
+    $("#postTextContainer_" + type + id).css('background-color', 'transparent');
     
     if(type == "question")
-        $("#textContainer_" + id).html(getQuestionById(id).getText());
+        $("#textContainer_" + type + id).html(getQuestionById(id).getText());
     else
-        $("#textContainer_" + id).html(getCommentById(id));
+        $("#textContainer_" + type + id).html(getCommentById(id).getText());
 }
 
 //sents vote report and changes vote image appropriately
-//  type needs to be 'questions' or 'comments' for this function to work
+//  type needs to be 'question' or 'comment' for this function to work
 //  dir is the direction that the user wants to vote
 function vote(type, id, dir) {
     var opp = "down";  //opp is the opposite direction of what the user wants to vote
@@ -502,43 +517,46 @@ function vote(type, id, dir) {
     if(opp == dir)
         opp = "up";
     
-    if(type == "questions") 
+    if(type == "question") 
         post = getQuestionById(id);
     else 
         post = getCommentById(id);
-
+        
     //if the user votes in the same direction he already has voted in,
     //  sends a delete request to delete the vote
     if(post.getUsersVote() == dir) {
         $.ajax({
-            url: "/api/" + type + "/vote/" + id,
+            //add an 's' because the url for deleting is 'questions' and not 'question' or 'comments' and not 'comment'
+            url: "/api/" + type + "s/vote/" + id,
             type: 'delete',
             dataType: 'json'
         }).done(function(data) {
-            $("#voteContainer_" + id).html(data.votes);
+            console.log(data);
+            $("#voteContainer_" + type + id).html(data.votes);
             post.setUsersVote('none');
-            changeVoteImg(id, 'out', dir);
+            changeVoteImg(type, id, 'out', dir);
         });
         return;
     }
     
     $.post("/api/" + type + "/vote/" + id + "/" + dir, function(data){
-        $("#voteContainer_" + id).html(data.votes);
+        console.log(data);
+        $("#voteContainer_" + type + id).html(data.votes);
         post.setUsersVote(dir);
-        changeVoteImg(id, 'out', opp);  //changes the opposite vote image incase that was the last vote
-        changeVoteImg(id, 'out', dir);
+        changeVoteImg(type, id, 'out', opp);  //changes the opposite vote image incase that was the last vote
+        changeVoteImg(type, id, 'out', dir);
     }, 'json');
 }
 
 //sends a flag repost on a specific post
-//  type needs to be 'questions' or 'comments'
+//  type needs to be 'question' or 'comment'
 function sendFlagReport(type, id) {
     var requestType = "POST"; //can be a deletion requestion or a post request
     var post;
     
     //if the post is not a comment
     //  sets the url to correct url and gets the question
-    if(type == "questions") {
+    if(type == "question") {
         post = getQuestionById(id);
         
     }
@@ -546,12 +564,14 @@ function sendFlagReport(type, id) {
         post = getCommentById(id);
     }
     
+    
     //if the post is already flagged, the type is set to delete
     if(post.isFlagged())
         requestType = "DELETE";    
     
     $.ajax({
-        url: "api/" + type + "/flag/" + id, //ex. api/questions/flag/12
+        //add an 's' because the url for deleting is 'questions' and not 'question' or 'comments' and not 'comment'
+        url: "api/" + type + "s/flag/" + id, //ex. api/questions/flag/12
         type: requestType,
         dataType: 'json'
     }).done(function(data){
@@ -561,15 +581,15 @@ function sendFlagReport(type, id) {
             
             if(post.isFlagged()) {
                 post.setFlagged(false);
-                show(id);
-                if(type == "questions")
+                show(type, id);
+                if(type == "question")
                     resizePosts();
                 else
-                    resizeComments(post.getQuestionID());
+                    resizeComments(post.getQuestionId());
             }
             else {
                 post.setFlagged(true);
-                hide(id);
+                hide(type, id);
             }
         }
         else
@@ -609,7 +629,8 @@ function submitQuestion() {
 
 //submits a reply to a specific question
 function sendReply(id) {
-    var text = $("#newPostTextArea_" + id).val();
+    var type = "question";
+    var text = $("#newPostTextArea_" + type + id).val();
     text = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');  //closes XSS vulnerabilities
     
     //reply data to be sent, in hash form so it can be sent as a json object
@@ -631,7 +652,7 @@ function sendReply(id) {
             toggleReplyForm(id);
             //hides and shows the comments, forcing them to refresh
             // UNLESS they arent already showing, then it just shows them
-            if($("#showCommentsButton_" + id).html().indexOf("hide") != -1) {
+            if($("#showCommentsButton_" + type + id).html().indexOf("hide") != -1) {
                 toggleComments(id);
             }
             toggleComments(id);
@@ -723,10 +744,10 @@ function reloadQuestions() {
 //shows or hides comments on a specific question. If the comments are not currenty shown, it loads the comments first
 function toggleComments(id) {
     var question = getQuestionById(id);
-    
+    var type = "question";
     //if the word hide is not on the show comments button, the comments are not currently shown
     //  the comments will be loaded, shown, and hide will be added to the button
-    if($("#showCommentsButton_" + id).html().indexOf("hide") == -1) {
+    if($("#showCommentsButton_" + type + id).html().indexOf("hide") == -1) {
         question.setCommentCount(0); //resets the comment count each time because of the way add comment works, it increments the comment count each time you add one
         $.get("/questions/" + id + "/comments", function(data){
             $.each(data, function(i, v){
@@ -748,6 +769,7 @@ function toggleComments(id) {
                 comment = question.getComment(j);
                 commentHTML = HTMLforComment;
                 commentHTML = commentHTML.replace(/ID/g, comment.getId());
+                commentHTML = commentHTML.replace(/TYPE/g, 'comment');
                 commentHTML = commentHTML.replace(/VOTES/g, comment.getVotes());
                 commentHTML = commentHTML.replace(/TEXT/g, comment.getText());
                 commentHTML = commentHTML.replace(/TIMEASKED/g, comment.getTimeCreated());
@@ -759,19 +781,19 @@ function toggleComments(id) {
             //  this way, it will be assigned a height, and we can resize it if it is too long
             //  before it slides out
             //  so: shows comments, resizes them, hides them, then animates them sliding out
-            $("#commentsContainer_" + question.getId()).html(commentsHTML);
-            $("#commentsContainer_" + question.getId()).show();
+            $("#commentsContainer_" + type + id).html(commentsHTML);
+            $("#commentsContainer_" + type + id).show();
             resizeComments(id);
-            $("#commentsContainer_" + question.getId()).hide();
-            $("#commentsContainer_" + id).slideToggle("slow");
-            $("#showCommentsButton_" + id).html("hide comments<br> ");  //changes the button to say hide commensts
+            $("#commentsContainer_" + type + id).hide();
+            $("#commentsContainer_" + type + id).slideToggle("slow");
+            $("#showCommentsButton_" + type + id).html("hide comments<br> ");  //changes the button to say hide commensts
             initializeCommentLayout(id);
         });
     }
     //if the comments are already shown, it will hide the comments and change the show comments button back to saying show comments
     else {
-        $("#commentsContainer_" + id).slideToggle("slow");
-        $("#showCommentsButton_" + id).html("show comments<br>(" + getQuestionById(id).getCommentCount() + ")");
+        $("#commentsContainer_" + type + id).slideToggle("slow");
+        $("#showCommentsButton_" + type + id).html("show comments<br>(" + getQuestionById(id).getCommentCount() + ")");
         question.setCommentsShown(false);
     }
 }
