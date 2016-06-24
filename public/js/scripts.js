@@ -111,7 +111,7 @@ var current_user = "007";
 var HTMLforPost = "uninitialized";
 var HTMLforComment = "uninitialized";
 var defaultPostSize = 0;
-var deviceType = "mobile";
+var deviceType = "desktop";
 var defaultLimit = 15;
 var openMenu = "none";
 
@@ -382,8 +382,8 @@ function resizePosts() {
         
         if(defaultPostSize == 0) {
             defaultPostSize = parseInt($("#postContainer_" + question.getId()).css('height'));
-            if(defaultPostSize < 275)
-                deviceType = "desktop";
+            if(defaultPostSize >= 275)
+                deviceType = "mobile";
         }
         
         var str = $("#textContainer_" + question.getId()).css('height');
