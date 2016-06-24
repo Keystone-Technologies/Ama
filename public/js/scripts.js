@@ -98,12 +98,12 @@ var openMenu = "none";                  //currently opened menu (ex. 'sort', 'se
 //filter settings
 var filters = [];                       //holds all of the current filters used, seen below
                                         //used when reloading the questions
-filters["creator"] = "all";
-filters["answered"] = 0;
-filters["orderby"] = "votes";
-filters["direction"] = "desc";
-filters["keyword"] = "none";
-filters["limit"] = defaultLimit;
+filters["creator"] = "all";             //can be 'all' or 'mine'
+filters["answered"] = 0;                //can be 1 or 0 representing whether the questions should be answered or not
+filters["orderby"] = "votes";           //can be 'votes' or 'date'
+filters["direction"] = "desc";          //can be 'asc' or 'desc' for oldest to newest or most vote to least votes... etc
+filters["keyword"] = "none";            //keyword that will be used in a search
+filters["limit"] = defaultLimit;        //number of questions to display at on time
 
 function getFilter(type) {
     return filters[type];
@@ -411,11 +411,11 @@ function resizeComments(id) {
     }
 }
 
-//removes a question/comment from users screen, if the server responds with an 'ok'(sort of)
+//removes a question/comment from users screen, if the server removes it from db
+//  in this case, to use this function, type must be 'questions' or 'comments' for the URL to work
 function deletePost(type, id) {
-    var identy = id;
     $.ajax({
-        url: "/" + type + "/" + identy,
+        url: "/" + type + "/" + id,
         type: 'DELETE',
         dataType: 'json'
     }).done(function(data){
@@ -445,7 +445,7 @@ function deletePost(type, id) {
                 }
                 else {
                     //deletes the comment from the questions storage and hides it then removes
-                    getQuestionById(id.substring(0, id.indexOf("_"))).deleteComment();
+                    getQuestionById(getCommentById(id).getQuestionId()).deleteComment();
                     $("#commentContainer_" + id).hide(2000, function() {
                         $("#commentContainer_" + id).remove();
                     });
@@ -480,42 +480,38 @@ function hide(id) {
 }
 
 //shows a flagged question/comment
-function show(id) {
+function show(type, id) {
     $("#flagImg_" + id).attr('src', '/img/flag.png');
     $("#upvote_" + id).css('visibility', 'visible');
     $("#downvote_" + id).css('visibility', 'visible');
     $("#replyButton_" + id).css('visibility', 'visible');
     $("#postTextContainer_" + id).css('background-color', 'transparent');
     
-    if(id.toString().indexOf('_') == -1)
+    if(type == "question")
         $("#textContainer_" + id).html(getQuestionById(id).getText());
     else
-        $("#textContainer_" + id).html(getQuestionById(id.substring(0, id.indexOf('_'))).getCommentById(id).getText());
+        $("#textContainer_" + id).html(getCommentById(id));
 }
 
 //sents vote report and changes vote image appropriately
-function vote(id, dir) {
-    var type = "questions";
-    var identity = id;
-    var opp = "down";
+//  type needs to be 'questions' or 'comments' for this function to work
+//  dir is the direction that the user wants to vote
+function vote(type, id, dir) {
+    var opp = "down";  //opp is the opposite direction of what the user wants to vote
     var post;
     if(opp == dir)
         opp = "up";
-    if(id.toString().indexOf('_') != -1) {
-        type = "comments";
-        identity = id.substring(id.indexOf('_') + 1);
-    }
     
-    if(type == "questions") {
+    if(type == "questions") 
         post = getQuestionById(id);
-    }
-    else {
-        post = getQuestionById(id.substring(0, id.indexOf('_'))).getCommentById(id);
-    }
-    
+    else 
+        post = getCommentById(id);
+
+    //if the user votes in the same direction he already has voted in,
+    //  sends a delete request to delete the vote
     if(post.getUsersVote() == dir) {
         $.ajax({
-            url: "/api/" + type + "/vote/" + identity,
+            url: "/api/" + type + "/vote/" + id,
             type: 'delete',
             dataType: 'json'
         }).done(function(data) {
@@ -526,83 +522,70 @@ function vote(id, dir) {
         return;
     }
     
-    $.post("/api/" + type + "/vote/" + identity + "/" + dir, function(data){
+    $.post("/api/" + type + "/vote/" + id + "/" + dir, function(data){
         $("#voteContainer_" + id).html(data.votes);
         post.setUsersVote(dir);
-        changeVoteImg(id, 'out', opp);
+        changeVoteImg(id, 'out', opp);  //changes the opposite vote image incase that was the last vote
         changeVoteImg(id, 'out', dir);
     }, 'json');
 }
 
-function sendFlagReport(id) {
-    var type = "POST";
-    var question;
-    var comment;
-    var url;
+//sends a flag repost on a specific post
+//  type needs to be 'questions' or 'comments'
+function sendFlagReport(type, id) {
+    var requestType = "POST"; //can be a deletion requestion or a post request
+    var post;
     
     //if the post is not a comment
     //  sets the url to correct url and gets the question
-    if(id.toString().indexOf('_') == -1) {
-        question = getQuestionById(id);
-        url = "api/questions/flag/" + id;
-        if(question.isFlagged())
-            type = "DELETE";
+    if(type == "questions") {
+        post = getQuestionById(id);
+        
+    }
+    else {
+        post = getCommentById(id);
     }
     
-    //otherwise changes the url and gets the correct question and comment
-    else {
-        question = getQuestionById(id.substring(0, id.indexOf('_')));
-        comment = question.getCommentById(id);
-        url = "api/comments/flag/" + id.substring(id.indexOf('_') + 1);
-        if(comment.isFlagged())
-            type="DELETE";
-    }
-        
+    //if the post is already flagged, the type is set to delete
+    if(post.isFlagged())
+        requestType = "DELETE";    
+    
     $.ajax({
-        url: url,
-        type: type,
+        url: "api/" + type + "/flag/" + id, //ex. api/questions/flag/12
+        type: requestType,
         dataType: 'json'
     }).done(function(data){
         if(data) {
             //if data has been sent back, success is assumed. 
             //  correctly hides or shows the correct post
-            if(id.toString().indexOf('_') == -1) {
-                if(question.isFlagged()) {
-                    show(id)
-                    question.setFlagged(0);
-                    //makes sure that if a big post has been flagged and the page refreshed
-                    // the post is resized when revelead
+            
+            if(post.isFlagged()) {
+                post.setFlagged(false);
+                show(id);
+                if(type == "questions")
                     resizePosts();
-                }
-                else {
-                    hide(id);
-                    question.setFlagged(1);
-                }
+                else
+                    resizeComments(post.getQuestionID());
             }
             else {
-                if(comment.isFlagged()) {
-                    show(id)
-                    comment.setFlagged(0);
-                    resizeComments(id.substring(0,id.indexOf('_')));
-                }
-                else {
-                    hide(id);
-                    comment.setFlagged(1);
-                }
+                post.setFlagged(true);
+                hide(id);
             }
-            
         }
         else
-            console.log("Oh no an error!"); //hah probably make this more specific
+            console.log("Error sending flag report"); //hah probably make this more specific
     });
 }
 
+//submits a new question to store in the database, and then refreshes the questions
+//  with a different filter
 function submitQuestion() {
     var text = $("#newQuestionTextarea").val();
-    text = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    text = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');  //closes XSS vulnerabilities
     
-    var question = {
-        question: text
+    //sending the data as a json requires this hash form of data(i think, never tried it without it)
+    var data = {
+        question: text  //'question' is the key and 'text' is the associated data
     };
     
     $.ajax({
@@ -610,15 +593,16 @@ function submitQuestion() {
         type: "POST",
         contentType:"application/x-www-form-urlencoded",
         dataType: 'json',
-        data: question
+        data: data
     }).done(function(data) {
         if(data.question_id) {
+            //hides the question form, updates filters and reloads questions
             toggleQuestionForm();
             setFilter('creator', 'all');
             setFilter('answered', '0');
             setFilter('orderby', 'created');
             setFilter('direction', 'desc');
-            changeQuestions();
+            reloadQuestions();
         }
     });
 }
@@ -626,9 +610,9 @@ function submitQuestion() {
 //submits a reply to a specific question
 function sendReply(id) {
     var text = $("#newPostTextArea_" + id).val();
-    text = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    text = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');  //closes XSS vulnerabilities
     
-    //reply data to be sent
+    //reply data to be sent, in hash form so it can be sent as a json object
     var reply = {
         question_id: id,
         comment: text
@@ -645,6 +629,8 @@ function sendReply(id) {
         if(data.comment_id)
         {
             toggleReplyForm(id);
+            //hides and shows the comments, forcing them to refresh
+            // UNLESS they arent already showing, then it just shows them
             if($("#showCommentsButton_" + id).html().indexOf("hide") != -1) {
                 toggleComments(id);
             }
@@ -653,46 +639,52 @@ function sendReply(id) {
     });
 }
 
+//in the future, this needs to have a confirmation box popup
 function markAnswer(id) {
-    //marks a comment as the answer to a question
-    // this cannot be undone, but in the future it would be nice to 
-    // have a confirmation box pop up perhaps
-    var question = getQuestionById(id.substring(0, id.indexOf('_')));
-    var comment = question.getCommentById(id);
-    $.post("/api/answers/" + question.getId() + "/" + comment.getId().substring(comment.getId().indexOf('_') + 1)).done(function(data) {
+    var comment = getCommentById(id);  //comment that is marked as the answer
+    var question = getQuestionById(comment.getQuestionId());  //question that has been answered
+    $.post("/api/answers/" + question.getId() + "/" + comment.getId()).done(function(data) {
+        //if the server sends back data with an id, it succesfully recorded and marked it as answered
         if(data.question_id) {
+            //reloads the questions with the newest answer on top
             setFilter('creator', 'all');
             setFilter('answered', '1');
             setFilter('orderby', 'created');
             setFilter('direction', 'desc');
-            changeQuestions();
+            reloadQuestions();
         }
     });
 }
 
-function changeQuestions() {
-    //add spinner eventually
+//reloads questions with currently set filters, and redisplays them all 
+function reloadQuestions() {
+    //See the list of global variables(close to the top, underneath Post object)(maybe around line 100 unless more lines are added) 
+    //  to learn what each filter does
+    var creator = getFilter('creator');
+    var answered = getFilter('answered');
+    var orderby = getFilter('orderby');
+    var direction = getFilter('direction');
+    var limit = getFilter('limit');
+    var keyword = getFilter('keyword');
     
-    var creator = filters["creator"];
-    var answered = filters["answered"];
-    var orderby = filters["orderby"];
-    var direction = filters["direction"];
-    var limit = filters["limit"];
-    var keyword = filters["keyword"];
-    
-    clearQuestions();
+    clearQuestions(); //removes all questions from the screen
     
     $.get("/questions/" + creator + "/" + answered + "/" + orderby + "/" + direction + "/" + limit + "/" + keyword, function(data){
         $.each(data, function(i, v){
-        	var question = new Question(v.question_id, v.question.replace(/\n/g, '</br>'), v.votes, v.username, v.created, v.comment_count, v.flagged, v.answered, v.my_vote);
+            //last two parameters set to null because last two are only used in comments
+        	var question = new Post(v.question_id, v.question.replace(/\n/g, '</br>'), 
+        	                        v.votes, v.username, v.created, v.flagged, 
+        	                        v.my_vote, v.comment_count, v.answered, null, null);
         	addQuestion(question);
         });
     }, 'json').done(function() {
     	initializeContent();
         
+        //filter is the string which contains the current sorting and searching filter
+        //  it is seen at the top of all the questions
         var filter = "";
         
-        filter += creator + " ";
+        filter += creator + " ";   //creator would be 'my' or 'all'
         
         if(answered == 0)
             filter += "un"
@@ -706,6 +698,7 @@ function changeQuestions() {
                 
             filter += "votes";
         }
+        //if it is not ordered by votes, it is ordered by date
         else {
             if(direction == "asc")
                 filter += "oldest";
@@ -713,9 +706,10 @@ function changeQuestions() {
                 filter += "newest";
         }
         
+        //if the user has a search in place, it adds what they search for and a clear button
         if(keyword != 'none') {
             if(deviceType == "desktop")
-                filter += " | ";
+                filter += " | ";  //a nice pipe for effect
             else
                 filter += "</br>";
             filter += "search: " + keyword;
@@ -726,30 +720,32 @@ function changeQuestions() {
     });
 }
 
+//shows or hides comments on a specific question. If the comments are not currenty shown, it loads the comments first
 function toggleComments(id) {
-    //resets the comment count each time because it increments it when you add a comment
     var question = getQuestionById(id);
     
+    //if the word hide is not on the show comments button, the comments are not currently shown
+    //  the comments will be loaded, shown, and hide will be added to the button
     if($("#showCommentsButton_" + id).html().indexOf("hide") == -1) {
-        question.setCommentCount(0);
+        question.setCommentCount(0); //resets the comment count each time because of the way add comment works, it increments the comment count each time you add one
         $.get("/questions/" + id + "/comments", function(data){
             $.each(data, function(i, v){
-                var current = new Comment(v.question_id + "_" + v.comment_id, v.comment, v.votes, v.username, v.created, v.flagged, v.answered, v.my_vote);
-                for(var j = 0; j < getQuestionCount(); j ++)
-                {
-                    if(getQuestion(j).getId() == current.getQuestId())
-                    {
-                        getQuestion(j).addComment(current);
-                    }
-                }
+                //two nulls are locations in Post object that are used only in a question, not a comment
+                var comment = new Post(v.comment_id, v.comment, v.votes, 
+                                        v.username, v.created, v.flagged, 
+                                        v.my_vote, null, null, v.question_id, v.answered);
+                question.addComment(comment);
             });
         
         }, 'json').done(function() {
+            
+            //initializes html for all of the comments in the question
             var commentsHTML = "";
             var commentHTML = "";
         
             for(var j = 0; j < question.getCommentCount(); j ++) {
                 var comment = question.getComment(j);
+                comment = question.getComment(j);
                 commentHTML = HTMLforComment;
                 commentHTML = commentHTML.replace(/ID/g, comment.getId());
                 commentHTML = commentHTML.replace(/VOTES/g, comment.getVotes());
@@ -758,15 +754,21 @@ function toggleComments(id) {
                 commentsHTML += commentHTML;
             }
             question.setCommentsShown(true);
+            
+            //shows the comment before animating it being shown
+            //  this way, it will be assigned a height, and we can resize it if it is too long
+            //  before it slides out
+            //  so: shows comments, resizes them, hides them, then animates them sliding out
             $("#commentsContainer_" + question.getId()).html(commentsHTML);
             $("#commentsContainer_" + question.getId()).show();
             resizeComments(id);
             $("#commentsContainer_" + question.getId()).hide();
             $("#commentsContainer_" + id).slideToggle("slow");
-            $("#showCommentsButton_" + id).html("hide comments<br> ");
+            $("#showCommentsButton_" + id).html("hide comments<br> ");  //changes the button to say hide commensts
             initializeCommentLayout(id);
         });
     }
+    //if the comments are already shown, it will hide the comments and change the show comments button back to saying show comments
     else {
         $("#commentsContainer_" + id).slideToggle("slow");
         $("#showCommentsButton_" + id).html("show comments<br>(" + getQuestionById(id).getCommentCount() + ")");
@@ -774,8 +776,9 @@ function toggleComments(id) {
     }
 }
 
+//shows the sorting menu so the user can choose filters to apply
 function showSortMenu() {
-    openMenu = "sort";
+    openMenu = "sort";  //sets global variable so the program knows the currently opened menu
     $(".backgroundCover").fadeTo(1, 0);
     $(".sortMenuContainer").fadeTo(1, 0);
     $(".backgroundCover").show();
@@ -784,43 +787,56 @@ function showSortMenu() {
     $(".sortMenuContainer").fadeTo(400, 1, setFilterButtonColors());
 }
 
-function closeMenu(type) {
+//closes whatever menu is currently open based on the GLOBAL openMenu variable
+//  save parameter is used only if the sort menu is being closed. It is set as 'save' ONLY if the user
+//  hits the APPLY button in the sort menu
+function closeMenu(save) {
     if(openMenu == "sort") {
         $(".sortMenuContainer").fadeTo(400, 0, function() {$(".sortMenuContainer").hide()} );
     
-        if(type == "save")
+        if(save == "save") {
             setFilter("limit", defaultLimit);
+            reloadQuestions();
+        }
             
         openMenu = "none";
     }
     
     if(openMenu == "search")
         toggleSearchBar();
-        
+    
+    //background cover is the white cover that appears when opening search menu/sort menu
     $(".backgroundCover").fadeTo(400, 0, function() {$(".backgroundCover").hide()});
 }
 
+//change filter, changes the filter, then changes the colors on the filter buttons
+//  in the open sort menu
 function changeFilter(type, value) {
     setFilter(type, value);
     setFilterButtonColors();
 }
 
+//set filter button colors effects the sort menu when it has been opened
 function setFilterButtonColors() {
     $(".sortMenuOption").css("color", "black");
     
-    $("#creator_" + getFilter('creator')).css("color", "1f268b");
-    $("#answered_" + getFilter('answered')).css("color", "1f268b");
-    $("#" + getFilter('orderby') + "_" +  getFilter('direction')).css("color", "1f268b");
+    //the id's of the options are set so that this will work
+    $("#creator_" + getFilter('creator')).css("color", "1f268b");     //id ex 'creator_mine' or 'creator_all'
+    $("#answered_" + getFilter('answered')).css("color", "1f268b");   //id ex 'answered_1' (1 for answered questions only 0 for unanaswered only)
+    $("#" + getFilter('orderby') + "_" +  getFilter('direction')).css("color", "1f268b");  //id ex 'votes_asc' or 'date_desc'
 }
 
+//increases the limit on the amount of shown questions, reloads ALL questions with a larger limit
 function showMore() {
     setFilter('limit', getFilter('limit') + defaultLimit);
-    changeQuestions();
+    reloadQuestions();
 }
 
+//shows or hides the dearch bar
 function toggleSearchBar() {
     if(openMenu != "search") {
         openMenu = "search";
+        //only adds a background cover is the user is on mobile
         if(deviceType == "mobile") {
             $(".backgroundCover").fadeTo(1, 0);
             $(".backgroundCover").show();
@@ -836,14 +852,15 @@ function toggleSearchBar() {
     $(".searchBar").slideToggle('fast', function() {$("#searchTextarea").focus();});
 }
 
+//extracts the keyword from the search bar, reloads the questions with that set as the new keyword
 function search() {
     var keyword = $(".searchTextarea").val();
     keyword = keyword.trim();
     if(keyword == ""){
-        keyword = "none";
+        keyword = "none"; //a keyword of 'none' means there is no search in effect
     }
     setFilter('keyword', keyword);
-    setFilter('limit', defaultLimit);
-    changeQuestions();
+    setFilter('limit', defaultLimit); //resets the limit
+    reloadQuestions();
     closeMenu();
 }
