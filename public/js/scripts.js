@@ -749,7 +749,10 @@ function toggleComments(id) {
         }, 'json').done(function() {
             var commentsHTML = "";
             var commentHTML = "";
-        
+            
+            if(question.getCommentCount() == 0) 
+                commentsHTML = "<div class='commentContainer' style='height:auto;'>no comments</div>";
+            
             for(var j = 0; j < question.getCommentCount(); j ++) {
                 var comment = question.getComment(j);
                 commentHTML = HTMLforComment;
