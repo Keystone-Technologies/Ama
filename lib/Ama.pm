@@ -46,6 +46,9 @@ sub startup {
   $self->plugin('AssetPack');
   $self->asset('ama.js' => 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js');
 
+  # Mojolicious
+  $self->plugin('Sendgrid' =>{config => $self -> config -> {sendgrid}});
+
   # Controller
   my $r = $self->routes;
 
@@ -83,6 +86,8 @@ sub startup {
 
   $api->post('/:entry_type/flag/:entry_id')->to('flags#raise')->name('raise_flag');
   $api->delete('/:entry_type/flag/:entry_id')->to('flags#remove')->name('remove_flag');
+  
+  $api->post('/feedback')->to('emailfeedback#submit')->name('submit_emailfeedback');
 }
 
 1;

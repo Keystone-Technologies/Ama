@@ -518,6 +518,18 @@ function vote(id, dir) {
     }, 'json');
 }
 
+function sendfeedback(){
+    var feedback = $("#feedbackTextarea").val();
+    $.post("/api/feedback",{feedback:feedback},function(data){
+        if(data.ok == "true"){
+            alert("feedback submitted");
+        }
+        else{
+            alert("feedback not submitted");
+        }
+    })
+}
+
 function sendFlagReport(id) {
     var type = "POST";
     var question;
@@ -607,14 +619,6 @@ function submitQuestion() {
     });
 }
 
-//submits a reply to a specific question
-//function submitfeedback(){
-        //var email = ("ajin@keystone_it.com");
-        //var subject = ('Feedback for AMA');
-        //var body = ('feedbackTextarea');
-        //$(".feedbackContainer").html('<a href="mailto:' + email + '?subject=' +subject+ '&body=' +body+ '">text</a>');
-//}
-//submits a feedback
 function sendReply(id) {
     var text = $("#newPostTextArea_" + id).val();
     text = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
