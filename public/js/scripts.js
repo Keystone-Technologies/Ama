@@ -343,7 +343,7 @@ function initializeCommentLayout(id) {
             }
         }
         if(comment.getLink() == null || comment.getLink() == "") {
-            $("#linkImg_" + comment.getId()).css('visibility', 'hidden');
+            $("#linkButtonContainer_" + type + comment.getId()).css('visibility', 'hidden');
         }
     }
 }
@@ -828,20 +828,16 @@ function extractLink(text) {
 
 //redirects user to whatever link is associated with the comment
 //  lots of this function will have to change after it is merged with refactoring branch
-function redirectToVideo(id) {
-    var question;
-    var link;
-    if(id.toString().indexOf('_') == -1) {
-        question = getQuestionById(id);
-        link = question.getLink();
-    }
-    else {
-        question = getQuestionById(id.substring(0, id.indexOf('_')));
-        link = question.getCommentById(id).getLink();
-    }
+function redirectToVideo(type, id) {
+    var post;
+    
+    if(type == "question")
+        post = getQuestionById(id);
+    else
+        post = getCommentById(id);
     
     //after refactoring changes are accepted, the above to lines will need to be changed to
     //var comment = getCommentById(id);
     
-    window.open(link, '_blank'); //the '_blank' parameter makes it open in a new tab
+    window.open(post.getLink(), '_blank'); //the '_blank' parameter makes it open in a new tab
 }
