@@ -236,6 +236,7 @@ $(document).ready(function() {
 					onmouseleave="this.src='/img/trash.png'" onclick="if( ConfirmDelete() == true){deletePost(ID)}"                                      
 					type="submit" name="actiondelete" value="1">
 				</div>
+			</div>
 			
 			<div class="buttonContainer" id="buttonContainer_TYPEID">
 				<div class="deleteButtonContainer" id="deleteButtonContainer_TYPEID">
