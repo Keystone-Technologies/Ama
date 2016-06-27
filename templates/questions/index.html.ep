@@ -18,7 +18,6 @@ gapi.load('auth2', function() {
 	
 
 $(document).ready(function() {
-	console.log("here");
 	//extracts html from page and stores it in global variables
 	HTMLforPost = $(".singlePost").html();
     $(".singlePost").remove();
@@ -221,18 +220,9 @@ $(document).ready(function() {
 					title="video answer"
 					onmouseenter="this.src='/img/youtubebuttonhover.png'" 
 					onmouseleave="this.src='/img/youtubebutton.png'" 
-					onclick="redirectToVideo(ID)">
+					onclick="redirectToVideo('TYPE', ID)">
 				</div>
 			</div>
-			<div class="buttonContainer" id="buttonContainer_ID">
-				<div class="deleteButtonContainer" id="deleteButtonContainer_ID">
-					<img class= "containedImg" src="/img/trash.png" alt="delete" 
-					onmouseenter="this.src='/img/opentrash.png'" 
-					onmouseleave="this.src='/img/trash.png'" onclick="if( ConfirmDelete() == true){deletePost(ID)}"                                      
-					type="submit" name="actiondelete" value="1">
-				</div>
-			</div>
-			
 			<div class="buttonContainer" id="buttonContainer_TYPEID">
 				<div class="deleteButtonContainer" id="deleteButtonContainer_TYPEID">
 					<img class= "containedImg" src="/img/trash.png" alt="delete" 
@@ -310,13 +300,12 @@ $(document).ready(function() {
 
 					</div>
 						
-					<div class="commentLinkButtonContainer">
+					<div class="commentLinkButtonContainer" id="linkButtonContainer_TYPEID">
 						<img class= "containedImg" src="/img/youtubebutton.png" alt="youtube link" 
-						id="linkImg_TYPEID"
 						title="go to video"
 						onmouseenter="this.src='/img/youtubebuttonhover.png'"
 						onmouseleave="this.src='/img/youtubebutton.png'"
-						onclick="redirectToVideo('ID')">
+						onclick="redirectToVideo('TYPE', ID)">
 					</div>
 						
 					<div class="commentAnswerButtonContainer" id="answerButtonContainer_TYPEID">
