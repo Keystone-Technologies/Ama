@@ -210,17 +210,21 @@ $(document).ready(function() {
 					onmouseleave="changeVoteImg(ID, 'out', 'down')"
 					onclick="vote(ID, 'down')">
 				</div>
+				<div class="linkButtonContainer" id="linkButtonContainer_ID">
+					<img class= "containedImg" src="/img/youtubebutton.png" alt="delete" 
+					title="video answer"
+					onmouseenter="this.src='/img/youtubebuttonhover.png'" 
+					onmouseleave="this.src='/img/youtubebutton.png'" 
+					onclick="redirectToVideo(ID)">
+				</div>
 			</div>
-			
 			<div class="buttonContainer" id="buttonContainer_ID">
 				<div class="deleteButtonContainer" id="deleteButtonContainer_ID">
 					<img class= "containedImg" src="/img/trash.png" alt="delete" 
 					onmouseenter="this.src='/img/opentrash.png'" 
 					onmouseleave="this.src='/img/trash.png'" onclick="if( ConfirmDelete() == true){deletePost(ID)}"                                      
 					type="submit" name="actiondelete" value="1">
-
 				</div>
-
 			</div>
 			
 			<div class="postTextAndInfoContainer" id="postTextAndInfoContainer_ID">
@@ -294,7 +298,7 @@ $(document).ready(function() {
 					<div class="commentLinkButtonContainer">
 						<img class= "containedImg" src="/img/youtubebutton.png" alt="youtube link" 
 						id="linkImg_ID"
-						title="link to video answer"
+						title="go to video"
 						onmouseenter="this.src='/img/youtubebuttonhover.png'"
 						onmouseleave="this.src='/img/youtubebutton.png'"
 						onclick="redirectToVideo('ID')">

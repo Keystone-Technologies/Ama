@@ -1,4 +1,4 @@
-function Question(id_input, text_input, votes_input, creator_input, time_created_input, comment_count_input, flagged_input, answered_input, users_vote_input) {
+function Question(id_input, text_input, votes_input, creator_input, time_created_input, comment_count_input, flagged_input, answered_input, users_vote_input, link_input) {
     var id = id_input;
     var text = text_input;
     text = text.replace(/NEWLINEPLEASE/g, '<br/>');
@@ -9,6 +9,7 @@ function Question(id_input, text_input, votes_input, creator_input, time_created
     var comment_count = comment_count_input;
     var comments = [];
     var comments_shown = false;
+    var link = link_input;
     var answered = answered_input;
     var users_vote = users_vote_input;
     if(users_vote != "up" && users_vote != "down")
@@ -23,6 +24,7 @@ function Question(id_input, text_input, votes_input, creator_input, time_created
     this.getTimeCreated = function() {return time_created;}
     this.getCommentCount = function() {return comment_count;}
     this.getCommentsShown = function() {return comments_shown;}
+    this.getLink = function() {return link;}
     this.getUsersVote = function() {return users_vote;}
     
     this.setCommentCount = function(count) {
@@ -49,6 +51,10 @@ function Question(id_input, text_input, votes_input, creator_input, time_created
     
     this.setCommentsShown = function(shown) {
         comments_shown = shown;
+    }
+    
+    this.setLink = function(l) {
+        link = l;
     }
     
     this.setFlagged = function(flag) {
@@ -298,6 +304,7 @@ function initializeContent() {
 //also initializes flagged questions and answered questions etc..
 function initializeLayout() {
     $(".commentsContainer").hide();
+    $(".linkButtonContainer").hide();
     for(var i = 0; i < getQuestionCount(); i ++)
     {
         var question = getQuestion(i);
@@ -336,6 +343,11 @@ function initializeLayout() {
             $("#postTextAndInfoContainer_" + question.getId()).css('left', '10%');
             $("#timeAskedContainer_" + question.getId()).html("Answered on " + question.getTimeCreated());
             $("#timeAskedContainer_" + question.getId()).css('width', '65%');
+            
+            if(question.getLink() != null) {
+                $("#voteContainer_" + question.getId()).css('top', '15%');
+                $("#linkButtonContainer_" + question.getId()).show();
+            }
         }
     }
     
@@ -696,7 +708,8 @@ function changeQuestions() {
     
     $.get("/questions/" + creator + "/" + answered + "/" + orderby + "/" + direction + "/" + limit + "/" + keyword, function(data){
         $.each(data, function(i, v){
-        	var question = new Question(v.question_id, v.question.replace(/\n/g, '</br>'), v.votes, v.username, v.created, v.comment_count, v.flagged, v.answered, v.my_vote);
+        	var question = new Question(v.question_id, v.question.replace(/\n/g, '</br>'), v.votes, v.username, v.created, v.comment_count, v.flagged, v.answered, v.my_vote, v.video_link);
+        	console.log(question.getLink());
         	addQuestion(question);
         });
     }, 'json').done(function() {
@@ -885,11 +898,21 @@ function extractLink(text) {
 }
 
 //redirects user to whatever link is associated with the comment
+//  lots of this function will have to change after it is merged with refactoring branch
 function redirectToVideo(id) {
-    var question = getQuestionById(id.substring(0, id.indexOf('_')));
-    var comment = question.getCommentById(id);
+    var question;
+    var link;
+    if(id.toString().indexOf('_') == -1) {
+        question = getQuestionById(id);
+        link = question.getLink();
+    }
+    else {
+        question = getQuestionById(id.substring(0, id.indexOf('_')));
+        link = question.getCommentById(id).getLink();
+    }
+    
     //after refactoring changes are accepted, the above to lines will need to be changed to
     //var comment = getCommentById(id);
     
-    window.open(comment.getLink(), '_blank'); //the_blank makes it open in a new tab
+    window.open(link, '_blank'); //the_blank makes it open in a new tab
 }

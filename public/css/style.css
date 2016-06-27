@@ -363,7 +363,7 @@ body {
 	top: 15%;
 }
 
-.flagButtonContainer {
+.linkButtonContainer {
 	position: absolute;
 	height: 25%;
 	width:100%;
@@ -527,7 +527,7 @@ body {
 	height:100%;
 }
 
-.commentFlagButtonContainer {
+.commentLinkButtonContainer {
 	position:relative;
 	float:left;
 	width:25%;
