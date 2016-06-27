@@ -375,6 +375,9 @@ function initializeCommentLayout(id) {
                 $("#answerImg_" + comment.getId()).remove();
             }
         }
+        if(comment.getLink() == null) {
+            $("#linkImg_" + comment.getId()).css('visibility', 'hidden');
+        }
     }
 }
 
@@ -633,8 +636,8 @@ function sendReply(id) {
     var text = $("#newPostTextArea_" + id).val();
     text = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     var link = extractLink(text);
-    text = text.replace(link + '\n', "");
-    text = text.replace(link, "");
+    text = text.replace('\n' + link + '\n', '\n'); //first checks if a video is on its own line, removes it
+    text = text.replace(link, ""); //if the link is not on its own line it will be replaced right here
     
     //reply data to be sent
     var reply = {
@@ -861,6 +864,7 @@ function search() {
     closeMenu();
 }
 
+//looks for a youtube link inside of the reply text and extracts it
 function extractLink(text) {
     var link = "";
     
@@ -868,6 +872,8 @@ function extractLink(text) {
     if(begin != -1) {
         var end = begin;
         
+        //checks each character after the begining of the link till it finds a character
+        //  that does not belong in a youtube link and returns the link
         while(acceptableLinkCharacters.indexOf(text.charAt(begin)) != -1 && begin < text.length) {
             begin ++;
         }
@@ -876,4 +882,14 @@ function extractLink(text) {
     }
     
     return link;
+}
+
+//redirects user to whatever link is associated with the comment
+function redirectToVideo(id) {
+    var question = getQuestionById(id.substring(0, id.indexOf('_')));
+    var comment = question.getCommentById(id);
+    //after refactoring changes are accepted, the above to lines will need to be changed to
+    //var comment = getCommentById(id);
+    
+    window.open(comment.getLink(), '_blank'); //the_blank makes it open in a new tab
 }

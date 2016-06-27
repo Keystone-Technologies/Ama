@@ -291,12 +291,13 @@ $(document).ready(function() {
 
 					</div>
 						
-					<div class="commentFlagButtonContainer">
-						<img class= "containedImg" src="/img/flag.png" alt="Flag" 
-						id="flagImg_ID"
-						onmouseenter="changeFlag('ID', 'in')" 
-						onmouseleave="changeFlag('ID', 'out')"
-						onclick="sendFlagReport('ID')">
+					<div class="commentLinkButtonContainer">
+						<img class= "containedImg" src="/img/youtubebutton.png" alt="youtube link" 
+						id="linkImg_ID"
+						title="link to video answer"
+						onmouseenter="this.src='/img/youtubebuttonhover.png'"
+						onmouseleave="this.src='/img/youtubebutton.png'"
+						onclick="redirectToVideo('ID')">
 					</div>
 						
 					<div class="commentAnswerButtonContainer" id="answerButtonContainer_ID">
