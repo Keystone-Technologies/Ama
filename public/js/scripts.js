@@ -1,5 +1,5 @@
 //Post object could be a Question or a Comment
-function Post(id_input, text_input, votes_input, creator_input, time_created_input, flagged_input, users_vote_input, link_input, //shared between questions and comments
+function Post(id_input, text_input, votes_input, creator_input, time_created_input, users_vote_input, link_input, //shared between questions and comments
                 comment_count_input, answered_input, //question specific
                 question_id_input, answer_input) { //comment specific
     //Paramters that both questions and comments share
@@ -10,7 +10,6 @@ function Post(id_input, text_input, votes_input, creator_input, time_created_inp
     var creator = creator_input; 
     var time_created = time_created_input;
     var link = link_input;
-    var flagged = flagged_input;
     var users_vote = users_vote_input;
     if(users_vote != "up" && users_vote != "down")
         users_vote = "none";
@@ -19,7 +18,6 @@ function Post(id_input, text_input, votes_input, creator_input, time_created_inp
     this.getText = function() {return text;}
     this.getVotes = function() {return votes;}
     this.getCreator = function() {return creator;}
-    this.isFlagged = function() {return flagged;}
     this.getTimeCreated = function() {return time_created;}
     this.getLink = function() {return link;}
     this.getUsersVote = function() {return users_vote;}
@@ -33,19 +31,6 @@ function Post(id_input, text_input, votes_input, creator_input, time_created_inp
     //Parameters specific to a Comment
     var question_id = question_id_input;
     var answer = answer_input;               //true if this is the answer to its question
-    
-    this.getId = function() {return id;};
-    this.getText = function() {return text;};
-    this.getVotes = function() {return votes;};
-    this.getCreator = function() {return creator;};
-    this.isFlagged = function() {return flagged;};
-    this.getTimeCreated = function() {return time_created;};
-    this.getUsersVote = function() {return users_vote;};
-    
-    //functions
-    this.setFlagged = function(flag) {
-        flagged = flag; 
-    };
     
     this.setUsersVote = function(vote) {
         users_vote = vote;
@@ -212,28 +197,6 @@ function toggleReplyForm(id) {
 	}
 }
 
-//changes the flag image based on mouse position and post status
-//  type is the type of post ('comment' or 'question')
-//  id is id
-//  dir is the direction of the mouse (if the mouse is going in or out)
-function changeFlagImg(type, id, dir) {
-    var flagged = "";  //if left blank, image will be normal flag. If changed to 'red' image will be redflag
-    var post;          //post to change the flag color on
-    
-    if(type == "question")
-        post = getQuestionById(id);
-    else
-        post = getCommentById(id);
-    
-    //determines what color the flag must be based on if it is flagged and where the mouse is
-    if(dir == 'in' && !post.isFlagged())
-        flagged = "red";
-    if(dir == 'out' && post.isFlagged())
-        flagged = 'red';
-    
-    $("#flagImg_" + type + id).attr("src", "/img/" + flagged + "flag.png"); //sets the flag image accordingly
-}
-
 //changes vote image based on mouse position and post status
 //  type is the type of post ('comment' or 'question')
 //  id is id
@@ -316,10 +279,6 @@ function initializeLayout() {
             $("#deleteButtonContainer_" + type + question.getId()).css('visibility', 'hidden'); //changing css visibility to hidden hides the div but lets it keep space where it was
         }
         
-        if(question.isFlagged()) {
-            hide(question.getId());
-        }
-        
         //sets the initial image for what the users vote is
         if(question.getUsersVote() == "up") {
             $("#upvote_" + type + question.getId()).attr('src', '/img/clickedsmalluparrow.png');
@@ -360,9 +319,6 @@ function initializeCommentLayout(id) {
     for(var j = 0; j < question.getCommentCount(); j ++) {
         var comment = question.getComment(j);
         
-        if(comment.isFlagged()) {
-            hide(comment.getId());
-        }
         if(comment.getCreator() != getCurrentUser()) {
             $("#deleteButtonContainer_" + type + comment.getId()).css('visibility', 'hidden');
         }
@@ -376,7 +332,6 @@ function initializeCommentLayout(id) {
             var comment = question.getComment(j);
             $("#upvote_" + type + comment.getId()).css('visibility', 'hidden');
             $("#downvote_" + type + comment.getId()).css('visibility', 'hidden');
-            $("#flagImg_" + type + comment.getId()).remove()
             $("#deleteButtonContainer_" + type + comment.getId()).remove();
             if(comment.isAnswer()) {
                 //if the comment is the answer, moving the mouse over the answer button, and clicking it, does not do anything
@@ -388,7 +343,7 @@ function initializeCommentLayout(id) {
             }
         }
         if(comment.getLink() == null || comment.getLink() == "") {
-            $("#linkImg_" + comment.getId()).css('visibility', 'hidden');
+            $("#linkButtonContainer_" + type + comment.getId()).css('visibility', 'hidden');
         }
     }
 }
@@ -503,35 +458,6 @@ function deletePost(type, id) {
     });
 }
 
-//blacks out a flagged question/comment
-function hide(type, id) {
-    $("#flagImg_" + type + id).attr('src', '/img/redflag.png');
-    $("#upvote_" + type + id).css('visibility', 'hidden');
-    $("#downvote_" + type + id).css('visibility', 'hidden');
-    $("#replyButton_" + type + id).css('visibility', 'hidden');
-    $("#postTextContainer_" + type + id).css('background-color', 'black');
-    $("#textContainer_" + type + id).html("nice try");
-    
-    if($("#replyContainer_" + type + id).is(":visible")) {
-        $("#replyButton_" + type + id).html("Reply");
-        $("#replyContainer_" + type + id).hide();
-    }
-}
-
-//shows a flagged question/comment
-function show(type, id) {
-    $("#flagImg_" + type + id).attr('src', '/img/flag.png');
-    $("#upvote_" + type + id).css('visibility', 'visible');
-    $("#downvote_" + type + id).css('visibility', 'visible');
-    $("#replyButton_" + type + id).css('visibility', 'visible');
-    $("#postTextContainer_" + type + id).css('background-color', 'transparent');
-    
-    if(type == "question")
-        $("#textContainer_" + type + id).html(getQuestionById(id).getText());
-    else
-        $("#textContainer_" + type + id).html(getCommentById(id).getText());
-}
-
 //sents vote report and changes vote image appropriately
 //  type needs to be 'question' or 'comment' for this function to work
 //  dir is the direction that the user wants to vote
@@ -568,55 +494,6 @@ function vote(type, id, dir) {
         changeVoteImg(type, id, 'out', opp);  //changes the opposite vote image incase that was the last vote
         changeVoteImg(type, id, 'out', dir);
     }, 'json');
-}
-
-//sends a flag repost on a specific post
-//  type needs to be 'question' or 'comment'
-function sendFlagReport(type, id) {
-    var requestType = "POST"; //can be a deletion requestion or a post request
-    var post;
-    
-    //if the post is not a comment
-    //  sets the url to correct url and gets the question
-    if(type == "question") {
-        post = getQuestionById(id);
-        
-    }
-    else {
-        post = getCommentById(id);
-    }
-    
-    
-    //if the post is already flagged, the type is set to delete
-    if(post.isFlagged())
-        requestType = "DELETE";    
-    
-    $.ajax({
-        //add an 's' because the url for deleting is 'questions' and not 'question' or 'comments' and not 'comment'
-        url: "api/" + type + "s/flag/" + id, //ex. api/questions/flag/12
-        type: requestType,
-        dataType: 'json'
-    }).done(function(data){
-        if(data) {
-            //if data has been sent back, success is assumed. 
-            //  correctly hides or shows the correct post
-            
-            if(post.isFlagged()) {
-                post.setFlagged(false);
-                show(type, id);
-                if(type == "question")
-                    resizePosts();
-                else
-                    resizeComments(post.getQuestionId());
-            }
-            else {
-                post.setFlagged(true);
-                hide(type, id);
-            }
-        }
-        else
-            console.log("Error sending flag report"); //hah probably make this more specific
-    });
 }
 
 //submits a new question to store in the database, and then refreshes the questions
@@ -735,7 +612,7 @@ function reloadQuestions() {
         $.each(data, function(i, v){
             //last two parameters set to null because last two are only used in comments
         	var question = new Post(v.question_id, v.question.replace(/\n/g, '</br>'), 
-        	                        v.votes, v.username, v.created, v.flagged, 
+        	                        v.votes, v.username, v.created, 
         	                        v.my_vote, v.video_link, v.comment_count, v.answered, null, null);
         	addQuestion(question);
         });
@@ -794,7 +671,7 @@ function toggleComments(id) {
             $.each(data, function(i, v){
                 //two nulls are locations in Post object that are used only in a question, not a comment
                 var comment = new Post(v.comment_id, v.comment, v.votes, 
-                                        v.username, v.created, v.flagged, 
+                                        v.username, v.created,
                                         v.my_vote, v.video_link, null, null, v.question_id, v.answered);
                 question.addComment(comment);
             });
@@ -951,20 +828,16 @@ function extractLink(text) {
 
 //redirects user to whatever link is associated with the comment
 //  lots of this function will have to change after it is merged with refactoring branch
-function redirectToVideo(id) {
-    var question;
-    var link;
-    if(id.toString().indexOf('_') == -1) {
-        question = getQuestionById(id);
-        link = question.getLink();
-    }
-    else {
-        question = getQuestionById(id.substring(0, id.indexOf('_')));
-        link = question.getCommentById(id).getLink();
-    }
+function redirectToVideo(type, id) {
+    var post;
+    
+    if(type == "question")
+        post = getQuestionById(id);
+    else
+        post = getCommentById(id);
     
     //after refactoring changes are accepted, the above to lines will need to be changed to
     //var comment = getCommentById(id);
     
-    window.open(link, '_blank'); //the '_blank' parameter makes it open in a new tab
+    window.open(post.getLink(), '_blank'); //the '_blank' parameter makes it open in a new tab
 }
