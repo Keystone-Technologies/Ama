@@ -1,5 +1,5 @@
 //Post object could be a Question or a Comment
-function Post(id_input, text_input, votes_input, creator_input, time_created_input, flagged_input, users_vote_input,//shared
+function Post(id_input, text_input, votes_input, creator_input, time_created_input, flagged_input, users_vote_input, link_input, //shared between questions and comments
                 comment_count_input, answered_input, //question specific
                 question_id_input, answer_input) { //comment specific
     //Paramters that both questions and comments share
@@ -9,11 +9,21 @@ function Post(id_input, text_input, votes_input, creator_input, time_created_inp
     var votes = votes_input;
     var creator = creator_input; 
     var time_created = time_created_input;
+    var link = link_input;
     var flagged = flagged_input;
     var users_vote = users_vote_input;
     if(users_vote != "up" && users_vote != "down")
         users_vote = "none";
     
+    this.getId = function() {return id;}
+    this.getText = function() {return text;}
+    this.getVotes = function() {return votes;}
+    this.getCreator = function() {return creator;}
+    this.isFlagged = function() {return flagged;}
+    this.getTimeCreated = function() {return time_created;}
+    this.getLink = function() {return link;}
+    this.getUsersVote = function() {return users_vote;}
+
     //Parameters specific to a Question
     var comment_count = comment_count_input; //number of comments on a question
     var comments = [];                       //array to hold comments when loaded
@@ -39,6 +49,10 @@ function Post(id_input, text_input, votes_input, creator_input, time_created_inp
     
     this.setUsersVote = function(vote) {
         users_vote = vote;
+    };
+    
+    this.setLink = function(l) {
+        link = l;
     };
     
     //*************************************************************Question Specific Funtions
@@ -70,7 +84,7 @@ function Post(id_input, text_input, votes_input, creator_input, time_created_inp
     
     this.setCommentsShown = function(shown) {
         comments_shown = shown;
-    };
+    }
     
     this.deleteComment = function() {
         comment_count --;
@@ -91,9 +105,10 @@ var current_user = "007";               //holds the username assigned to the use
 var HTMLforPost = "uninitialized";      //html to be extracted from index page and stored in memory used on each new question
 var HTMLforComment = "uninitialized";   //same but for one comment
 var defaultPostSize = 0;                //Default height of a post, used to determine if the user is on mobile or desktop
-var deviceType = "mobile";              //Initially assumes mobile and is changed further down if the user is on desktop
+var deviceType = "desktop";             //Initially assumes mobile and is changed further down if the user is on desktop
 var defaultLimit = 15;                  //default limit on number of questions to display
 var openMenu = "none";                  //currently opened menu (ex. 'sort', 'search', etc...) used in close menu function
+var acceptableLinkCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuwxyz.:/?=";  //characters that are allowed in a video link
 
 //filter settings
 var filters = [];                       //holds all of the current filters used, seen below
@@ -287,6 +302,7 @@ function initializeContent() {
 function initializeLayout() {
     //hides all comments and reply containers
     $(".commentsContainer").hide();
+    $(".linkButtonContainer").hide();
     $(".replyContainer").hide();
     var type = "question";
     
@@ -324,6 +340,11 @@ function initializeLayout() {
             $("#postTextAndInfoContainer_" + type + question.getId()).css('left', '10%');
             $("#timeAskedContainer_" + type + question.getId()).html("Answered on " + question.getTimeCreated());
             $("#timeAskedContainer_" + type + question.getId()).css('width', '65%');
+            
+            if(question.getLink() != null) {
+                $("#voteContainer_" + type + question.getId()).css('top', '15%');
+                $("#linkButtonContainer_" + type + question.getId()).show();
+            }
         }
     }
     
@@ -366,6 +387,9 @@ function initializeCommentLayout(id) {
                 $("#answerImg_" + type + comment.getId()).remove();
             }
         }
+        if(comment.getLink() == null || comment.getLink() == "") {
+            $("#linkImg_" + comment.getId()).css('visibility', 'hidden');
+        }
     }
 }
 
@@ -377,15 +401,9 @@ function resizePosts() {
         
         //sets the default post size if it has never been set. This helps the program determine whether or not the use is on mobile or on desktop version
         if(defaultPostSize == 0) {
-<<<<<<< HEAD
-            defaultPostSize = parseInt($("#postContainer_" + question.getId()).css('height'));
+            defaultPostSize = parseInt($("#postContainer_" + type + question.getId()).css('height'));
             if(defaultPostSize >= 275)
                 deviceType = "mobile";
-=======
-            defaultPostSize = parseInt($("#postContainer_" + type + question.getId()).css('height'));
-            if(defaultPostSize < 275)
-                deviceType = "desktop";
->>>>>>> refactoring-part2
         }
         
         //Parse int because the .css('height') will return a string, '100px' or something like that
@@ -637,10 +655,29 @@ function sendReply(id) {
     var text = $("#newPostTextArea_" + type + id).val();
     text = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');  //closes XSS vulnerabilities
     
+    text = text.replace("https://www.youtube.com/watch?v=", "https://youtu.be/");
+    var link = extractLink(text);
+    
+    if(link != "") {
+        text = text.replace('\n' + link + '\n', '\n'); //first checks if a video is on its own line, removes it
+        text = text.replace(link, ""); //if the link is not on its own line it will be replaced right here
+        
+        //if the link doesnt designate a time to start, sets the time to start at 0 (not necessary)
+        if(link.indexOf('?t=') == -1) {
+            link += "?t=0";
+        }
+        console.log('showReplyMenu()');
+    }
+        
+    //JOSH try to do one of those deffered waiting things so it waits or whatever for the menu thing to be closed
+    //  before sending the reply ok awesome good work
+    console.log("Remove this and these comments");
+    
     //reply data to be sent, in hash form so it can be sent as a json object
     var reply = {
         question_id: id,
-        comment: text
+        comment: text,
+        video_link: link
     };
     
     $.ajax({
@@ -699,7 +736,7 @@ function reloadQuestions() {
             //last two parameters set to null because last two are only used in comments
         	var question = new Post(v.question_id, v.question.replace(/\n/g, '</br>'), 
         	                        v.votes, v.username, v.created, v.flagged, 
-        	                        v.my_vote, v.comment_count, v.answered, null, null);
+        	                        v.my_vote, v.video_link, v.comment_count, v.answered, null, null);
         	addQuestion(question);
         });
     }, 'json').done(function() {
@@ -758,7 +795,7 @@ function toggleComments(id) {
                 //two nulls are locations in Post object that are used only in a question, not a comment
                 var comment = new Post(v.comment_id, v.comment, v.votes, 
                                         v.username, v.created, v.flagged, 
-                                        v.my_vote, null, null, v.question_id, v.answered);
+                                        v.my_vote, v.video_link, null, null, v.question_id, v.answered);
                 question.addComment(comment);
             });
         
@@ -892,4 +929,42 @@ function search() {
     setFilter('limit', defaultLimit); //resets the limit
     reloadQuestions();
     closeMenu();
+}
+
+//looks for a youtube link inside of the reply text and extracts it
+function extractLink(text) {
+    var link = "";
+    var begin = 0;  //begining location of id
+    var end = 0;    //ending location of id
+    
+    begin = text.indexOf("https://youtu.be/"); //link style when press share button
+    if(begin != -1) {
+        end = begin;
+        while(acceptableLinkCharacters.indexOf(text.charAt(end)) != -1 && end < text.length) {
+            end ++;
+        }
+        link = text.substring(begin, end);
+    }
+    
+    return link;
+}
+
+//redirects user to whatever link is associated with the comment
+//  lots of this function will have to change after it is merged with refactoring branch
+function redirectToVideo(id) {
+    var question;
+    var link;
+    if(id.toString().indexOf('_') == -1) {
+        question = getQuestionById(id);
+        link = question.getLink();
+    }
+    else {
+        question = getQuestionById(id.substring(0, id.indexOf('_')));
+        link = question.getCommentById(id).getLink();
+    }
+    
+    //after refactoring changes are accepted, the above to lines will need to be changed to
+    //var comment = getCommentById(id);
+    
+    window.open(link, '_blank'); //the '_blank' parameter makes it open in a new tab
 }

@@ -236,6 +236,12 @@ create table if not exists providers (
 
 -- 3 down
 
+
 drop table users;
 
 drop table providers;
+
+-- 4 up
+ALTER TABLE comments
+ADD video_link text
+-- 4 down

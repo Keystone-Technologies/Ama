@@ -18,6 +18,7 @@ gapi.load('auth2', function() {
 	
 
 $(document).ready(function() {
+	console.log("here");
 	//extracts html from page and stores it in global variables
 	HTMLforPost = $(".singlePost").html();
     $(".singlePost").remove();
@@ -31,6 +32,7 @@ $(document).ready(function() {
 	$(".sortMenuContainer").hide();
 	$(".backgroundCover").hide();
 	$(".searchBar").hide();
+	$(".replyMenuContainer").hide();
 	
     setCurrentUser("<%=session 'username'%>");
     
@@ -62,7 +64,6 @@ $(document).ready(function() {
 			}
 		}
 	});
-    
 });
 </script>
 
@@ -165,6 +166,25 @@ $(document).ready(function() {
 		<button class="searchButton" onclick="search()">search</button>
 	</div>
 	
+	<div class="replyMenuContainer">
+		<div class="replyMenuTitle">
+			ATTENTION
+		</div>
+		<div class="replyMenuDescription">
+			A youtube link has been detected in your reply. Please check the information below:
+		</div>
+		<div class="replyMenuLinkContainer">
+			Link:</br><textarea class="replyMenuLinkTextarea" rows=1 placeholder="link goes here"></textarea>
+		</div>
+		<div class="replyMenuStartingTimeContainer">
+			Starting Time:
+		</div>
+		<div class="replyMenuButtonsContainer">
+			<div class="replyMenuButton">not a link</div>
+			<div class="replyMenuButton">OK</div>
+		</div>
+	</div>
+	
 	<div class="content">
 		
 	</div>
@@ -196,6 +216,21 @@ $(document).ready(function() {
 					onmouseleave="changeVoteImg('TYPE', ID, 'out', 'down')"
 					onclick="vote('TYPE', ID, 'down')">
 				</div>
+				<div class="linkButtonContainer" id="linkButtonContainer_TYPEID">
+					<img class= "containedImg" src="/img/youtubebutton.png" alt="delete" 
+					title="video answer"
+					onmouseenter="this.src='/img/youtubebuttonhover.png'" 
+					onmouseleave="this.src='/img/youtubebutton.png'" 
+					onclick="redirectToVideo(ID)">
+				</div>
+			</div>
+			<div class="buttonContainer" id="buttonContainer_ID">
+				<div class="deleteButtonContainer" id="deleteButtonContainer_ID">
+					<img class= "containedImg" src="/img/trash.png" alt="delete" 
+					onmouseenter="this.src='/img/opentrash.png'" 
+					onmouseleave="this.src='/img/trash.png'" onclick="if( ConfirmDelete() == true){deletePost(ID)}"                                      
+					type="submit" name="actiondelete" value="1">
+				</div>
 			</div>
 			
 			<div class="buttonContainer" id="buttonContainer_TYPEID">
@@ -205,13 +240,6 @@ $(document).ready(function() {
 					onmouseleave="this.src='/img/trash.png'" 
 					onclick="deletePost('TYPE', ID)">
 				</div>
-				<div class="flagButtonContainer">
- 					<img class= "containedImg" src="/img/flag.png" alt="Flag" 
- 					id="flagImg_TYPEID"
- 					onmouseenter="changeFlagImg('TYPE', ID, 'in')" 
- 					onmouseleave="changeFlagImg('TYPE', ID, 'out')"
- 					onclick="sendFlagReport('TYPE', ID)">
- 				</div>
 			</div>
 			
 			<div class="postTextAndInfoContainer" id="postTextAndInfoContainer_TYPEID">
@@ -282,12 +310,13 @@ $(document).ready(function() {
 
 					</div>
 						
-					<div class="commentFlagButtonContainer">
-						<img class= "containedImg" src="/img/flag.png" alt="Flag" 
-						id="flagImg_TYPEID"
-						onmouseenter="changeFlagImg('TYPE', ID, 'in')" 
-						onmouseleave="changeFlagImg('TYPE', ID, 'out')"
-						onclick="sendFlagReport('TYPE', ID)">
+					<div class="commentLinkButtonContainer">
+						<img class= "containedImg" src="/img/youtubebutton.png" alt="youtube link" 
+						id="linkImg_TYPEID"
+						title="go to video"
+						onmouseenter="this.src='/img/youtubebuttonhover.png'"
+						onmouseleave="this.src='/img/youtubebutton.png'"
+						onclick="redirectToVideo('ID')">
 					</div>
 						
 					<div class="commentAnswerButtonContainer" id="answerButtonContainer_TYPEID">

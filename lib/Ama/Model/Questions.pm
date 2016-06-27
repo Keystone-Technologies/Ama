@@ -74,6 +74,7 @@ sub getQuestions {
     'question, '.
     "to_char(questions.created, 'MM/DD/YYYY HH12:MI:SS') as created, ".
     'username, '.
+    '(select video_link from comments where comment_id = (select comment_id from answers where question_id = questions.question_id)) as video_link, ' .
     "votes('questions',questions.question_id) votes, ".
     "(select vote from votes where entry_type = 'questions' and entry_id = questions.question_id and username = ?) as my_vote, ".
     "flagged('questions',questions.question_id) flagged, ".
@@ -96,7 +97,7 @@ sub getQuestions {
   'limit ?; ';
   
   $self->pg->db->query($sql, $self->username, $answered, $limit)->hashes->to_array }
-
+  
 sub find { shift->pg->db->query('select * from questions where question_id = ?', shift)->hash }
 
 sub remove {
