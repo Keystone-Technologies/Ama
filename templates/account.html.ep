@@ -1,0 +1,49 @@
+<html>
+<head>
+
+	
+	<meta name="google-signin-client_id" content="156728782684-3v8c4suoku9kqcqoe0ghoouahuukqv1m.apps.googleusercontent.com">
+	<script src="https://apis.google.com/js/api.js"></script>
+	<script src="https://apis.google.com/js/platform.js" async defer></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+	<script src="/js/scripts.js"></script>
+	<link rel="stylesheet" media="screen and (max-device-width: 800px)" href="/css/style.css">
+	<link rel="stylesheet" media="screen and (min-device-width: 800px)" href="/css/desktop.css">
+</head>
+
+<script>
+gapi.load('auth2', function() {
+		gapi.auth2.init();
+	});
+	
+</script>
+<a href='/questions'> Home</a>
+
+</br>
+</br>
+
+% if ($c->session('id')){
+        You are currently logged in!
+        <% my $user = $c->model->oauth2->find($c->session('id')); %>
+		</br><a href="/logout" >Logout, <%= $user->{first_name}%></a>
+%}
+
+</br>
+</br>
+Choose the app(s) you would like to connect with!
+
+
+
+</br>
+%foreach my $provider( keys %{$c->config->{oauth2}}){
+<%= link_to account => {provider=> $provider} => begin %><img  src="/img/<%= $provider%>.png"><% end %>
+%}
+
+</br>
+</br>
+
+Admin
+
+</br>
+
+</html>
