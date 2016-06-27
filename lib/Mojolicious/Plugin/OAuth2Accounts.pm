@@ -77,13 +77,13 @@ sub register {
     $c->redirect_to($config->{on_logout});
   });
   
-    $app->routes->get('/login/:provider' => {provider => ''} => sub {
+  $app->routes->get('/account/:provider' => {provider => ''} => sub {
     my $c = shift;
     #return $c->render($c->session('id') ? 'logout' : 'login') unless $c->param('provider');
-    return $c->render('login') unless $c->param('provider');
+    return $c->render('account') unless $c->param('provider');
     return $c->redirect_to('connectprovider', {provider => $c->param('provider')}) ; #removed "unless $c->session('id')"
     $c->redirect_to($config->{on_success});
-  })->name('login');
+  })->name('account');
   
 
   $app->routes->get("/mocked/me" => sub {

@@ -42,7 +42,7 @@ sub startup {
 $self->plugin("OAuth2Accounts" => {
   on_logout => '/',
   on_success => 'questions',
-  on_error => 'login',
+  on_error => 'account',
   on_connect => sub { shift->model->oauth2->store(@_) },
   providers => $config->{oauth2},
   });
@@ -71,7 +71,6 @@ $self->plugin("OAuth2Accounts" => {
     return $self->redirect_to('connectprovider', {provider => $self->param('provider')}) unless $self->session('id');
     $self->redirect_to('questions');
   });
-  
   $r->get('/questions')->to('questions#index')->name('questions'); # Display all questions
   $r->get('/questions/create')->to('questions#create')->name('create_question'); # Display empty form
   $r->post('/questions')->to('questions#store')->name('store_question'); # Insert into DB and redirect to show_question
