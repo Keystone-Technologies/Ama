@@ -70,7 +70,6 @@ $(document).ready(function() {
 			}
 		}
 	});
-    
 });
 </script>
 
@@ -172,6 +171,25 @@ $(document).ready(function() {
 	<div class="searchBar">
 		<textarea rows="1" placeholder="search" class="searchTextArea" id="searchTextarea" required></textarea>
 		<button class="searchButton" onclick="search()">search</button>
+	</div>
+	
+	<div class="replyMenuContainer">
+		<div class="replyMenuTitle">
+			ATTENTION
+		</div>
+		<div class="replyMenuDescription">
+			A youtube link has been detected in your reply. Please check the information below:
+		</div>
+		<div class="replyMenuLinkContainer">
+			Link:</br><textarea class="replyMenuLinkTextarea" rows=1 placeholder="link goes here"></textarea>
+		</div>
+		<div class="replyMenuStartingTimeContainer">
+			Starting Time:
+		</div>
+		<div class="replyMenuButtonsContainer">
+			<div class="replyMenuButton">not a link</div>
+			<div class="replyMenuButton">OK</div>
+		</div>
 	</div>
 	
 	<div class="content">

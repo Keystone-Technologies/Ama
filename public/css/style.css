@@ -274,6 +274,55 @@ body {
 	font-size: 3em;
 }
 
+/********reply menu ************/
+
+.replyMenuContainer {
+	position: fixed;
+	top: 10%;
+	bottom: 10%;
+	left: 10%;
+	right: 10%;
+	background-color: white;
+	z-index: 2;
+	border: 3px solid black;
+	box-sizing: border-box;
+}
+
+.replyMenuTitle {
+	width: 100%;
+	text-align: center;
+	font-size: 4em;
+	font-weight: bold;
+}
+
+.replyMenuDescription {
+	position: relative;
+	top: 50px;
+	width: 100%;
+	text-align: center;
+	font-size: 2em;
+	color: 777777;
+}
+
+.replyMenuLinkContainer {
+	position: relative;
+	top: 100px;
+	text-align: center;
+	width: 100%;
+	font-size: 2em;
+}
+
+.replyMenuLinkTextarea {
+	font-size: 1em;
+	width: 98%;
+	border: 1px solid;
+	border-color: e6e6e6;
+	resize: none;
+	height: auto;
+}
+
+/***** content and show more******/
+
 .content {
 	max-width: 1200px;
 	min-width: 810px;
