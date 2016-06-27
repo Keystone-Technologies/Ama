@@ -15,17 +15,10 @@
 gapi.load('auth2', function() {
 		gapi.auth2.init();
 	});
-</script>
-<script>
-function ConfirmDelete()
-    {
-      var x = confirm("Are you sure you want to delete?");
-      if (x)
-          return true;
-      else
-        return false;
-    }
+	
+
 $(document).ready(function() {
+	console.log("here");
 	//extracts html from page and stores it in global variables
 	HTMLforPost = $(".singlePost").html();
     $(".singlePost").remove();
@@ -39,11 +32,12 @@ $(document).ready(function() {
 	$(".sortMenuContainer").hide();
 	$(".backgroundCover").hide();
 	$(".searchBar").hide();
+	$(".replyMenuContainer").hide();
 	
     setCurrentUser("<%=session 'username'%>");
     
     //this is where it should set the last viewed options, something like that with cookies
-    changeQuestions();
+    reloadQuestions();
     
     $(window).resize(function() {
     	resizePosts();
@@ -70,7 +64,6 @@ $(document).ready(function() {
 			}
 		}
 	});
-    
 });
 </script>
 
@@ -98,11 +91,10 @@ $(document).ready(function() {
 	<div class="newQuestionContainer">
 		<br><label for='question' class="newPostTitle">New Question</label><br>
 		<textarea placeholder= "Enter question here" class="newPostTextarea" id="newQuestionTextarea" required></textarea><br>
-		<button class='postButton' onclick="submitQuestion()">Create </button>
+		<button class='postButton' onclick="submitQuestion()">Create</button>
 	</div>
 	
 	<div class="backgroundCover" onclick="closeMenu('none')">
-	 
 	</div>
 	
 	<div class="sortMenuContainer">
@@ -150,7 +142,7 @@ $(document).ready(function() {
 				Cancel
 			</div>
 		</div><div class="sortMenuButton">
-			<div class="sortMenuButtonText" onclick="closeMenu('save');changeQuestions()">
+			<div class="sortMenuButtonText" onclick="closeMenu('save')">
 				Apply
 			</div>
 		</div>
@@ -174,6 +166,25 @@ $(document).ready(function() {
 		<button class="searchButton" onclick="search()">search</button>
 	</div>
 	
+	<div class="replyMenuContainer">
+		<div class="replyMenuTitle">
+			ATTENTION
+		</div>
+		<div class="replyMenuDescription">
+			A youtube link has been detected in your reply. Please check the information below:
+		</div>
+		<div class="replyMenuLinkContainer">
+			Link:</br><textarea class="replyMenuLinkTextarea" rows=1 placeholder="link goes here"></textarea>
+		</div>
+		<div class="replyMenuStartingTimeContainer">
+			Starting Time:
+		</div>
+		<div class="replyMenuButtonsContainer">
+			<div class="replyMenuButton">not a link</div>
+			<div class="replyMenuButton">OK</div>
+		</div>
+	</div>
+	
 	<div class="content">
 		
 	</div>
@@ -191,120 +202,134 @@ $(document).ready(function() {
 	</div>
 
 	<div class="singlePost">
-		<div class= "postContainer" id="postContainer_ID">
-			<div class="voteInfoContainer" id="voteInfoContainer_ID">
+		<div class= "postContainer" id="postContainer_TYPEID">
+			<div class="voteInfoContainer" id="voteInfoContainer_TYPEID">
 				<div class="upvoteContainer">
 					<img class="containedImg" src="/img/smalluparrow.png" alt="uparrow"
-					id="upvote_ID"
-					onmouseenter="changeVoteImg(ID, 'in', 'up')"
-					onmouseleave="changeVoteImg(ID, 'out', 'up')"
-					onclick="vote(ID, 'up')">
+					id="upvote_TYPEID"
+					onmouseenter="changeVoteImg('TYPE', ID, 'in', 'up')"
+					onmouseleave="changeVoteImg('TYPE', ID, 'out', 'up')"
+					onclick="vote('TYPE', ID, 'up')">
 				</div>
-				<div class="voteContainer" id="voteContainer_ID">
+				<div class="voteContainer" id="voteContainer_TYPEID">
 					VOTES
 				</div>
 				<div class="downvoteContainer">
 					<img class="containedImg" src="/img/smalldownarrow.png" alt="downarrow"
-					id="downvote_ID"
-					onmouseenter="changeVoteImg(ID, 'in', 'down')"
-					onmouseleave="changeVoteImg(ID, 'out', 'down')"
-					onclick="vote(ID, 'down')">
+					id="downvote_TYPEID"
+					onmouseenter="changeVoteImg('TYPE', ID, 'in', 'down')"
+					onmouseleave="changeVoteImg('TYPE', ID, 'out', 'down')"
+					onclick="vote('TYPE', ID, 'down')">
+				</div>
+				<div class="linkButtonContainer" id="linkButtonContainer_TYPEID">
+					<img class= "containedImg" src="/img/youtubebutton.png" alt="delete" 
+					title="video answer"
+					onmouseenter="this.src='/img/youtubebuttonhover.png'" 
+					onmouseleave="this.src='/img/youtubebutton.png'" 
+					onclick="redirectToVideo(ID)">
 				</div>
 			</div>
-			
 			<div class="buttonContainer" id="buttonContainer_ID">
 				<div class="deleteButtonContainer" id="deleteButtonContainer_ID">
 					<img class= "containedImg" src="/img/trash.png" alt="delete" 
 					onmouseenter="this.src='/img/opentrash.png'" 
 					onmouseleave="this.src='/img/trash.png'" onclick="if( ConfirmDelete() == true){deletePost(ID)}"                                      
 					type="submit" name="actiondelete" value="1">
-
 				</div>
-
 			</div>
 			
-			<div class="postTextAndInfoContainer" id="postTextAndInfoContainer_ID">
-				<div class="postTextContainer" id="postTextContainer_ID">
-					<div class="postText" id="textContainer_ID">
+			<div class="buttonContainer" id="buttonContainer_TYPEID">
+				<div class="deleteButtonContainer" id="deleteButtonContainer_TYPEID">
+					<img class= "containedImg" src="/img/trash.png" alt="delete" 
+					onmouseenter="this.src='/img/opentrash.png'" 
+					onmouseleave="this.src='/img/trash.png'" 
+					onclick="deletePost('TYPE', ID)">
+				</div>
+			</div>
+			
+			<div class="postTextAndInfoContainer" id="postTextAndInfoContainer_TYPEID">
+				<div class="postTextContainer" id="postTextContainer_TYPEID">
+					<div class="postText" id="textContainer_TYPEID">
 					    TEXT
 					</div>
 				</div>
 				<div class="postInfoContainer">
-					<div class="postActionContainer" id="showCommentsButton_ID" onclick="toggleComments(ID)">
+					<div class="postActionContainer" id="showCommentsButton_TYPEID" onclick="toggleComments(ID)">
 						show comments<br>(NUMCOMMENTS)
 					</div>
-					<div class="postActionContainer" id="replyButton_ID" onclick="toggleReplyForm(ID)">
+					<div class="postActionContainer" id="replyButton_TYPEID" onclick="toggleReplyForm(ID)">
 						reply
 					</div>
-					<div class="timeAskedContainer" id="timeAskedContainer_ID">
+					<div class="timeAskedContainer" id="timeAskedContainer_TYPEID">
 						TIMEASKED
 					</div>
 				</div>
 			</div>
 		</div>
 		
-		<div class="replyContainer" id="replyContainer_ID">
+		<div class="replyContainer" id="replyContainer_TYPEID">
             <label class='newPostTitle' for='comment'>Reply</label>
-            <br><textarea class = "newPostTextArea" id="newPostTextArea_ID" placeholder= "Enter reply here"></textarea><br>
+            <br><textarea class = "newPostTextArea" id="newPostTextArea_TYPEID" placeholder= "Enter reply here"></textarea><br>
             <button class="postButton" onclick="sendReply(ID)">Post</button>
 		</div>
 			
-		<div class="commentsContainer" id="commentsContainer_ID">
+		<div class="commentsContainer" id="commentsContainer_TYPEID">
 		</div>
 	</div>
 	
 	<div class="singleComment">
-		<div class="commentContainer" id="commentContainer_ID">
-			<div class="commentVoteInfoContainer" id="voteInfoContainer_ID">
+		<div class="commentContainer" id="commentContainer_TYPEID">
+			<div class="commentVoteInfoContainer" id="voteInfoContainer_TYPEID">
 				<div class="commentUpvoteContainer">
 					<img class="containedImg" src="/img/smalluparrow.png" alt="uparrow"
-					id="upvote_ID"
-					onmouseenter="changeVoteImg('ID', 'in', 'up')"
-					onmouseleave="changeVoteImg('ID', 'out', 'up')"
-					onclick="vote('ID', 'up')">
+					id="upvote_TYPEID"
+					onmouseenter="changeVoteImg('TYPE', ID, 'in', 'up')"
+					onmouseleave="changeVoteImg('TYPE', ID, 'out', 'up')"
+					onclick="vote('TYPE', ID, 'up')">
 				</div>
-				<div class="commentVoteContainer" id="voteContainer_ID">
+				<div class="commentVoteContainer" id="voteContainer_TYPEID">
 					VOTES
 				</div>
 				<div class="commentDownvoteContainer">
 					<img class="containedImg" src="/img/smalldownarrow.png" alt="downarrow"
-					id="downvote_ID"
-					onmouseenter="changeVoteImg('ID', 'in', 'down')"
-					onmouseleave="changeVoteImg('ID', 'out', 'down')"
-					onclick="vote('ID', 'down')">
+					id="downvote_TYPEID"
+					onmouseenter="changeVoteImg('TYPE', ID, 'in', 'down')"
+					onmouseleave="changeVoteImg('TYPE', ID, 'out', 'down')"
+					onclick="vote('TYPE', ID, 'down')">
 				</div>
 			</div>
 			
-			<div class="commentPostTextAndInfoContainer" id="postTextAndInfoContainer_ID">
-				<div class="commentPostTextContainer" id="postTextContainer_ID">
-					<div class="commentPostText" id="textContainer_ID">
+			<div class="commentPostTextAndInfoContainer" id="postTextAndInfoContainer_TYPEID">
+				<div class="commentPostTextContainer" id="postTextContainer_TYPEID">
+					<div class="commentPostText" id="textContainer_TYPEID">
 					    TEXT
 					</div>
 				</div>
 					
 				<div class="commentPostInfoContainer">
-					<div class="commentDeleteButtonContainer" id="deleteButtonContainer_ID">
+					<div class="commentDeleteButtonContainer" id="deleteButtonContainer_TYPEID">
 						<img class= "containedImg" src="/img/trash.png" alt="delete" 
 						onmouseenter="this.src='/img/opentrash.png'" 
-						onmouseleave="this.src='/img/trash.png'" onclick="if( ConfirmDelete() == true){deletePost('ID')}"
-                        type="submit" name="actiondelete" value="1">
+						onmouseleave="this.src='/img/trash.png'" 
+						onclick="deletePost('TYPE', ID)">
 
 					</div>
 						
-					<div class="commentFlagButtonContainer">
-						<img class= "containedImg" src="/img/flag.png" alt="Flag" 
-						id="flagImg_ID"
-						onmouseenter="changeFlag('ID', 'in')" 
-						onmouseleave="changeFlag('ID', 'out')"
-						onclick="sendFlagReport('ID')">
+					<div class="commentLinkButtonContainer">
+						<img class= "containedImg" src="/img/youtubebutton.png" alt="youtube link" 
+						id="linkImg_TYPEID"
+						title="go to video"
+						onmouseenter="this.src='/img/youtubebuttonhover.png'"
+						onmouseleave="this.src='/img/youtubebutton.png'"
+						onclick="redirectToVideo('ID')">
 					</div>
 						
-					<div class="commentAnswerButtonContainer" id="answerButtonContainer_ID">
+					<div class="commentAnswerButtonContainer" id="answerButtonContainer_TYPEID">
 						<img class="containedImg" src="/img/checkmark.png" alt="Checkmark"
-						id="answerImg_ID"
-						onmouseenter="changeCheckMark('ID', 'in')"
-						onmouseleave="changeCheckMark('ID', 'out')"
-						onclick="markAnswer('ID')">
+						id="answerImg_TYPEID"
+						onmouseenter="changeCheckMark(ID, 'in')"
+						onmouseleave="changeCheckMark(ID, 'out')"
+						onclick="markAnswer(ID)">
 					</div>
 						
 					<div class="commentTimeAskedContainer">

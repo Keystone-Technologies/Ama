@@ -11,11 +11,11 @@ has 'votes' => sub {
 };
 
 sub add {
-  my ($self, $question_id, $comment) = @_;
+  my ($self, $question_id, $comment, $video_link) = @_;
   my $results = eval {
     my $tx = $self->pg->db->begin;
-    my $sql = 'insert into comments (question_id, comment, username) select ?, ?, ? where not answered(?) returning *';
-    my $results = $self->pg->db->query($sql, $question_id, $comment, $self->username, $question_id)->hash;
+    my $sql = 'insert into comments (question_id, comment, username, video_link) select ?, ?, ?, ? where not answered(?) returning *';
+    my $results = $self->pg->db->query($sql, $question_id, $comment, $self->username, $video_link, $question_id)->hash;
     $self->votes->username($self->username);
     $self->votes->cast('comments', $results->{comment_id}, 'up');
     $tx->commit;
@@ -31,6 +31,7 @@ sub all {
     comments.comment_id,
     comments.question_id,
     comment,
+    video_link,
     to_char(comments.created, 'MM/DD/YYYY HH12:MI:SS') as created,
     to_char(comments.modified, 'MM/DD/YYYY HH12:MI:SS') as modified,
     comments.username as username,
