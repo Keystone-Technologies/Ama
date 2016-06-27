@@ -387,7 +387,7 @@ function initializeCommentLayout(id) {
                 $("#answerImg_" + comment.getId()).remove();
             }
         }
-        if(comment.getLink() == null) {
+        if(comment.getLink() == null || comment.getLink() == "") {
             $("#linkImg_" + comment.getId()).css('visibility', 'hidden');
         }
     }
@@ -647,9 +647,24 @@ function submitQuestion() {
 function sendReply(id) {
     var text = $("#newPostTextArea_" + id).val();
     text = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    
+    text = text.replace("https://www.youtube.com/watch?v=", "https://youtu.be/");
     var link = extractLink(text);
-    text = text.replace('\n' + link + '\n', '\n'); //first checks if a video is on its own line, removes it
-    text = text.replace(link, ""); //if the link is not on its own line it will be replaced right here
+    
+    if(link != "") {
+        text = text.replace('\n' + link + '\n', '\n'); //first checks if a video is on its own line, removes it
+        text = text.replace(link, ""); //if the link is not on its own line it will be replaced right here
+        
+        //if the link doesnt designate a time to start, sets the time to start at 0 (not necessary)
+        if(link.indexOf('?t=') == -1) {
+            link += "?t=0";
+        }
+        console.log('showReplyMenu()');
+    }
+        
+    //JOSH try to do one of those deffered waiting things so it waits or whatever for the menu thing to be closed
+    //  before sending the reply ok awesome good work
+    console.log("Remove this and these comments");
     
     //reply data to be sent
     var reply = {
@@ -709,7 +724,6 @@ function changeQuestions() {
     $.get("/questions/" + creator + "/" + answered + "/" + orderby + "/" + direction + "/" + limit + "/" + keyword, function(data){
         $.each(data, function(i, v){
         	var question = new Question(v.question_id, v.question.replace(/\n/g, '</br>'), v.votes, v.username, v.created, v.comment_count, v.flagged, v.answered, v.my_vote, v.video_link);
-        	console.log(question.getLink());
         	addQuestion(question);
         });
     }, 'json').done(function() {
@@ -760,7 +774,6 @@ function toggleComments(id) {
         $.get("/questions/" + id + "/comments", function(data){
             $.each(data, function(i, v){
                 var current = new Comment(v.question_id + "_" + v.comment_id, v.comment, v.votes, v.username, v.created, v.flagged, v.answered, v.my_vote, v.video_link);
-                console.log(current.getLink());
                 for(var j = 0; j < getQuestionCount(); j ++)
                 {
                     if(getQuestion(j).getId() == current.getQuestId())
@@ -880,17 +893,15 @@ function search() {
 //looks for a youtube link inside of the reply text and extracts it
 function extractLink(text) {
     var link = "";
+    var begin = 0;  //begining location of id
+    var end = 0;    //ending location of id
     
-    var begin = text.indexOf("https://youtu.be/");
+    begin = text.indexOf("https://youtu.be/"); //link style when press share button
     if(begin != -1) {
-        var end = begin;
-        
-        //checks each character after the begining of the link till it finds a character
-        //  that does not belong in a youtube link and returns the link
-        while(acceptableLinkCharacters.indexOf(text.charAt(begin)) != -1 && begin < text.length) {
-            begin ++;
+        end = begin;
+        while(acceptableLinkCharacters.indexOf(text.charAt(end)) != -1 && end < text.length) {
+            end ++;
         }
-        
         link = text.substring(begin, end);
     }
     
@@ -914,5 +925,5 @@ function redirectToVideo(id) {
     //after refactoring changes are accepted, the above to lines will need to be changed to
     //var comment = getCommentById(id);
     
-    window.open(link, '_blank'); //the_blank makes it open in a new tab
+    window.open(link, '_blank'); //the '_blank' parameter makes it open in a new tab
 }
