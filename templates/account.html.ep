@@ -21,10 +21,10 @@ gapi.load('auth2', function() {
 
 </br>
 </br>
+<% my $user = $c->model->oauth2->find($c->session('id')); %>
 
 % if ($c->session('id')){
         You are currently logged in!
-        <% my $user = $c->model->oauth2->find($c->session('id')); %>
 		</br><a href="/logout" >Logout, <%= $user->{first_name}%></a>
 %}
 
