@@ -2,9 +2,6 @@
 <head>
 
 	
-	<meta name="google-signin-client_id" content="156728782684-3v8c4suoku9kqcqoe0ghoouahuukqv1m.apps.googleusercontent.com">
-	<script src="https://apis.google.com/js/api.js"></script>
-	<script src="https://apis.google.com/js/platform.js" async defer></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 	<script src="/js/scripts.js"></script>
 	<link rel="stylesheet" media="screen and (max-device-width: 800px)" href="/css/style.css">
@@ -12,10 +9,6 @@
 </head>
 <title>Ask Me Anything</title>
 <script>
-gapi.load('auth2', function() {
-		gapi.auth2.init();
-	});
-	
 
 $(document).ready(function() {
 	//extracts html from page and stores it in global variables
