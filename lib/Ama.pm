@@ -31,6 +31,12 @@ sub startup {
     my ($next, $c, $action, $last) = @_;
     $c->session->{username} ||= time;
     $c->session->{username} = $c->session('id') if $c->session('id');
+    my $admin = 0; #by default the user is not an admin
+    if ($c->session('id')) { #if the user has logged in with OAuth
+      $admin = $self->pg->db->query('select admin from users where id = ?', $c->session->{username})->hash->{admin}; #set admin to 1 or null
+    }
+    $c->session->{admin} = $admin; #updates cookie's admin variable
+    $c->questions->admin($c->session->{admin}); #sends the admin info to the model (lib/Ama/Model/Questions.pm)
     $c->questions->username($c->session->{username});
     $c->comments->username($c->session->{username});
     $c->answers->username($c->session->{username});
