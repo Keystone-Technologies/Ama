@@ -242,6 +242,6 @@ drop table users;
 drop table providers;
 
 -- 4 up
-ALTER TABLE comments
-ADD video_link text
+ALTER TABLE comments ADD video_link text;
 -- 4 down
+alter table comments drop video_link;
