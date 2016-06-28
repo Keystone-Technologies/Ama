@@ -522,7 +522,8 @@ function sendfeedback(){
     var feedback = $("#feedbackTextarea").val();
     $.post("/api/feedback",{feedback:feedback},function(data){
         if(data.ok == "true"){
-            alert("feedback submitted");
+            $(".filterName").html("feedback submitted");
+            togglefeedbackForm();
         }
         else{
             alert("feedback not submitted");
@@ -596,7 +597,6 @@ function sendFlagReport(id) {
 function submitQuestion() {
     var text = $("#newQuestionTextarea").val();
     text = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    
     var question = {
         question: text
     };

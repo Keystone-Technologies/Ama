@@ -78,7 +78,7 @@ $(document).ready(function() {
 	<div class="newQuestionContainer">
 		<br><label for='question' class="newPostTitle">New Question</label><br>
 		<textarea placeholder= "Enter question here" class="newPostTextarea" id="newQuestionTextarea" required></textarea><br>
-		<button class='postButton' onclick="submitQuestion">Create </button>
+		<button class='postButton' onclick="submitQuestion">Create</button>
 	</div>
 	
 	<div class="feedback" onclick="javascript:togglefeedbackForm();">
