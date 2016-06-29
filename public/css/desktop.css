@@ -308,6 +308,15 @@ body {
 	color: 777777;
 }
 
+.replyMenuSecondDescription {
+	position: relative;
+	top: 35px;
+	width: 100%;
+	text-align: center;
+	font-size: 1em;
+	color: 777777;
+}
+
 .replyMenuLinkContainer {
 	position: relative;
 	top: 15px;

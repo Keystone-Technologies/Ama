@@ -186,7 +186,7 @@ $(document).ready(function() {
 			<input class="replyMenuTimeInput" id="replyMenuTimeMin" type="number" placeholder="0" rows=1></input> min
 			<input class="replyMenuTimeInput" id="replyMenuTimeS" type="number" placeholder="0" rows=1></input> s
 		</div>
-		<div class="replyMenuDescription" style="top:35px;">
+		<div class="replyMenuSecondDescription">
 			The link will be removed from your reply and mapped to a button.
 		</div>
 		<div class="replyMenuButtonsContainer">
