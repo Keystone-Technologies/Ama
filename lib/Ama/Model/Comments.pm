@@ -5,6 +5,7 @@ use Ama::Model::Votes;
 
 has 'pg';
 has 'username';
+has 'admin';
 has 'votes' => sub {
   my $self = shift;
   state $votes = Ama::Model::Votes->new(pg => $self->pg, username => $self->username);

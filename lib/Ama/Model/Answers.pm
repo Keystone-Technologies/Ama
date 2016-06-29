@@ -3,6 +3,7 @@ use Mojo::Base -base;
 
 has 'pg';
 has 'username';
+has 'admin';
 
 sub mark {
   my ($self, $comment_id, $question_id) = @_;

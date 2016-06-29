@@ -36,10 +36,12 @@ sub startup {
       $admin = $self->pg->db->query('select admin from users where id = ?', $c->session->{username})->hash->{admin}; #set admin to 1 or null
     }
     $c->session->{admin} = $admin; #updates cookie's admin variable
-    $c->questions->admin($c->session->{admin}); #sends the admin info to the model (lib/Ama/Model/Questions.pm)
     $c->questions->username($c->session->{username});
+    $c->questions->admin($c->session->{admin}); #sends the admin info to the model (lib/Ama/Model/Questions.pm)
     $c->comments->username($c->session->{username});
+    $c->comments->admin($c->session->{admin}); #sends the admin info to the model (lib/Ama/Model/Comments.pm)
     $c->answers->username($c->session->{username});
+    $c->answers->admin($c->session->{admin}); #sends the admin info to the model (lib/Ama/Model/Answers.pm)
     $c->votes->username($c->session->{username});
     $c->flags->username($c->session->{username});
     return $next->();
