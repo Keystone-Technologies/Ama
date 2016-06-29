@@ -13,8 +13,9 @@ sub submit{
         #cc      => q(jsiems@keystone-it.com),
         #bcc     => q(bmeyer@keystone-it.com),
         from    => q(ajin@keystone-it.com),
-        subject => "feedback received from AMA",)->send;
-    $c -> render(json => {ok => "true"});
+        subject => "feedback received from AMA",)->send->res->json,
+        #{message => 'success'},
+        $c -> render(json => {message => 'success'});
 }
  #$sendgrid->on(mail_send => sub {
     #my ($sendgrid, $ua, $tx) = @_;
