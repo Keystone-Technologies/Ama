@@ -71,11 +71,16 @@ function Post(id_input, text_input, votes_input, creator_input, time_created_inp
         comments_shown = shown;
     }
     
-    this.deleteComment = function() {
+    this.deleteComment = function(id) {
+        for(var i = 0; i < comment_count; i ++) {
+            if(comments[i].getId() == id) {
+                for(var j = i; j < comment_count; j ++) {
+                    comments[j] = comments[j + 1];
+                }
+                break;
+            }
+        }
         comment_count --;
-        //doesnt actually remove the comment from memory 
-        //  only changes comment count for accurate display 
-        //  for show comments(commentcount)
     }
     
     //************************************************************Comment Specific Functions
@@ -439,7 +444,7 @@ function deletePost(type, id) {
                 }
                 else {
                     //deletes the comment from the questions storage and hides it then removes
-                    getQuestionById(getCommentById(id).getQuestionId()).deleteComment();
+                    getQuestionById(getCommentById(id).getQuestionId()).deleteComment(id);
                     $("#commentContainer_" + type + id).hide(2000, function() {
                         $("#commentContainer_" + type + id).remove();
                     });
