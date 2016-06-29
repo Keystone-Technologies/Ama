@@ -87,6 +87,7 @@ function Post(id_input, text_input, votes_input, creator_input, time_created_inp
 var questions = [];                     //holds all questions currently loaded
 var questionCount = 0;                  //holds the total number of questions loaded
 var current_user = "007";               //holds the username assigned to the user by the server, used to determine if a user can delete stuff, etc...
+var admin = 0;                          //determines some styling differences, like showing all trashcans if admin
 var HTMLforPost = "uninitialized";      //html to be extracted from index page and stored in memory used on each new question
 var HTMLforComment = "uninitialized";   //same but for one comment
 var defaultPostSize = 0;                //Default height of a post, used to determine if the user is on mobile or desktop
@@ -120,6 +121,14 @@ function setCurrentUser(name) {
 
 function getCurrentUser() {
     return current_user;
+}
+
+function setAdmin(adm) {
+    admin = adm;
+}
+
+function getAdmin() {
+    return admin;
 }
 
 //Adds a question to static list of questions and increases question count
@@ -275,7 +284,7 @@ function initializeLayout() {
         var question = getQuestion(i);
         
         //hides all trash cans on questions the current user does not own
-        if(getCurrentUser() != question.getCreator()) {
+        if(getCurrentUser() != question.getCreator() && !(getAdmin() == 1)) {
             $("#deleteButtonContainer_" + type + question.getId()).css('visibility', 'hidden'); //changing css visibility to hidden hides the div but lets it keep space where it was
         }
         
@@ -294,7 +303,10 @@ function initializeLayout() {
             $("#upvote_" + type + question.getId()).remove();
             $("#voteInfoContainer_" + type + question.getId()).css('left', '0%');
             $("#downvote_" + type + question.getId()).remove();
-            $("#buttonContainer_" + type + question.getId()).remove();
+            
+            if(!getAdmin())
+                $("#buttonContainer_" + type + question.getId()).remove();
+            
             $("#postTextAndInfoContainer_" + type + question.getId()).css('width', '90%');
             $("#postTextAndInfoContainer_" + type + question.getId()).css('left', '10%');
             $("#timeAskedContainer_" + type + question.getId()).html("Answered on " + question.getTimeCreated());
