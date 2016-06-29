@@ -18,6 +18,7 @@
 --   X mark a new comment (including their own) of their own question as an answer and unmarking the prior mark
 
 
+
 create table if not exists questions (
   question_id serial primary key,
   question    text not null,
@@ -90,6 +91,8 @@ insert into flags (entry_type, entry_id, username) values
   ('questions', 2, 'anonymous4'),
   ('comments', 5, 'anonymous3'),
   ('comments', 9, 'anonymous2');
+  
+  
 
 CREATE OR REPLACE FUNCTION answered(integer) 
 RETURNS boolean AS
@@ -212,3 +215,33 @@ $BODY$ LANGUAGE plpgsql;
 
 DROP FUNCTION deletechildren() CASCADE;
 DROP FUNCTION commentcount();
+
+-- 3 up
+
+create table if not exists users (
+  id         text primary key,
+  email      text,
+  first_name text,
+  last_name  text,
+  admin      integer,
+  created    timestamptz not null default now()
+);
+create table if not exists providers (
+  id          text,
+  provider_id text,
+  provider    text,
+  created     timestamptz not null default now(),
+  PRIMARY KEY (id, provider_id, provider)
+);
+
+-- 3 down
+
+
+drop table users;
+
+drop table providers;
+
+-- 4 up
+ALTER TABLE comments
+ADD video_link text
+-- 4 down
