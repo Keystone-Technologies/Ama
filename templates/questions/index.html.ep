@@ -27,6 +27,7 @@ $(document).ready(function() {
 	$(".replyMenuContainer").hide();
 	
     setCurrentUser("<%=session 'username'%>");
+    setAdmin("<%=session 'admin'%>");
     
     //this is where it should set the last viewed options, something like that with cookies
     reloadQuestions();
