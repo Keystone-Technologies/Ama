@@ -15,7 +15,6 @@
 gapi.load('auth2', function() {
 		gapi.auth2.init();
 	});
-	
 
 $(document).ready(function() {
 	//extracts html from page and stores it in global variables
@@ -62,6 +61,12 @@ $(document).ready(function() {
 				$(".filterContainer").css({"position":"relative", "top":"0"});
 			}
 		}
+	});
+	
+	//Whenever someone makes a change to one of the time inputs on the time menu
+	//  this function is called and it changes the link appropriately
+	$(".replyMenuTimeInput").bind('input propertychange', function() {
+    	setReplyMenuTimes($("#replyMenuLinkTextarea").val());
 	});
 });
 </script>
@@ -173,14 +178,19 @@ $(document).ready(function() {
 			A youtube link has been detected in your reply. Please check the information below:
 		</div>
 		<div class="replyMenuLinkContainer">
-			Link:</br><textarea class="replyMenuLinkTextarea" rows=1 placeholder="link goes here"></textarea>
+			Link:</br><textarea class="replyMenuTextarea" id="replyMenuLinkTextarea" rows=3 placeholder="link goes here"></textarea>
 		</div>
 		<div class="replyMenuStartingTimeContainer">
-			Starting Time:
+			Starting Time:</br>
+			<input class="replyMenuTimeInput" id="replyMenuTimeHr" type="number" placeholder="0" rows=1></input> hr
+			<input class="replyMenuTimeInput" id="replyMenuTimeMin" type="number" placeholder="0" rows=1></input> min
+			<input class="replyMenuTimeInput" id="replyMenuTimeS" type="number" placeholder="0" rows=1></input> s
+		</div>
+		<div class="replyMenuDescription" style="top:35px;">
+			The link will be removed from your reply and mapped to a button.
 		</div>
 		<div class="replyMenuButtonsContainer">
-			<div class="replyMenuButton">not a link</div>
-			<div class="replyMenuButton">OK</div>
+			<div class="replyMenuButton" onclick="readyToSubmit.resolve('')">leave it in</div><div class="replyMenuButton" onclick="readyToSubmit.resolve(' save ')">add button</div>
 		</div>
 	</div>
 	
@@ -260,7 +270,7 @@ $(document).ready(function() {
 		<div class="replyContainer" id="replyContainer_TYPEID">
             <label class='newPostTitle' for='comment'>Reply</label>
             <br><textarea class = "newPostTextArea" id="newPostTextArea_TYPEID" placeholder= "Enter reply here"></textarea><br>
-            <button class="postButton" onclick="sendReply(ID)">Post</button>
+            <button class="postButton" onclick="readyReply(ID)">Post</button>
 		</div>
 			
 		<div class="commentsContainer" id="commentsContainer_TYPEID">

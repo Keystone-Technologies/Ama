@@ -277,6 +277,93 @@ body {
 	font-size: 1em;
 }
 
+/********reply menu ************/
+
+.replyMenuContainer {
+	position: fixed;
+	top: 30%;
+	height: 320px;
+	width: 400px;
+	left:50%;
+	transform: translateX(-50%);
+	background-color: white;
+	z-index: 2;
+	border: 3px solid black;
+	box-sizing: border-box;
+}
+
+.replyMenuTitle {
+	width: 100%;
+	text-align: center;
+	font-size: 1.5em;
+	font-weight: bold;
+}
+
+.replyMenuDescription {
+	position: relative;
+	top: 5px;
+	width: 100%;
+	text-align: center;
+	font-size: 1em;
+	color: 777777;
+}
+
+.replyMenuLinkContainer {
+	position: relative;
+	top: 15px;
+	text-align: center;
+	width: 100%;
+	font-size: 1em;
+}
+
+.replyMenuTextarea {
+	font-size: 1em;
+	width: 98%;
+	border: 1px solid;
+	border-color: e6e6e6;
+	resize: none;
+}
+
+.replyMenuStartingTimeContainer {
+	width:100%;
+	position: relative;
+	top: 30px;
+	text-align: center;
+	font-size: 1em;
+}
+
+.replyMenuTimeInput {
+	font-size: 1em;
+	width: 15%;
+	border: 1px solid;
+	border-color: e6e6e6;
+	resize: none;
+	text-align: right;
+}
+
+.replyMenuButtonsContainer {
+	position: relative;
+	display: flex;
+	top: 5%;
+	width: 100%;
+	height: 30%;
+	justify-content: center;
+	align-items: center;
+}
+
+.replyMenuButton {
+	position: relative;
+	display: inline-block;
+	margin:auto;
+	font-size: 1.5em;
+	cursor: pointer;
+}
+
+.replyMenuButton:hover {
+	color: 1f268b;;
+}
+
+/*****************************content n such*******************************/
 .content {
 	max-width: 1200px;
 	min-width: 700px;
@@ -408,7 +495,6 @@ body {
 	transform: translateY(-50%);
 	font-size: 1.2em;
 	padding: 15px;
-	cursor: default;
 	font-weight: bold;
 }
 
@@ -520,7 +606,6 @@ body {
 	top: 50%;
 	transform: translateY(-50%);
 	font-size: 1em;
-	cursor: default;
 }
 
 .commentPostInfoContainer {
