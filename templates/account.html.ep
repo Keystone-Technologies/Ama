@@ -1,10 +1,73 @@
 <html>
 <head>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-	<script src="/js/scripts.js"></script>
-	<link rel="stylesheet" media="screen and (max-device-width: 800px)" href="/css/style.css">
-	<link rel="stylesheet" media="screen and (min-device-width: 800px)" href="/css/desktop.css">
+	<script src="/js/accountScripts.js"></script>
+	<link rel="stylesheet" media="screen and (max-device-width: 800px)" href="/css/accountMobile.css">
+	<link rel="stylesheet" media="screen and (min-device-width: 800px)" href="/css/accountDesktop.css">
 </head>
+
+<title>Account</title>
+
+<script>
+	% if ($c->session('id')){
+	setLoggedIn(true);
+	%}
+	
+	setAdmin(<%=$c->session->{admin}%>);
+	
+	$(window).load(function() {
+		initializeLayout();
+	});
+</script>
+
+<body>
+
+	<div class="header">
+		<div class="logoContainer"> 
+			<img class="logoImg" src="/img/logo.png" alt="LOGO">
+		</div>
+		<div class="version">
+			v<%=$self->version%>
+		</div>
+	</div>
+	
+	<div class="content">
+		<div class="title">
+			Account Options
+		</div>
+	
+		<div class="option" onclick="document.location = '/questions'">
+			return home
+		</div>
+	
+		<div class="option" id="logoutContainer" onclick="document.location='/logout'">
+			logout
+		</div>
+		
+		<div class ="title" id="signInTitle">
+			Sign In
+		</div>
+		
+		<div class="signInContainer" id="signInContainer">
+			<div class= "signInOption" onclick="document.location = '/account/google'">
+				<img class="containedImg" src="/img/google.png">oogle
+			</div><div class="signInOption" onclick="document.location = '/account/facebook'">
+				<img class="containedImg" src="/img/facebook.png">acebook
+			</div>
+		</div>
+		
+		<div class="title" id="adminTitle">
+			Admin Options
+		</div>
+		
+		<div class="option danger" id="deleteAllButton" onclick="deleteAll()">
+			delete all questions
+		</div>
+	</div>
+</body>
+
+
+<!--
 
 <a href='/questions'> Home</a>
 
@@ -61,5 +124,5 @@ Congrats! Someone trusted you with admin privelages!
 %}
 
 </br>
-
+-->
 </html>
