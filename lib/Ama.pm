@@ -5,7 +5,6 @@ use Ama::Model::Questions;
 use Ama::Model::Comments;
 use Ama::Model::Answers;
 use Ama::Model::Votes;
-use Ama::Model::Flags;
 use Mojo::Pg;
 use Ama::Model::OAuth2;
 our $VERSION = '1.2';
@@ -25,7 +24,6 @@ sub startup {
   $self->helper(comments => sub { state $comments = Ama::Model::Comments->new(pg => shift->pg) });
   $self->helper(answers => sub { state $votes = Ama::Model::Answers->new(pg => shift->pg) });
   $self->helper(votes => sub { state $votes = Ama::Model::Votes->new(pg => shift->pg) });
-  $self->helper(flags => sub { state $votes = Ama::Model::Flags->new(pg => shift->pg) });
   $self->helper('model.oauth2' => sub { state $votes = Ama::Model::OAuth2->new(pg => shift->pg) });
   $self->hook(around_action => sub {
     my ($next, $c, $action, $last) = @_;
@@ -43,7 +41,6 @@ sub startup {
     $c->answers->username($c->session->{username});
     $c->answers->admin($c->session->{admin}); #sends the admin info to the model (lib/Ama/Model/Answers.pm)
     $c->votes->username($c->session->{username});
-    $c->flags->username($c->session->{username});
     return $next->();
   });
   
@@ -105,9 +102,6 @@ $self->plugin("OAuth2Accounts" => {
 
   $api->post('/:entry_type/vote/:entry_id/:vote', [vote => [qw(up down)]])->to('votes#cast')->name('cast_vote');
   $api->delete('/:entry_type/vote/:entry_id')->to('votes#uncast')->name('uncast_vote');
-
-  $api->post('/:entry_type/flag/:entry_id')->to('flags#raise')->name('raise_flag');
-  $api->delete('/:entry_type/flag/:entry_id')->to('flags#remove')->name('remove_flag');
 }
 
 1;
