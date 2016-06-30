@@ -236,7 +236,9 @@ function changeCheckMark(id, dir) {
     var checked = "";                  //changes to 'checked' if the img needs to be checkedcheckmark
     var type = "comment";
     
-    if(dir == 'in')
+    if(dir == 'in' && !comment.isAnswer())
+        checked = "checked";
+    if(dir == 'out' && comment.isAnswer())
         checked = "checked";
         
     $("#answerImg_" + type + comment.getId()).attr('src', '/img/' + checked + 'checkmark.png');
@@ -334,20 +336,31 @@ function initializeCommentLayout(id) {
         if(comment.getCreator() != getCurrentUser()) {
             $("#deleteButtonContainer_" + type + comment.getId()).css('visibility', 'hidden');
         }
+        
+        if(question.getCreator() != getCurrentUser() && getAdmin() != 1) {
+            $("#answerButtonContainer_" + type + comment.getId()).css('visibility', 'hidden');
+        }
+        
         if(comment.getUsersVote() == "up") {
             $("#upvote_" + type + comment.getId()).attr('src', '/img/clickedsmalluparrow.png');
         }
         if(comment.getUsersVote() == "down") {
             $("#downvote_" + type + comment.getId()).attr('src', '/img/clickedsmalldownarrow.png');
         }
+        
         if(question.isAnswered()) {
             var comment = question.getComment(j);
             $("#upvote_" + type + comment.getId()).css('visibility', 'hidden');
             $("#downvote_" + type + comment.getId()).css('visibility', 'hidden');
             $("#deleteButtonContainer_" + type + comment.getId()).remove();
             if(comment.isAnswer()) {
+                $("#answerImg_" + type + comment.getId()).attr({src:"/img/checkedcheckmark.png"});
                 //if the comment is the answer, moving the mouse over the answer button, and clicking it, does not do anything
-                $("#answerImg_" + type + comment.getId()).attr({onmouseenter: "", onmouseleave: "", onclick: "", src:"/img/checkedcheckmark.png"});
+                //   unless they are the creator or they are an admin
+                if(question.getCreator() != getCurrentUser() && getAdmin() != 1) {
+                    $("#answerImg_" + type + comment.getId()).attr({onmouseenter: "", onmouseleave: "", onclick: ""});
+                    $("#answerImg_" + type + comment.getId()).css('visibility', 'visible');
+                }
             }
             else {
                 $("#commentContainer_" + type + comment.getId()).css('background-color', 'd6d6d6');
@@ -594,12 +607,20 @@ function sendReply(id) {
 function markAnswer(id) {
     var comment = getCommentById(id);  //comment that is marked as the answer
     var question = getQuestionById(comment.getQuestionId());  //question that has been answered
-    $.post("/api/answers/" + question.getId() + "/" + comment.getId()).done(function(data) {
+    var type = 'POST';
+    
+    if(question.isAnswered())
+        type = 'delete';
+    
+    $.ajax({
+        url: "/api/answers/" + question.getId() + "/" + comment.getId(),
+        type: type,
+        dataType:'json'}).done(function(data) {
         //if the server sends back data with an id, it succesfully recorded and marked it as answered
         if(data.question_id) {
             //reloads the questions with the newest answer on top
             setFilter('creator', 'all');
-            setFilter('answered', '1');
+            setFilter('answered', !question.isAnswered() | 0);
             setFilter('orderby', 'created');
             setFilter('direction', 'desc');
             reloadQuestions();
