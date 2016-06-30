@@ -30,9 +30,17 @@ sub startup {
     $c->session->{username} ||= time;
     $c->session->{username} = $c->session('id') if $c->session('id');
     my $admin = 0; #by default the user is not an admin
-    if ($c->session('id')) { #if the user has logged in with OAuth
-      $admin = $self->pg->db->query('select admin from users where id = ?', $c->session->{username})->hash->{admin}; #set admin to 1 or null
+    
+    if ($c->session('id') ) { #if the user has logged in with OAuth
+      if ( defined $self->pg->db->query('select id from users where id = ?', $c->session->{username})->hash ) {
+        $admin = $self->pg->db->query('select admin from users where id = ?', $c->session->{username})->hash->{admin}; #set admin to 1 or 0
+      }
+      else {
+        $c->redirect_to('/logout');
+        warn Data::Dumper::Dumper($c->session);
+      }
     }
+    
     $c->session->{admin} = $admin; #updates cookie's admin variable
     $c->questions->username($c->session->{username});
     $c->questions->admin($c->session->{admin}); #sends the admin info to the model (lib/Ama/Model/Questions.pm)
@@ -83,6 +91,8 @@ $self->plugin("OAuth2Accounts" => {
   $r->get('/questions/:question_id/edit')->to('questions#edit')->name('edit_question'); # Display filled-out form
   $r->put('/questions/:question_id')->to('questions#update')->name('update_question'); # Update DB and redirect to show_question
   $r->delete('/questions/:question_id')->to('questions#remove')->name('remove_question'); # Delete from DB and redirect to questions
+  $r->delete('/removeAll')->to('questions#removeAll')->name('removeAll'); #Delete every question
+  $r->get('/questions/:creator/:answered/:orderby/:direction/:limit/:keyword')->to('questions#getQuestions')->name('get_answered');
 
   $r->get('/questions/:question_id/comments')->to('comments#index')->name('comments');
   $r->get('/questions/:question_id/comment/create')->to('comments#create')->name('create_comment');
@@ -92,9 +102,7 @@ $self->plugin("OAuth2Accounts" => {
   $r->get('/comments/:comment_id/edit')->to('comments#edit')->name('edit_comment');
   $r->put('/comments/:comment_id')->to('comments#update')->name('update_comment');
   $r->delete('/comments/:comment_id')->to('comments#remove')->name('remove_comment');
-
-  $r->get('/questions/:creator/:answered/:orderby/:direction/:limit/:keyword')->to('questions#getQuestions')->name('get_answered');
-
+  
   my $api = $r->under('/api'); # Require Ajax (need to do)
 
   $api->post('/answers/:question_id/:comment_id')->to('answers#mark')->name('mark_comment_as_answer');

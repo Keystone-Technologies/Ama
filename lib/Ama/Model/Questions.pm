@@ -121,6 +121,22 @@ sub remove {
   }
 }
 
+sub removeAll {
+  my $self = shift;
+  my $results = eval {
+    if ($self->{admin} == 1) {
+      my $sql = 'delete from questions';
+      $self->pg->db->query($sql);
+    }
+  };
+  if ($results) {
+    $@ ? { error => $@ } : $results;
+  }
+  else {
+    error => "Couldn't delete question";
+  }
+}
+
 sub save {
   my ($self, $question_id, $question) = @_;
   my $results = eval {

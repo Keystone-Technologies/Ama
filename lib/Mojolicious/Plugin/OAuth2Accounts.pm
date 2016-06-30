@@ -75,7 +75,7 @@ sub register {
     $token->{$_} = {} foreach keys %$token;
     $c->session(token => $token);
     $c->redirect_to($config->{on_logout});
-  });
+  })->name('logout');
   
   $app->routes->get('/account/:provider' => {provider => ''} => sub {
     my $c = shift;
@@ -123,20 +123,24 @@ sub register {
           $c->flash(error => "Could not obtain access token: $err");
           return $c->redirect_to($error);
         }
-        
         $token->{$provider} = $data;
         $token->{$provider}->{expires_at} = time + ($token->{$provider}->{expires_in}||3600);
         $c->session(token => $token);
+        warn $self->_fetch_user_url($fetch_user_url, $token->{$provider}->{access_token});
+  
         $c->ua->get($self->_fetch_user_url($fetch_user_url, $token->{$provider}->{access_token}), sub {
           my ($ua, $tx) = @_;
           return $c->reply->exception("No JSON response") unless defined $tx->res->json;
           my $json = Mojo::JSON::Pointer->new($tx->res->json);
           if ( my $error_message = $json->get(delete $map->{error}) ) {
             $c->flash(error => $error_message);
+            warn Data::Dumper::Dumper({json=> $tx->res->body ,error => $error_message, header => $tx->res->headers, status => $tx->res->code, request => $tx->req->headers});
             return $c->redirect_to($error);
           }
           $c->session(id => $connect->($c, $json->get($map->{id}))) unless $c->session('id'); # on_connect Form #2
+          warn "\n\nForm 2";
           $connect->($c, $c->session('id'), $provider, $tx->res->json, {map { $_ => $json->get($map->{$_}) } keys %$map}); # on_connect Form #3
+          warn "\n\nForm 3";
           $c->redirect_to($success);
         });
       },

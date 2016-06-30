@@ -54,6 +54,14 @@ sub remove {
   );
 }
 
+sub removeAll {
+  my $self = shift;
+  $self->stash('question' => $self->questions->removeAll());
+  $self->respond_to(
+    json => {json => $self->stash('question')},
+  );
+}
+
 sub show {
   my $self = shift;
   my $question_id = $self->param('question_id');
