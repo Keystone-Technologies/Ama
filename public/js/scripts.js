@@ -521,7 +521,7 @@ function vote(id, dir) {
 function sendfeedback(){
     var feedback = $("#feedbackTextarea").val();
     $.post("/api/feedback",{feedback:feedback},function(data){
-        if(data.ok == 'success'){
+        if(data.ok == "true"){
             $(".filterName").html("feedback submitted");
             togglefeedbackForm();
         }

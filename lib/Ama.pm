@@ -64,6 +64,7 @@ sub startup {
   $r->get('/questions/:question_id/edit')->to('questions#edit')->name('edit_question'); # Display filled-out form
   $r->put('/questions/:question_id')->to('questions#update')->name('update_question'); # Update DB and redirect to show_question
   $r->delete('/questions/:question_id')->to('questions#remove')->name('remove_question'); # Delete from DB and redirect to questions
+  $r->post('/feedbacks')->to('feedbacks#store')->name('store_feedback');
 
   $r->get('/questions/:question_id/comments')->to('comments#index')->name('comments');
   $r->get('/questions/:question_id/comment/create')->to('comments#create')->name('create_comment');
