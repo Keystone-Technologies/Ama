@@ -2,7 +2,7 @@ body {
 	margin:0;
 	padding:0px;
 	height:100%;
-	background: #white; /* For browsers that do not support gradients */
+	background: #white;
 }
 
 
@@ -16,6 +16,24 @@ body {
 	width:100%;
 	background-color:2d3338;
 	z-index:1;
+}
+
+.accountButton {
+	position:absolute;
+	left:0;
+    font-size: 3em;
+    text-align: center;
+    white-space: nowrap;
+    margin-top: 32px;
+    padding: 2px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border: 2px solid;
+    color: white;
+    border-color: #00004d;
+    background-color:  #000066;
+    border-radius: 15px;
+    z-index: 1;
 }
 
 .logoContainer {
@@ -36,7 +54,8 @@ body {
 }
 
 .version {
-	position: absolute;
+	display: inline;
+	position: relative;
 	color: b4b4b4;
 	font-size: 1.5em;
 	left: 0%;
@@ -44,6 +63,7 @@ body {
 }
 
 .youtube {
+	display: inline-block;
 	position: absolute;
 	right: 0px;
 	text-align:center;

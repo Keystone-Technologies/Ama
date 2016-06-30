@@ -2,7 +2,7 @@ body {
 	margin:0;
 	padding:0px;
 	height:100%;
-	background-color: eeeeee; /* For browsers that do not support gradients */
+	background-color: eeeeee;
 }
 
 * {
@@ -15,6 +15,25 @@ body {
 	width:100%;
 	background-color:2d3338;
 	z-index:1;
+}
+
+.accountButton {
+	position:absolute;
+	left:0;
+	bottom: 0;
+    font-size: 1.5em;
+    text-align: center;
+    white-space: nowrap;
+    margin-top: 32px;
+    color:white;
+    text-decoration: underline;
+    margin-bottom: 10px;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.accountButton:hover {
+	color: #0066ff;
 }
 
 .logoContainer {
@@ -69,7 +88,7 @@ body {
 	border: 3px solid black;
 	border-radius: 10px;
 	box-sizing: border-box;
-	z-index: 1;
+	z-index: 2;
 }
 
 .newQuestion:hover {
@@ -82,7 +101,7 @@ body {
 	position: fixed;
 	width: 250px;
 	top: 40px;
-	z-index: 1;
+	z-index: 2;
 	background-color: white;
 }
 
@@ -129,7 +148,7 @@ body {
 	bottom:0;
 	left:0;
 	right:0;
-	z-index: 1;
+	z-index: 3;
 }
 
 /************************sort menu container ********************/
@@ -145,7 +164,7 @@ body {
 	max-width:400px;
 	min-height: 300px;
 	max-height: 320px;
-	z-index:2;
+	z-index:3;
 	border: 5px solid black;
 	box-sizing: border-box;
 }
@@ -375,6 +394,7 @@ body {
 	height: 25%;
 	width:100%;
 	top: 15%;
+	z-index:1;
 }
 
 .linkButtonContainer {
