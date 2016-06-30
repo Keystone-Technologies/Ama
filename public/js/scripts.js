@@ -306,8 +306,20 @@ function initializeLayout() {
             $("#voteInfoContainer_" + type + question.getId()).css('left', '0%');
             $("#downvote_" + type + question.getId()).remove();
             
-            if(!getAdmin())
+            if(!(getAdmin() == 1)) {
                 $("#buttonContainer_" + type + question.getId()).remove();
+                $("#deleteButtonContainer_" + type + question.getId()).remove();
+            }
+            else {
+                if(deviceType == "desktop") {
+                    $("#deleteButtonContainer_" + type + question.getId()).css('top', '61%');
+                    $("#buttonContainer_" + type + question.getId()).css('left', '10%');
+                }
+                else {
+                    $("#deleteButtonContainer_" + type + question.getId()).appendTo("#voteInfoContainer_" + type + question.getId());
+                    $("#deleteButtonContainer_" + type + question.getId()).css('top', '31%');
+                }
+            }
             
             $("#postTextAndInfoContainer_" + type + question.getId()).css('width', '90%');
             $("#postTextAndInfoContainer_" + type + question.getId()).css('left', '10%');
@@ -333,7 +345,7 @@ function initializeCommentLayout(id) {
     for(var j = 0; j < question.getCommentCount(); j ++) {
         var comment = question.getComment(j);
         
-        if(comment.getCreator() != getCurrentUser()) {
+        if(comment.getCreator() != getCurrentUser() && getAdmin() != 1) {
             $("#deleteButtonContainer_" + type + comment.getId()).css('visibility', 'hidden');
         }
         
@@ -352,7 +364,10 @@ function initializeCommentLayout(id) {
             var comment = question.getComment(j);
             $("#upvote_" + type + comment.getId()).css('visibility', 'hidden');
             $("#downvote_" + type + comment.getId()).css('visibility', 'hidden');
-            $("#deleteButtonContainer_" + type + comment.getId()).remove();
+            
+            if(!(getAdmin() == 1) || comment.isAnswer())
+                $("#deleteButtonContainer_" + type + comment.getId()).remove();
+                
             if(comment.isAnswer()) {
                 $("#answerImg_" + type + comment.getId()).attr({src:"/img/checkedcheckmark.png"});
                 //if the comment is the answer, moving the mouse over the answer button, and clicking it, does not do anything
