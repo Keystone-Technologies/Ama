@@ -54,13 +54,6 @@ insert into answers (comment_id, question_id, username) values
   (3, 1, 'anonymous1'),
   (9, 3, 'anonymous2');
   
-create table if not exists feedbacks (
-  feedback_id int not null,
-  feedback_comment text not null,
-  created timestamptz not null default now(),
-);
-insert into answers(feedback_id, feedback_comment) values (1, 'feedback');
-
 create table if not exists votes (
   entry_type  text not null,
   entry_id    int not null,
@@ -219,3 +212,11 @@ $BODY$ LANGUAGE plpgsql;
 
 DROP FUNCTION deletechildren() CASCADE;
 DROP FUNCTION commentcount();
+
+-- 3 up
+
+-- 3 down
+
+-- 4 up
+
+-- 4 down

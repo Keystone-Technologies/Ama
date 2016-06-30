@@ -521,14 +521,8 @@ function vote(id, dir) {
 function sendfeedback(){
     var feedback = $("#feedbackTextarea").val();
     $.post("/api/feedback",{feedback:feedback},function(data){
-        if(data.ok == "true"){
-            $(".filterName").html("feedback submitted");
+            $(".filterName").html("feedback submit result: " + data.message);
             togglefeedbackForm();
-        }
-        else{
-            alert("feedback not submitted");
-            togglefeedbackForm();
-        }
     })
 }
 
