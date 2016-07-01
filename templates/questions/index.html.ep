@@ -179,9 +179,9 @@ $(document).ready(function() {
 		</div>
 		<div class="replyMenuStartingTimeContainer">
 			Starting Time:</br>
-			<input class="replyMenuTimeInput" id="replyMenuTimeHr" type="number" placeholder="0" rows=1></input> hr
-			<input class="replyMenuTimeInput" id="replyMenuTimeMin" type="number" placeholder="0" rows=1></input> min
-			<input class="replyMenuTimeInput" id="replyMenuTimeS" type="number" placeholder="0" rows=1></input> s
+			<input class="replyMenuTimeInput" onclick="$(this).select();" id="replyMenuTimeHr" type="number" placeholder="0" rows=1></input> hr
+			<input class="replyMenuTimeInput" onclick="$(this).select();" id="replyMenuTimeMin" type="number" placeholder="0" rows=1></input> min
+			<input class="replyMenuTimeInput" onclick="$(this).select();" id="replyMenuTimeS" type="number" placeholder="0" rows=1></input> s
 		</div>
 		<div class="replyMenuSecondDescription">
 			The link will be removed from your reply and mapped to a button.
