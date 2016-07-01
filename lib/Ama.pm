@@ -7,7 +7,7 @@ use Ama::Model::Answers;
 use Ama::Model::Votes;
 use Mojo::Pg;
 use Ama::Model::OAuth2;
-our $VERSION = '1.2';
+our $VERSION = '2.0';
 
 sub startup {
   my $self = shift;
