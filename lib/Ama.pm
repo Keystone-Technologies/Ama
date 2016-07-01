@@ -36,8 +36,11 @@ sub startup {
         $admin = $self->pg->db->query('select admin from users where id = ?', $c->session->{username})->hash->{admin}; #set admin to 1 or 0
       }
       else {
-        $c->redirect_to('/logout');
-        warn Data::Dumper::Dumper($c->session);
+        my $token = $c->session('token') || {};
+        delete $c->session->{$_} foreach keys %{$c->session};
+        $token->{$_} = {} foreach keys %$token;
+        $c->session(token => $token);
+        $c->redirect_to($config->{on_logout});
       }
     }
     
