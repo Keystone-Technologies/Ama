@@ -565,6 +565,7 @@ function submitQuestion() {
             setFilter('answered', '0');
             setFilter('orderby', 'created');
             setFilter('direction', 'desc');
+            setFilter('limit', '15');
             reloadQuestions();
         }
     });
@@ -715,7 +716,7 @@ function reloadQuestions() {
             else
                 filter += "</br>";
             filter += "search: " + keyword;
-            filter += " <div class='clearButton' onclick='setFilter(\"keyword\", \"none\");changeQuestions()'>clear</div>";
+            filter += " <div class='clearButton' onclick='setFilter(\"keyword\", \"none\");setFilter(\"limit\", 15);reloadQuestions()'>clear</div>";
         }
         
         $(".filterName").html(filter);
