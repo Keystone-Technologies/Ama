@@ -19,11 +19,7 @@ function getAdmin() {
 }
 
 function initializeLayout() {
-    if(getLoggedIn()) {
-        $("#signInContainer").remove();
-        $("#signInTitle").remove();
-    }
-    else
+    if(!getLoggedIn())
         $("#logoutContainer").remove();
     
     if(!getAdmin()) {
