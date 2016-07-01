@@ -298,10 +298,10 @@ body {
 
 .replyMenuContainer {
 	position: fixed;
-	top: 10%;
-	bottom: 10%;
+	top: 5%;
 	left: 10%;
 	right: 10%;
+	height: 1100px;
 	background-color: white;
 	z-index: 2;
 	border: 3px solid black;
@@ -324,6 +324,15 @@ body {
 	color: 777777;
 }
 
+.replyMenuSecondDescription {
+	position: relative;
+	top: 300px;
+	width: 100%;
+	text-align: center;
+	font-size: 2em;
+	color: 777777;
+}
+
 .replyMenuLinkContainer {
 	position: relative;
 	top: 100px;
@@ -332,13 +341,47 @@ body {
 	font-size: 2em;
 }
 
-.replyMenuLinkTextarea {
+.replyMenuTextarea {
 	font-size: 1em;
 	width: 98%;
 	border: 1px solid;
 	border-color: e6e6e6;
 	resize: none;
-	height: auto;
+}
+
+.replyMenuStartingTimeContainer {
+	width:100%;
+	height: 10%;
+	position: relative;
+	top: 200px;
+	text-align: center;
+	font-size: 2em;
+}
+
+.replyMenuTimeInput {
+	font-size: 1em;
+	width: 15%;
+	border: 1px solid;
+	border-color: e6e6e6;
+	resize: none;
+	text-align: right;
+}
+
+.replyMenuButtonsContainer {
+	position: absolute;
+	display: flex;
+	bottom: 5%;
+	width: 100%;
+	height: 200px;
+	justify-content: center;
+	align-items: center;
+}
+
+.replyMenuButton {
+	position: relative;
+	display: inline-block;
+	margin:auto;
+	font-size: 3em;
 }
 
 /***** content and show more******/

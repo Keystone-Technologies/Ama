@@ -71,11 +71,16 @@ function Post(id_input, text_input, votes_input, creator_input, time_created_inp
         comments_shown = shown;
     }
     
-    this.deleteComment = function() {
+    this.deleteComment = function(id) {
+        for(var i = 0; i < comment_count; i ++) {
+            if(comments[i].getId() == id) {
+                for(var j = i; j < comment_count; j ++) {
+                    comments[j] = comments[j + 1];
+                }
+                break;
+            }
+        }
         comment_count --;
-        //doesnt actually remove the comment from memory 
-        //  only changes comment count for accurate display 
-        //  for show comments(commentcount)
     }
     
     //************************************************************Comment Specific Functions
@@ -243,6 +248,8 @@ function changeCheckMark(id, dir) {
         
     $("#answerImg_" + type + comment.getId()).attr('src', '/img/' + checked + 'checkmark.png');
 }
+
+//*****************************************************************content initializationg and styling
 
 //adds all questions with proper html to the content div
 function initializeContent() {
@@ -439,6 +446,8 @@ function resizeComments(id) {
     }
 }
 
+//************************************************************************Onclick functions
+
 //removes a question/comment from users screen, if the server removes it from db
 //  in this case, to use this function, type must be 'question' or 'comment' for the URL to work
 function deletePost(type, id) {
@@ -479,7 +488,7 @@ function deletePost(type, id) {
                 }
                 else {
                     //deletes the comment from the questions storage and hides it then removes
-                    getQuestionById(getCommentById(id).getQuestionId()).deleteComment();
+                    getQuestionById(getCommentById(id).getQuestionId()).deleteComment(id);
                     $("#commentContainer_" + type + id).hide(2000, function() {
                         $("#commentContainer_" + type + id).remove();
                     });
@@ -566,31 +575,42 @@ function submitQuestion() {
     });
 }
 
-//submits a reply to a specific question
-function sendReply(id) {
+//readys a reply to be sent to the server
+function readyReply(id) {
     var type = "question";
     var text = $("#newPostTextArea_" + type + id).val();
+    
+    //gotta check for links with & before removing them all unfortunately
+    text = text.replace("&feature=youtu.be&", "?"); //checking for a replacing link type 3
+    text = text.replace("&feature=youtu.be", "") //checks for type 3 without the time attatched
+    
     text = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');  //closes XSS vulnerabilities
     
+    //Youtube links can have 3 different forms:
+    // 1. https://youtu.be/PFY7uQzupf0?t=291
+    // 2. https://www.youtube.com/watch?v=PFY7uQzupf0
+    // 3. https://www.youtube.com/watch?v=PFY7uQzupf0&feature=youtu.be&t=365
+    
+    //this code will parse the text for all 3 forms and replace if with form 1 for simplicity. 
+    
+    //replaces all instances of the link type 3 with the better short link type 1
     text = text.replace("https://www.youtube.com/watch?v=", "https://youtu.be/");
     var link = extractLink(text);
     
+    //if the link is not empty, shows the menu for editing it
     if(link != "") {
-        text = text.replace('\n' + link + '\n', '\n'); //first checks if a video is on its own line, removes it
-        text = text.replace(link, ""); //if the link is not on its own line it will be replaced right here
-        
-        //if the link doesnt designate a time to start, sets the time to start at 0 (not necessary)
-        if(link.indexOf('?t=') == -1) {
-            link += "?t=0";
-        }
-        console.log('showReplyMenu()');
+        showReplyMenu(id, text, link);
     }
-        
-    //JOSH try to do one of those deffered waiting things so it waits or whatever for the menu thing to be closed
-    //  before sending the reply ok awesome good work
-    console.log("Remove this and these comments");
+    else {
+        submitReply(id, text, link);
+    }
     
-    //reply data to be sent, in hash form so it can be sent as a json object
+}
+
+//sends a reply to the server and toggles comments
+function submitReply(id, text, link) {
+    var type = "question";
+    
     var reply = {
         question_id: id,
         comment: text,
@@ -778,6 +798,136 @@ function showSortMenu() {
     $(".sortMenuContainer").fadeTo(400, 1, setFilterButtonColors());
 }
 
+//opens a menu only when the user has a youtube link in their question
+function showReplyMenu(id, text, link) {
+    var originalLink = link;
+    readyToSubmit = $.Deferred();  //declared global so the onclick functions can use this
+    openMenu = "reply";  //global variable that lets program know when menu to close when the white background is clicked
+    $(".backgroundCover").fadeTo(1, 0);
+    $(".replyMenuContainer").fadeTo(1, 0);
+    $(".backgroundCover").show();
+    $(".replyMenuContainer").show();
+    $(".backgroundCover").fadeTo(400, 0.65);
+    $(".replyMenuContainer").fadeTo(400, 1);
+    
+    var hr = 0;   //hours into the link to start
+    var min = 0;  //minute mark to start the video at
+    var s = 0;    //seconds mark to start the video at
+    
+    //youtube times are formatted like this:
+    //    https://youtu.be/PFY7uQzupf0?t=0h13m55s
+    //    but any of the three, h, m, or s, could be missing. none are required
+    //or like this:
+    //    https://youtu.be/DKFNAJFI?t=435
+    //    with no units, and will be treated as seconds
+    
+    var start = link.indexOf('=');  //begin of where to parse a number
+    var end = link.indexOf('h', start);  //end of where to parse the number
+    
+    //if h is not found anywhere at the end of the link, AFTER ?t=, then end is set to start so end is not -1
+    if(end != -1)
+        hr = link.substring(start + 1, end);
+    else
+        end = start;
+    
+    start = end;  //the start of the search for the next number is where the end of the last one was
+    end = link.indexOf('m', start);  //searches for an m in the link, for minutes
+    if(end != -1)
+        min = link.substring(start + 1, end);
+    else
+        end = start;
+    
+    //same as previous but for seconds
+    start = end;
+    end = link.indexOf('s', start);
+    if(end != -1)
+        s = link.substring(start + 1, end);
+    
+    //if all numbers are zero, it could mean
+    //  1. There is no start time
+    //  2. Start time is formatted like this: https://url/LAJDF?t=555 with no label of units
+    if( s == 0 && min == 0 && hr == 0) {
+        start = link.indexOf('?t=');
+        if(start != -1)
+            s = link.substring(start + 3); //add 3 because the string '?t='.length = 3
+    }
+    
+    $("#replyMenuTimeHr").val(hr);  
+    $("#replyMenuTimeMin").val(min); 
+    $("#replyMenuTimeS").val(s);
+    
+    setReplyMenuTimes(link);
+    
+    //this when statement is run when the onclick functions in the reply menu are clicked
+    //  newlink functions like a boolean, if it is blank, then the user
+    //  is indicating that he does not want his link extracted
+    $.when(readyToSubmit).done(function(newLink) {
+        if(newLink != "") {
+            link = $("#replyMenuLinkTextarea").val();
+            text = text.replace('\n' + originalLink + '\n', '\n'); //first checks if a video is on its own line, removes it
+            text = text.replace(originalLink, ""); //if the link is not on its own line it will be replaced right here
+        }
+        else
+            link = newLink; //which would have to be ""
+            
+        closeMenu('save');  //meaning the user wants to save the link as a button
+        submitReply(id, text, link);
+    });
+}
+
+//sets the time input boxes in the reply menu, and also sets the link
+function setReplyMenuTimes(link) {
+    //hours, minutes, seconds
+    var hr = parseInt($("#replyMenuTimeHr").val()) | 0;  
+    var min = parseInt($("#replyMenuTimeMin").val()) | 0; 
+    var s = parseInt($("#replyMenuTimeS").val()) | 0;
+    
+    if(hr < 0)
+        hr = 0;
+    if(min < 0)
+        min = 0;
+    if(s < 0)
+        s = 0;
+    
+    
+    //Converts to hr, min, s to set each box appropriately...
+    while(s >= 60) {
+        s -= 60;
+        min ++;;
+    }
+    while(min >= 60) {
+        min -= 60;
+        hr ++;
+    }
+    
+    //the ? statement is if hr is zero, instead of making the input box have a 0 (can be annoying)
+    //  it leaves it empty
+    $("#replyMenuTimeHr").val(hr ? hr : "");  
+    $("#replyMenuTimeMin").val(min ? min : ""); 
+    $("#replyMenuTimeS").val(s ? s : "");
+    
+    //then converts it back to seconds to set the link!
+    while(hr >= 1) {
+        hr --;
+        min += 60;
+    }
+    while(min >= 1) {
+        min --;
+        s += 60;
+    }
+    
+    var start = link.indexOf('?');
+    if(start != -1)
+        link = link.substring(0, link.indexOf('?')) + "?t=";
+    else
+        link += "?t=";
+        
+    if(s)
+        link += s;
+    
+    $("#replyMenuLinkTextarea").val(link);
+}
+
 //closes whatever menu is currently open based on the GLOBAL openMenu variable
 //  save parameter is used only if the sort menu is being closed. It is set as 'save' ONLY if the user
 //  hits the APPLY button in the sort menu
@@ -795,6 +945,14 @@ function closeMenu(save) {
     
     if(openMenu == "search")
         toggleSearchBar();
+        
+    if(openMenu == "reply" && save != "save")
+        return;
+    else {
+        $(".replyMenuContainer").fadeTo(400, 0, function() {
+            $(".replyMenuContainer").hide();
+        })
+    }
     
     //background cover is the white cover that appears when opening search menu/sort menu
     $(".backgroundCover").fadeTo(400, 0, function() {$(".backgroundCover").hide()});
