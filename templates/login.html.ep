@@ -1,5 +1,0 @@
-Choose the app(s) you would like to connect with!
-</br>
-%foreach my $provider( keys %{$c->config->{oauth2}}){
-<%= link_to login => {provider=> $provider} => begin %><img  src="/img/<%= $provider%>.png"><% end %>
-%}

@@ -1,0 +1,109 @@
+body {
+    margin: 0;
+}
+
+* {
+    font-family: Verdana, Geneva, sans-serif;
+}
+
+.header {
+    position:relative;
+	height:150px;
+	width:100%;
+	background-color:2d3338;
+	z-index:1;
+}
+
+.logoContainer {
+	position: absolute;
+	top: 15%;
+	left:40%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.logoImg {
+	max-width:500px;
+	max-height:100px;
+	width: auto;
+	height: auto;
+}
+
+.version {
+	position: absolute;
+	color: b4b4b4;
+	left: 48%;
+	top: 85%;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.title {
+    width: 95%;
+    font-size: 2.5em;
+    text-align: center;
+    margin-top: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid black;
+}
+
+.option {
+    font-size: 1.5em;
+    text-align: center;
+    white-space: nowrap;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 5px;
+    color: 757575;
+    border: 2px solid grey;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.option:hover {
+    background-color: #f8f8f8;
+    color: black;
+}
+
+.containedImg {
+	display:inline-block;
+	cursor: pointer;
+	max-height: 100%;
+	max-width: 100%;
+	width: auto;
+	height: auto;
+}
+.signInContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 95%;
+}
+
+.signInOption {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    margin: 30px;
+    width: 40%;
+}
+
+.danger {
+    color: black;
+    background-color: #ff9999;
+    font-size: 2em;
+    border-color: red;
+    border-width: 3px;
+}
+
+.danger:hover {
+    background-color: #ff8888;
+}

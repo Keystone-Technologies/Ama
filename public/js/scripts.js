@@ -87,6 +87,7 @@ function Post(id_input, text_input, votes_input, creator_input, time_created_inp
 var questions = [];                     //holds all questions currently loaded
 var questionCount = 0;                  //holds the total number of questions loaded
 var current_user = "007";               //holds the username assigned to the user by the server, used to determine if a user can delete stuff, etc...
+var admin = 0;                          //determines some styling differences, like showing all trashcans if admin
 var HTMLforPost = "uninitialized";      //html to be extracted from index page and stored in memory used on each new question
 var HTMLforComment = "uninitialized";   //same but for one comment
 var defaultPostSize = 0;                //Default height of a post, used to determine if the user is on mobile or desktop
@@ -120,6 +121,14 @@ function setCurrentUser(name) {
 
 function getCurrentUser() {
     return current_user;
+}
+
+function setAdmin(adm) {
+    admin = adm;
+}
+
+function getAdmin() {
+    return admin;
 }
 
 //Adds a question to static list of questions and increases question count
@@ -227,7 +236,9 @@ function changeCheckMark(id, dir) {
     var checked = "";                  //changes to 'checked' if the img needs to be checkedcheckmark
     var type = "comment";
     
-    if(dir == 'in')
+    if(dir == 'in' && !comment.isAnswer())
+        checked = "checked";
+    if(dir == 'out' && comment.isAnswer())
         checked = "checked";
         
     $("#answerImg_" + type + comment.getId()).attr('src', '/img/' + checked + 'checkmark.png');
@@ -277,7 +288,7 @@ function initializeLayout() {
         var question = getQuestion(i);
         
         //hides all trash cans on questions the current user does not own
-        if(getCurrentUser() != question.getCreator()) {
+        if(getCurrentUser() != question.getCreator() && !(getAdmin() == 1)) {
             $("#deleteButtonContainer_" + type + question.getId()).css('visibility', 'hidden'); //changing css visibility to hidden hides the div but lets it keep space where it was
         }
         
@@ -296,7 +307,22 @@ function initializeLayout() {
             $("#upvote_" + type + question.getId()).remove();
             $("#voteInfoContainer_" + type + question.getId()).css('left', '0%');
             $("#downvote_" + type + question.getId()).remove();
-            $("#buttonContainer_" + type + question.getId()).remove();
+            
+            if(!(getAdmin() == 1)) {
+                $("#buttonContainer_" + type + question.getId()).remove();
+                $("#deleteButtonContainer_" + type + question.getId()).remove();
+            }
+            else {
+                if(deviceType == "desktop") {
+                    $("#deleteButtonContainer_" + type + question.getId()).css('top', '61%');
+                    $("#buttonContainer_" + type + question.getId()).css('left', '10%');
+                }
+                else {
+                    $("#deleteButtonContainer_" + type + question.getId()).appendTo("#voteInfoContainer_" + type + question.getId());
+                    $("#deleteButtonContainer_" + type + question.getId()).css('top', '31%');
+                }
+            }
+            
             $("#postTextAndInfoContainer_" + type + question.getId()).css('width', '90%');
             $("#postTextAndInfoContainer_" + type + question.getId()).css('left', '10%');
             $("#timeAskedContainer_" + type + question.getId()).html("Answered on " + question.getTimeCreated());
@@ -321,23 +347,37 @@ function initializeCommentLayout(id) {
     for(var j = 0; j < question.getCommentCount(); j ++) {
         var comment = question.getComment(j);
         
-        if(comment.getCreator() != getCurrentUser()) {
+        if(comment.getCreator() != getCurrentUser() && getAdmin() != 1) {
             $("#deleteButtonContainer_" + type + comment.getId()).css('visibility', 'hidden');
         }
+        
+        if(question.getCreator() != getCurrentUser() && getAdmin() != 1) {
+            $("#answerButtonContainer_" + type + comment.getId()).css('visibility', 'hidden');
+        }
+        
         if(comment.getUsersVote() == "up") {
             $("#upvote_" + type + comment.getId()).attr('src', '/img/clickedsmalluparrow.png');
         }
         if(comment.getUsersVote() == "down") {
             $("#downvote_" + type + comment.getId()).attr('src', '/img/clickedsmalldownarrow.png');
         }
+        
         if(question.isAnswered()) {
             var comment = question.getComment(j);
             $("#upvote_" + type + comment.getId()).css('visibility', 'hidden');
             $("#downvote_" + type + comment.getId()).css('visibility', 'hidden');
-            $("#deleteButtonContainer_" + type + comment.getId()).remove();
+            
+            if(!(getAdmin() == 1) || comment.isAnswer())
+                $("#deleteButtonContainer_" + type + comment.getId()).remove();
+                
             if(comment.isAnswer()) {
+                $("#answerImg_" + type + comment.getId()).attr({src:"/img/checkedcheckmark.png"});
                 //if the comment is the answer, moving the mouse over the answer button, and clicking it, does not do anything
-                $("#answerImg_" + type + comment.getId()).attr({onmouseenter: "", onmouseleave: "", onclick: "", src:"/img/checkedcheckmark.png"});
+                //   unless they are the creator or they are an admin
+                if(question.getCreator() != getCurrentUser() && getAdmin() != 1) {
+                    $("#answerImg_" + type + comment.getId()).attr({onmouseenter: "", onmouseleave: "", onclick: ""});
+                    $("#answerImg_" + type + comment.getId()).css('visibility', 'visible');
+                }
             }
             else {
                 $("#commentContainer_" + type + comment.getId()).css('background-color', 'd6d6d6');
@@ -597,12 +637,20 @@ function submitReply(id, text, link) {
 function markAnswer(id) {
     var comment = getCommentById(id);  //comment that is marked as the answer
     var question = getQuestionById(comment.getQuestionId());  //question that has been answered
-    $.post("/api/answers/" + question.getId() + "/" + comment.getId()).done(function(data) {
+    var type = 'POST';
+    
+    if(question.isAnswered())
+        type = 'delete';
+    
+    $.ajax({
+        url: "/api/answers/" + question.getId() + "/" + comment.getId(),
+        type: type,
+        dataType:'json'}).done(function(data) {
         //if the server sends back data with an id, it succesfully recorded and marked it as answered
         if(data.question_id) {
             //reloads the questions with the newest answer on top
             setFilter('creator', 'all');
-            setFilter('answered', '1');
+            setFilter('answered', !question.isAnswered() | 0);
             setFilter('orderby', 'created');
             setFilter('direction', 'desc');
             reloadQuestions();
