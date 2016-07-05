@@ -99,7 +99,7 @@ var defaultPostSize = 0;                //Default height of a post, used to dete
 var deviceType = "desktop";             //Initially assumes mobile and is changed further down if the user is on desktop
 var defaultLimit = 15;                  //default limit on number of questions to display
 var openMenu = "none";                  //currently opened menu (ex. 'sort', 'search', etc...) used in close menu function
-var acceptableLinkCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuwxyz.:/?=";  //characters that are allowed in a video link
+var acceptableLinkCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuwxyz.:/?=_";  //characters that are allowed in a video link
 
 //filter settings
 var filters = [];                       //holds all of the current filters used, seen below
