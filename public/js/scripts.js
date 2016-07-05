@@ -333,7 +333,7 @@ function initializeLayout() {
             $("#timeAskedContainer_" + type + question.getId()).html("Answered on " + question.getTimeCreated());
             $("#timeAskedContainer_" + type + question.getId()).css('width', '65%');
             
-            if(question.getLink() != null) {
+            if(question.getLink() != '') {
                 $("#voteContainer_" + type + question.getId()).css('top', '15%');
                 $("#linkButtonContainer_" + type + question.getId()).show();
             }
