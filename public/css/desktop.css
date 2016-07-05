@@ -3,6 +3,7 @@ body {
 	padding:0px;
 	height:100%;
 	background-color: eeeeee;
+	overflow: scroll;
 }
 
 * {
@@ -306,7 +307,7 @@ body {
 	left:50%;
 	transform: translateX(-50%);
 	background-color: white;
-	z-index: 2;
+	z-index: 3;
 	border: 3px solid black;
 	box-sizing: border-box;
 }
@@ -489,7 +490,7 @@ body {
 	position: absolute;
 	height: 25%;
 	width:100%;
-	top: 15%;
+	top: 35%;
 	z-index:1;
 }
 

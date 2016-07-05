@@ -94,7 +94,7 @@ sub getQuestions {
   }
   
   $sql = $sql .  'answered(question_id)::int = ? '.
-  'order by ' . $orderby . ' ' . $direction . ' ' .
+  'order by ' . $orderby . ' ' . $direction . ', question_id asc ' .
   'limit ?; ';
   
   $self->pg->db->query($sql, $self->username, $answered, $limit)->hashes->to_array }
