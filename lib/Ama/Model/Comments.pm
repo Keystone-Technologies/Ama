@@ -5,6 +5,7 @@ use Ama::Model::Votes;
 
 has 'pg';
 has 'username';
+has 'admin';
 has 'votes' => sub {
   my $self = shift;
   state $votes = Ama::Model::Votes->new(pg => $self->pg, username => $self->username);
@@ -56,8 +57,14 @@ sub find { shift->pg->db->query('select * from comments where id = ?', shift)->h
 sub remove {
   my ($self, $comment_id) = @_;
   my $results = eval {
-    my $sql = 'delete from comments where comment_id = ? and username = ? and not answered(question_id) returning *';
-    $self->pg->db->query($sql, $comment_id, $self->username)->hash;
+    if($self->{admin} ==1) {
+      my $sql = 'delete from comments where comment_id = ? returning *';
+      $self->pg->db->query($sql, $comment_id)->hash;
+    }
+    else {
+      my $sql = 'delete from comments where comment_id = ? and username = ? and not answered(question_id) returning *';
+      $self->pg->db->query($sql, $comment_id, $self->username)->hash;
+    }
   };
   $@ ? {error => $@} : $results;
 }

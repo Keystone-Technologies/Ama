@@ -4,6 +4,7 @@ use Mojo::Base -base;
 use Ama::Model::Votes;
 has 'pg';
 has 'username';
+has 'admin';
 has 'votes' => sub {
   my $self = shift;
   my $votes = Ama::Model::Votes->new(pg => $self->pg);
@@ -102,9 +103,31 @@ sub find { shift->pg->db->query('select * from questions where question_id = ?',
 
 sub remove {
   my ($self, $question_id) = @_;
-  my $results = eval {
+  my $results =  eval {
+  if($self->{admin} ==1) {
+    my $sql = 'delete from questions where question_id = ? returning *';
+    $self->pg->db->query($sql, $question_id)->hash;
+  }
+  else {
     my $sql = 'delete from questions where question_id = ? and username = ? and not answered(question_id) returning *';
     $self->pg->db->query($sql, $question_id, $self->username)->hash;
+  }
+  };
+  if ($results) {
+    $@ ? { error => $@ } : $results;
+  }
+  else {
+    error => "Couldn't delete question";
+  }
+}
+
+sub removeAll {
+  my $self = shift;
+  my $results = eval {
+    if ($self->{admin} == 1) {
+      my $sql = 'delete from questions';
+      $self->pg->db->query($sql);
+    }
   };
   if ($results) {
     $@ ? { error => $@ } : $results;
