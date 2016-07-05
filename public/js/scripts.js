@@ -721,7 +721,8 @@ function reloadQuestions() {
             else
                 filter += "</br>";
             filter += "search: " + keyword;
-            filter += " <div class='clearButton' onclick='setFilter(\"keyword\", \"none\");setFilter(\"limit\", 15);reloadQuestions()'>clear</div>";
+            //filter += " <div class='clearButton' onclick='setFilter(\"keyword\", \"none\");setFilter(\"limit\", 15);reloadQuestions()'>clear</div>";
+            filter += "<img class='clearButton' onclick='setFilter(\"keyword\", \"none\");setFilter(\"limit\", 15);reloadQuestions()' src='/img/clearSearchButton.png'>";
         }
         
         $(".filterName").html(filter);
