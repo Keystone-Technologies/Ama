@@ -687,6 +687,11 @@ function reloadQuestions() {
         });
     }, 'json').done(function() {
     	initializeContent();
+    	
+    	if(getQuestionCount() < getFilter('limit'))
+    	    $(".showMoreButton").hide();
+    	else
+    	    $(".showMoreButton").show();
         
         //filter is the string which contains the current sorting and searching filter
         //  it is seen at the top of all the questions
