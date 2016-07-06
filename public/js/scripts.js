@@ -955,6 +955,11 @@ function closeMenu(save) {
         })
     }
     
+    if(openMenu == "privacy") {
+        $(".privacyPolicyContainer").fadeTo(400, 0, function() { $(".privacyPolicyContainer").hide()});
+        openMenu = "none";
+    }
+    
     //background cover is the white cover that appears when opening search menu/sort menu
     $(".backgroundCover").fadeTo(400, 0, function() {$(".backgroundCover").hide()});
 }
@@ -1047,4 +1052,14 @@ function redirectToVideo(type, id) {
     //var comment = getCommentById(id);
     
     window.open(post.getLink(), '_blank'); //the '_blank' parameter makes it open in a new tab
+}
+
+function showPrivacyPolicy() {
+    openMenu = 'privacy';
+    $(".backgroundCover").fadeTo(1, 0);
+    $(".privacyPolicyContainer").fadeTo(1, 0);
+    $(".backgroundCover").show();
+    $(".privacyPolicyContainer").show();
+    $(".backgroundCover").fadeTo(400, 0.65);
+    $(".privacyPolicyContainer").fadeTo(400, 1);
 }
