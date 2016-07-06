@@ -52,6 +52,7 @@ sub startup {
     $c->answers->username($c->session->{username});
     $c->answers->admin($c->session->{admin}); #sends the admin info to the model (lib/Ama/Model/Answers.pm)
     $c->votes->username($c->session->{username});
+    $c->votes->threshold($self->config('threshold'));
     return $next->();
   });
   
