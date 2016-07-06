@@ -3,12 +3,13 @@ use Mojo::Base -base;
 
 has 'pg';
 has 'username';
+has 'threshold';
 
 sub cast {
-  my ($self, $entry_type, $entry_id, $vote) = @_;
+  my ($self, $entry_type, $entry_id, $vote,$sql) = @_;
+  
   my $results = eval {
     $self->uncast($entry_type, $entry_id);
-    my $sql;
     if ( $entry_type eq 'questions' ) {
       $sql = 'insert into votes (entry_type, entry_id, vote, username) select ?, ?, ?, ? where not answered(?) and not flagged(?, ?) returning *, votes(?, ?) as votes';
     } elsif ( $entry_type = 'comments' ) {
@@ -18,6 +19,19 @@ sub cast {
     }
     $self->pg->db->query($sql, $entry_type, $entry_id, $vote, $self->username, $entry_id, $entry_type, $entry_id, $entry_type, $entry_id)->hash;
   };
+  
+  my $votes = eval {$self->pg->db->query('select votes(?, ?) as votes', $entry_type, $entry_id)->hash->{votes}};
+  if ($votes eq $self->threshold){
+    my $results = eval {
+      if ($entry_type eq 'questions'){
+        $sql = 'delete from questions where question_id = ?'
+      }
+      if ($entry_type eq 'comments'){
+        $sql = 'delete from comments where comment_id = ?'
+      }
+      $self->pg->db->query($sql,  $entry_id)
+    };
+  }
   $@ ? {error => $@} : $results;
 }
 
