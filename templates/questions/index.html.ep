@@ -81,26 +81,18 @@ $(document).ready(function() {
 
 <body>
 	<div class="header">
-		<div class="accountButton" onclick="window.location = '/account'">
-			Account
+		<div class="headerImgContainer">
+			<img class="containedImg headerImg" src="/img/menubutton.png" alt="menu" onclick="showSortMenu()">
 		</div>
-		<div class="logoContainer"> 
-			<img class="logoImg" src="/img/logo.png" alt="LOGO">
+		<div class="headerImgContainer">
+			<img class="containedImg headerImg" src="/img/searchbutton.png" alt="search" onclick="toggleSearchBar()">
 		</div>
-		<div class="version">
-			v<%=$self->version%>
+		<div class="headerImgContainer">
+			<img class="containedImg headerImg" src="/img/newQuestion.png" alt='new question' onclick="toggleQuestionForm()">
 		</div>
-		<div class="youtube">
-			<a href="https://www.youtube.com/channel/UCwSuyK7EsrNN02Z92bI34gA/feed" target="_blank">
-				<img class="youtubeImg" src="/img/youtubehover.png" alt="YOUTUBE">
-			</a>
+		<div class="headerImgContainer" onclick="window.location = '/account'">
+			<img class="containedImg headerImg" src="/img/account.png">
 		</div>
-	</div>
-	
-	<div class="padding"></div>
-	
-	<div class="newQuestion" onclick="toggleQuestionForm()">
-		Ask A Question
 	</div>
 	
 	<div class="newQuestionContainer">
@@ -165,14 +157,8 @@ $(document).ready(function() {
 	</div>
 	
 	<div class="filterContainer">
-		<div class="sortMenuButtonContainer">
-			<img class="containedImg" src="/img/menubutton.png" alt="menu" onclick="showSortMenu()">
-		</div>
 		<div class="filterName">
 			filter
-		</div>
-		<div class="searchButtonContainer">
-			<img class="containedImg" src="/img/searchbutton.png" alt="search" onclick="toggleSearchBar()">
 		</div>
 	</div>
 	
@@ -224,6 +210,33 @@ $(document).ready(function() {
 	<div class="showMoreButton" onclick="showMore()">
 		show more
 	</div>
+	
+	<div class="footer">
+		<a href="https://www.youtube.com/channel/UCwSuyK7EsrNN02Z92bI34gA/feed" target="_blank">
+			<div class="youtubeContainer">
+				<img src="/img/lightYoutube.png" alt="youtube" class="inline containedImg" > KSTN
+			</div>
+		</a>
+		<div class="logoContainer"> 
+			<img class="containedImg" src="/img/logo.png" alt="LOGO">
+		</div>
+		<div class="privacyPolicyButtonContainer linkContainer" onclick="showPrivacyPolicy()">
+			Privacy Policy
+		</div>
+		<a href="https://www.keystone-technologies.com/" target="_blank">
+			<div class="websiteContainer linkContainer">
+				Company Website
+			</div>
+		</a>
+		<div class="feedbackButtonContainer linkContainer" onclick="console.log('not yet implemented!');">
+			Submit Feedback
+		</div>
+		<div class="version">
+			v<%=$self->version%>
+		</div>
+	</div>
+	
+	<!-- All html under here is extracted by the js, parsed and used for comments and questions, then reinserted into the page -->
 
 	<div class="singlePost">
 		<div class= "postContainer" id="postContainer_TYPEID">
