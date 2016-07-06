@@ -24,6 +24,7 @@ $(document).ready(function() {
 	$(".backgroundCover").hide();
 	$(".searchBar").hide();
 	$(".replyMenuContainer").hide();
+	$(".privacyPolicyContainer").hide();
 	
     setCurrentUser("<%=session 'username'%>");
     setAdmin("<%=session 'admin'%>");
@@ -202,6 +203,18 @@ $(document).ready(function() {
 		<div class="replyMenuButtonsContainer">
 			<div class="replyMenuButton" onclick="readyToSubmit.resolve('')">leave it in</div><div class="replyMenuButton" onclick="readyToSubmit.resolve(' save ')">add button</div>
 		</div>
+	</div>
+	
+	<div class="privacyPolicyContainer">
+		<div class="privacyTitle">
+			Privacy Policy
+		</div>
+		<div class="privacyContent">
+			Here is the content of the privacy policy. It is kinda long, so we gotta make sure it wraps. Hopefully people really like this privacy policy. Hopefully it does not scare people away.
+		</div>
+		<button class="closePrivacyButton" onclick="closeMenu('none')">
+			Close
+		</button>
 	</div>
 	
 	<div class="content">
