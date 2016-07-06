@@ -40,23 +40,36 @@ $(document).ready(function() {
     	}
     });
     
-    $(window).scroll(function() {
-		if(deviceType == "mobile") {
-			if($(window).scrollTop() > 500 && $(".newQuestionContainer").css('display') != 'none') {
-				$(".padding").css('height','200px');
-				$(".filterContainer").css({"position":"fixed", "top":"100"});
-			}
-			else if($(window).scrollTop() > 100 && $(".newQuestionContainer").css('display') == 'none') {
-				$(".padding").css('height','200px');
-				$(".filterContainer").css({"position":"fixed", "top":"100"});
-			}
-			else {
-				$(".padding").css('height','100px');
-				$(".filterContainer").css({"position":"relative", "top":"0"});
-			}
-		}
+    var scrolled = false;   //did the user recently scroll
+    var lastTop = 0;        //last top of view window in pixels
+    
+    $(window).scroll(function(event){
+	    scrolled = true;
 	});
-	
+
+	setInterval(function() {
+	    if (scrolled) {
+	        var top = $(this).scrollTop();
+	        
+	        //if the use scrolls own, hide the header and move all fixed elements beneath it upwards
+	        // also makes sure that they are not too close to the top for the header to be hidden
+	        if(lastTop < top && top > 90) {
+	    	 	$(".header").css('top', '-100px');
+	        	$(".filterContainer").css('top', '0');
+	        	$(".newQuestionContainer").css('top', '100px');
+	        }
+	        //if the user scrolls up, reveal the header and move the filter container down 
+	        else {
+	        	$(".header").css('top', '0');
+	        	$(".filterContainer").css('top', '100px');
+	        	$(".newQuestionContainer").css('top', '200px');
+	        }
+	        
+	        lastTop = top;
+	        scrolled = false;
+	    }
+	}, 250);  //this number is the number of ms before checking if the user scrolled. The higher this number is, the slower the site will run
+
 	//Whenever someone makes a change to one of the time inputs on the time menu
 	//  this function is called and it changes the link appropriately
 	$(".replyMenuTimeInput").bind('input propertychange', function() {
