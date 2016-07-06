@@ -27,6 +27,7 @@ $(document).ready(function() {
 	
     setCurrentUser("<%=session 'username'%>");
     setAdmin("<%=session 'admin'%>");
+    setThreshold("<%= $self->config->{threshold}%>");
     
     //this is where it should set the last viewed options, something like that with cookies
     reloadQuestions();
