@@ -269,6 +269,7 @@ function initializeContent() {
             questionHTML = questionHTML.replace(/TEXT/g, question.getText());
             questionHTML = questionHTML.replace(/NUMCOMMENTS/g, question.getCommentCount());
             questionHTML = questionHTML.replace(/TIMEASKED/g, question.getTimeCreated());
+            questionHTML = questionHTML.replace(/LINK/g, question.getLink());
             contentHTML += questionHTML;  //adds the html for one new question filled with infoto content
         }
        $(".content").html(contentHTML); 
@@ -283,7 +284,7 @@ function initializeContent() {
 function initializeLayout() {
     //hides all comments and reply containers
     $(".commentsContainer").hide();
-    $(".linkButtonContainer").hide();
+    $(".linkButtonContainer").remove();
     $(".replyContainer").hide();
     var type = "question";
     
@@ -769,6 +770,7 @@ function toggleComments(id) {
                 commentHTML = commentHTML.replace(/VOTES/g, comment.getVotes());
                 commentHTML = commentHTML.replace(/TEXT/g, comment.getText());
                 commentHTML = commentHTML.replace(/TIMEASKED/g, comment.getTimeCreated());
+                commentHTML = commentHTML.replace(/LINK/g, comment.getLink());
                 commentsHTML += commentHTML;
             }
             question.setCommentsShown(true);
@@ -1037,20 +1039,4 @@ function extractLink(text) {
     }
     
     return link;
-}
-
-//redirects user to whatever link is associated with the comment
-//  lots of this function will have to change after it is merged with refactoring branch
-function redirectToVideo(type, id) {
-    var post;
-    
-    if(type == "question")
-        post = getQuestionById(id);
-    else
-        post = getCommentById(id);
-    
-    //after refactoring changes are accepted, the above to lines will need to be changed to
-    //var comment = getCommentById(id);
-    
-    window.open(post.getLink(), '_blank'); //the '_blank' parameter makes it open in a new tab
 }
