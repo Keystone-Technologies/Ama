@@ -220,11 +220,12 @@ $(document).ready(function() {
 					onclick="vote('TYPE', ID, 'down')">
 				</div>
 				<div class="linkButtonContainer" id="linkButtonContainer_TYPEID">
-					<img class= "containedImg" src="/img/youtubebutton.png" alt="delete" 
+					<a href="LINK" target='_blank'>
+					<img class= "containedImg" src="/img/youtubebutton.png" alt="youtube" 
 					title="video answer"
 					onmouseenter="this.src='/img/youtubebuttonhover.png'" 
-					onmouseleave="this.src='/img/youtubebutton.png'" 
-					onclick="redirectToVideo('TYPE', ID)">
+					onmouseleave="this.src='/img/youtubebutton.png'" >
+					</a>
 				</div>
 			</div>
 			<div class="buttonContainer" id="buttonContainer_TYPEID">
@@ -301,15 +302,15 @@ $(document).ready(function() {
 						onmouseenter="this.src='/img/opentrash.png'" 
 						onmouseleave="this.src='/img/trash.png'" 
 						onclick="deletePost('TYPE', ID)">
-
 					</div>
 						
 					<div class="commentLinkButtonContainer" id="linkButtonContainer_TYPEID">
+						<a href="LINK" target='_blank'>
 						<img class= "containedImg" src="/img/youtubebutton.png" alt="youtube link" 
 						title="go to video"
 						onmouseenter="this.src='/img/youtubebuttonhover.png'"
-						onmouseleave="this.src='/img/youtubebutton.png'"
-						onclick="redirectToVideo('TYPE', ID)">
+						onmouseleave="this.src='/img/youtubebutton.png'">
+						</a>
 					</div>
 						
 					<div class="commentAnswerButtonContainer" id="answerButtonContainer_TYPEID">
