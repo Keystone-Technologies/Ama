@@ -7,6 +7,7 @@ body {
 
 * {
 	font-family: Verdana, Geneva, sans-serif;
+	word-wrap: break-word;
 }
 
 .header {
@@ -29,6 +30,12 @@ body {
 
 .headerImgContainer {
 	height: 100%;
+}
+
+.headerMenuArrow {
+	position: absolute;
+	height: 0px;
+	width: 0px;
 }
 
 /*container that pops up when you push button to make new question */
@@ -180,8 +187,8 @@ body {
 
 .searchBar {
 	position: fixed;
-	background-color: f4f4f4;
-	z-index:2;
+	background-color: #f4f4f4;
+	z-index: 3;
 	width: 100%;
 	top: 0px;
 	height: 120px;
@@ -236,7 +243,7 @@ body {
 	width: 100%;
 	text-align: center;
 	font-size: 2em;
-	color: 777777;
+	color: #777777;
 }
 
 .replyMenuSecondDescription {
@@ -245,7 +252,7 @@ body {
 	width: 100%;
 	text-align: center;
 	font-size: 2em;
-	color: 777777;
+	color: #777777;
 }
 
 .replyMenuLinkContainer {
@@ -260,7 +267,7 @@ body {
 	font-size: 1em;
 	width: 98%;
 	border: 1px solid;
-	border-color: e6e6e6;
+	border-color: #e6e6e6;
 	resize: none;
 }
 
@@ -277,7 +284,7 @@ body {
 	font-size: 1em;
 	width: 15%;
 	border: 1px solid;
-	border-color: e6e6e6;
+	border-color: #e6e6e6;
 	resize: none;
 	text-align: right;
 }
@@ -537,7 +544,7 @@ body {
 	width: 100%;
 	text-align: center;
 	font-size: 1.5em;
-	color: 747474;
+	color: #747474;
 }
 
 .postActionContainer {
@@ -678,5 +685,5 @@ body {
 	top: 50%;
 	transform: translateY(-50%);
 	text-align:center;
-	color: 747474;
+	color: #747474;
 }
