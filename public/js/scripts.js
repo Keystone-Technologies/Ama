@@ -99,7 +99,7 @@ var defaultPostSize = 0;                //Default height of a post, used to dete
 var deviceType = "desktop";             //Initially assumes mobile and is changed further down if the user is on desktop
 var defaultLimit = 15;                  //default limit on number of questions to display
 var openMenu = "none";                  //currently opened menu (ex. 'sort', 'search', etc...) used in close menu function
-var acceptableLinkCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz.:/?=";  //characters that are allowed in a video link
+var acceptableLinkCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz.:/?=_";  //characters that are allowed in a video link
 
 //filter settings
 var filters = [];                       //holds all of the current filters used, seen below
@@ -267,6 +267,7 @@ function initializeContent() {
             questionHTML = questionHTML.replace(/TEXT/g, question.getText());
             questionHTML = questionHTML.replace(/NUMCOMMENTS/g, question.getCommentCount());
             questionHTML = questionHTML.replace(/TIMEASKED/g, question.getTimeCreated());
+            questionHTML = questionHTML.replace(/LINK/g, question.getLink());
             contentHTML += questionHTML;  //adds the html for one new question filled with infoto content
         }
        $(".content").html(contentHTML); 
@@ -281,7 +282,7 @@ function initializeContent() {
 function initializeLayout() {
     //hides all comments and reply containers
     $(".commentsContainer").hide();
-    $(".linkButtonContainer").hide();
+    $(".linkButtonContainer").remove();
     $(".replyContainer").hide();
     var type = "question";
     
@@ -331,7 +332,7 @@ function initializeLayout() {
             $("#timeAskedContainer_" + type + question.getId()).html("Answered on " + question.getTimeCreated());
             $("#timeAskedContainer_" + type + question.getId()).css('width', '65%');
             
-            if(question.getLink() != null) {
+            if(question.getLink() != '') {
                 $("#voteContainer_" + type + question.getId()).css('top', '15%');
                 $("#linkButtonContainer_" + type + question.getId()).show();
             }
@@ -690,6 +691,11 @@ function reloadQuestions() {
         });
     }, 'json').done(function() {
     	initializeContent();
+    	
+    	if(getQuestionCount() < getFilter('limit'))
+    	    $(".showMoreButton").hide();
+    	else
+    	    $(".showMoreButton").show();
         
         //filter is the string which contains the current sorting and searching filter
         //  it is seen at the top of all the questions
@@ -724,7 +730,8 @@ function reloadQuestions() {
             else
                 filter += "</br>";
             filter += "search: " + keyword;
-            filter += " <div class='clearButton' onclick='setFilter(\"keyword\", \"none\");setFilter(\"limit\", 15);reloadQuestions()'>clear</div>";
+            //filter += " <div class='clearButton' onclick='setFilter(\"keyword\", \"none\");setFilter(\"limit\", 15);reloadQuestions()'>clear</div>";
+            filter += "<img class='clearButton' onclick='setFilter(\"keyword\", \"none\");setFilter(\"limit\", 15);reloadQuestions()' src='/img/clearSearchButton.png'>";
         }
         
         $(".filterName").html(filter);
@@ -773,6 +780,7 @@ function toggleComments(id) {
                 commentHTML = commentHTML.replace(/VOTES/g, comment.getVotes());
                 commentHTML = commentHTML.replace(/TEXT/g, comment.getText());
                 commentHTML = commentHTML.replace(/TIMEASKED/g, comment.getTimeCreated());
+                commentHTML = commentHTML.replace(/LINK/g, comment.getLink());
                 commentsHTML += commentHTML;
             }
             question.setCommentsShown(true);
