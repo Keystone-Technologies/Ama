@@ -219,3 +219,15 @@ $BODY$ LANGUAGE plpgsql;
 
 DROP FUNCTION deletechildren() CASCADE;
 DROP FUNCTION commentcount();
+
+--3 up
+
+--3 down
+
+--4 up
+
+--4 down
+
+--5 up
+
+--5 down
