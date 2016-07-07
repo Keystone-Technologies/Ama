@@ -3,11 +3,11 @@ use Mojo::Base -base;
 
 has 'pg';
 has 'username';
-has 'threshold';
+has 'vote_floor';
 
 sub cast {
-  my ($self, $entry_type, $entry_id, $vote,$sql) = @_;
-  
+  my ($self, $entry_type, $entry_id, $vote) = @_;
+  my $sql;
   my $results = eval {
     $self->uncast($entry_type, $entry_id);
     if ( $entry_type eq 'questions' ) {
@@ -21,16 +21,9 @@ sub cast {
   };
   
   my $votes = eval {$self->pg->db->query('select votes(?, ?) as votes', $entry_type, $entry_id)->hash->{votes}};
-  if ($votes eq $self->threshold){
-    my $results = eval {
-      if ($entry_type eq 'questions'){
-        $sql = 'delete from questions where question_id = ?'
-      }
-      if ($entry_type eq 'comments'){
-        $sql = 'delete from comments where comment_id = ?'
-      }
-      $self->pg->db->query($sql,  $entry_id)
-    };
+  
+  if ($votes == $self->vote_floor){
+    _autoRemove($self, $entry_type, $entry_id);
   }
   $@ ? {error => $@} : $results;
 }
@@ -42,6 +35,20 @@ sub uncast {
     $self->pg->db->query($sql, $entry_type, $entry_id, $self->username, $entry_type, $entry_id)->hash;
   };
   $@ ? { error => $@ } : $results;
+}
+
+sub _autoRemove {
+  my ($self, $entry_type, $entry_id) = @_;
+  my $sql;
+  my $results = eval {
+      if ($entry_type eq 'questions'){
+        $sql = 'delete from questions where question_id = ?'
+      }
+      if ($entry_type eq 'comments'){
+        $sql = 'delete from comments where comment_id = ?'
+      }
+      $self->pg->db->query($sql,  $entry_id)
+    }; 
 }
 
 1;
