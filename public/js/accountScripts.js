@@ -21,11 +21,6 @@ function getAdmin() {
 function initializeLayout() {
     if(!getLoggedIn())
         $("#logoutContainer").remove();
-    
-    if(!getAdmin()) {
-        $("#adminTitle").remove();
-        $("#deleteAllButton").remove();
-    }
 }
 
 function deleteAll() {

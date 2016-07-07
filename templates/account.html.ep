@@ -55,7 +55,7 @@
 				<img class="containedImg" src="/img/facebook.png">acebook
 			</div>
 		</div>
-		
+		%if($c->session->{admin} == 1) {
 		<div class="title" id="adminTitle">
 			Admin Options
 		</div>
@@ -63,6 +63,7 @@
 		<div class="option danger" id="deleteAllButton" onclick="deleteAll()">
 			delete all questions
 		</div>
+		%}
 	</div>
 </body>
 

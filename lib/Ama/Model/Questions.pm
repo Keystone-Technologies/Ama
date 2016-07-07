@@ -90,7 +90,7 @@ sub getQuestions {
   }
   
   if($keyword ne 'none') {
-    $sql = $sql . "question like '%" . $keyword . "%' and ";
+    $sql = $sql . "LOWER(question) like LOWER('%" . $keyword . "%') and ";
   }
   
   $sql = $sql .  'answered(question_id)::int = ? '.
