@@ -1055,22 +1055,6 @@ function extractLink(text) {
     return link;
 }
 
-//redirects user to whatever link is associated with the comment
-//  lots of this function will have to change after it is merged with refactoring branch
-function redirectToVideo(type, id) {
-    var post;
-    
-    if(type == "question")
-        post = getQuestionById(id);
-    else
-        post = getCommentById(id);
-    
-    //after refactoring changes are accepted, the above to lines will need to be changed to
-    //var comment = getCommentById(id);
-    
-    window.open(post.getLink(), '_blank'); //the '_blank' parameter makes it open in a new tab
-}
-
 function showPrivacyPolicy() {
     openMenu = 'privacy';
     $(".backgroundCover").fadeTo(1, 0);
