@@ -725,9 +725,6 @@ function reloadQuestions() {
         
         //if the user has a search in place, it adds what they search for and a clear button
         if(keyword != 'none') {
-            if(deviceType == "desktop")
-               filter += " | ";  //a nice pipe for effect
-            else
                 filter += "</br>";
             filter += "search: " + keyword;
             filter += "<img class='clearButton headerImg' onclick='setFilter(\"keyword\", \"none\");setFilter(\"limit\", 15);reloadQuestions()' src='/img/clearSearchButton.png'>";

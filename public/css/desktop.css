@@ -1,6 +1,7 @@
 body {
 	margin:0;
 	padding:0px;
+	padding-top: 60px;
 	height: auto;
 	background-color: #eeeeee;
 	overflow: scroll;
@@ -17,6 +18,7 @@ a {
 
 /*********************************header yeah aw yeah********************/
 
+/*
 .header {
 	position: fixed;
 	top: 75px;
@@ -39,13 +41,38 @@ a {
 	right: 0px;
 }
 
+*/
+
+.header {
+	
+}
+
 .headerImg {
 	-webkit-filter: invert(100%);
 	filter: invert(100%);
 }
 
-.headerMenuArrowImg {
-	transform: rotate(90deg);
+.menuButtonContainer {
+	position: fixed;
+	top: 5px;
+	left: 5px;
+}
+
+.searchButtonContainer {
+	position: fixed;
+	top: 5px;
+	left: 50px;
+}
+
+.accountButtonContainer {
+	position: fixed;
+	top: 5px;
+	right: 5px;
+}
+
+.newQuestionButtonContainer {
+	height:0px !important;
+	width:0px;
 }
 
 .headerImgContainer {
@@ -53,16 +80,8 @@ a {
 	justify-content: center;
 	align-items: center;
 	height: 40px;
-	width: 80px;
-}
-
-.headerMenuArrow {
-	position: absolute;
-	left: -10px;
-	top: 50%;
-	transform: translateY(-50%);
-	height: 40px;
 	width: 40px;
+	z-index: 3;
 }
 
 /*container that pops up when you push button to make new question */
@@ -77,8 +96,8 @@ a {
 	margin:auto;
 	top: 40px;
 	padding-top: 20px;
-	background-color: white;
-	padding-bottom: 10px;
+	padding-bottom: 40px;
+	background-color: #eeeeee;
 }
 
 .newPostTitle {
@@ -226,36 +245,21 @@ a {
 	padding-left: 10px;
 }
 
-.sortMenuButtonContainer {
-	position: absolute;
-	display: inline-block;
-	right:8%;
-	top:0;
-	bottom:0;
-	height:100%;
-}
-
-.searchButtonContainer {
-	position: absolute;
-	right: 1%;
-	top: 0;
-	bottom: 0;
-	height: 100%;
-}
-
 /*************search bar****************/
 
 .searchBar {
-	position: relative;
+	position: fixed;
 	width: 100%;
 	max-width:1200px;
 	min-width:700px;
 	margin:auto;
-	top: 0px;
+	top: 30px;
+	z-index: 2;
 	height: 30px;
 	padding: 10px;
 	padding-top: 60px;
 	display: flex;
+	background-color: #42474B;
     justify-content: center; /* align horizontal */
     align-items: center; /* align vertical */
 }
@@ -429,10 +433,11 @@ a {
 	margin: auto;
 	background-color:white;
 	padding: 15px;
-	padding-top: 30px;
 }
 
 .showMoreButton {
+	position: relative;
+	top: 25px;
 	padding: 20px;
 	padding-top: 5px;
 	padding-bottom: 5px;
@@ -451,13 +456,13 @@ a {
 
 .footer {
 	position: relative;
-	bottom: 0;
+	bottom: -25px;
 	display: flex;
 	align-items: center;
 	justify-content: space-around;
 	flex-wrap: wrap;
 	width: 100%;
-	height: 300px;
+	height: 200px;
 	background-color: #42474B;
 }
 

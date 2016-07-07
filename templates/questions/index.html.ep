@@ -79,23 +79,18 @@ $(document).ready(function() {
 </script>
 
 <body>
-	<div class="header" 
-	onmouseenter="$('.header').addClass('shownHeader');" 
-	onmouseleave="$('.header').removeClass('shownHeader');">
-		<div class="headerImgContainer">
+	<div class="header" >
+		<div class="headerImgContainer menuButtonContainer">
 			<img class="containedImg headerImg" src="/img/menubutton.png" alt="menu" onclick="showSortMenu()">
 		</div>
-		<div class="headerImgContainer">
+		<div class="headerImgContainer searchButtonContainer">
 			<img class="containedImg headerImg" src="/img/searchbutton.png" alt="search" onclick="toggleSearchBar()">
 		</div>
-		<div class="headerImgContainer">
+		<div class="headerImgContainer newQuestionButtonContainer">
 			<img class="containedImg headerImg" src="/img/newQuestion.png" alt='new question' onclick="toggleQuestionForm()">
 		</div>
-		<div class="headerImgContainer" onclick="window.location = '/account'">
+		<div class="headerImgContainer accountButtonContainer" onclick="window.location = '/account'">
 			<img class="containedImg headerImg" src="/img/account.png" alt="account">
-		</div>
-		<div class="headerMenuArrow">
-			<img class="containedImg headerImg headerMenuArrowImg" src="/img/menuarrow.png" alt="arrow">
 		</div>
 	</div>
 	
