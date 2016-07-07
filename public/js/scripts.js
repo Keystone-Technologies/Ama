@@ -100,7 +100,7 @@ var deviceType = "desktop";             //Initially assumes mobile and is change
 var defaultLimit = 15;                  //default limit on number of questions to display
 var openMenu = "none";                  //currently opened menu (ex. 'sort', 'search', etc...) used in close menu function
 var acceptableLinkCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuwxyz.:/?=";  //characters that are allowed in a video link
-var threshold = '';
+var vote_floor = '';
 //filter settings
 var filters = [];                       //holds all of the current filters used, seen below
                                         //used when reloading the questions
@@ -119,8 +119,8 @@ function setFilter(type, value) {
     filters[type] = value;
 }
 
-function setThreshold(voteCount) {
-    threshold = voteCount;
+function setVoteFloor(min_votes) {
+    vote_floor = min_votes;
 }
 
 //sets the username based on what the server gives us
@@ -547,7 +547,7 @@ function vote(type, id, dir) {
         changeVoteImg(type, id, 'out', opp);  //changes the opposite vote image incase that was the last vote
         changeVoteImg(type, id, 'out', dir);
     
-    if (data.votes == threshold) {
+    if (data.votes == vote_floor) {
         
          if(type == "question") {
                     
