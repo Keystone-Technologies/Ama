@@ -5,6 +5,7 @@
 	<script src="/js/scripts.js"></script>
 	<link rel="stylesheet" media="screen and (max-device-width: 800px)" href="/css/style.css">
 	<link rel="stylesheet" media="screen and (min-device-width: 800px)" href="/css/desktop.css">
+	<% my $user = $c->model->oauth2->find($c->session('id')); %>
 </head>
 <title>Ask Me Anything</title>
 <script>
@@ -91,6 +92,13 @@ $(document).ready(function() {
 			<img class="containedImg headerImg" src="/img/newQuestion.png" alt='new question' onclick="toggleQuestionForm()">
 		</div>
 		<div class="headerImgContainer accountButtonContainer" onclick="window.location = '/account'">
+			% if ($c->session('id')){
+        	<div class="Name"><%= $user->{first_name}%></div>
+			%}
+			%if ($c->session->{admin} == 1) {
+			<div class="Name">*</div>
+			%}
+			
 			<img class="containedImg headerImg" src="/img/account.png" alt="account">
 		</div>
 	</div>
