@@ -99,7 +99,8 @@ var defaultPostSize = 0;                //Default height of a post, used to dete
 var deviceType = "desktop";             //Initially assumes mobile and is changed further down if the user is on desktop
 var defaultLimit = 15;                  //default limit on number of questions to display
 var openMenu = "none";                  //currently opened menu (ex. 'sort', 'search', etc...) used in close menu function
-var acceptableLinkCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuwxyz.:/?=_";  //characters that are allowed in a video link
+var acceptableLinkCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuwxyz.:/?=";  //characters that are allowed in a video link
+var vote_floor = '';
 
 //filter settings
 var filters = [];                       //holds all of the current filters used, seen below
@@ -117,6 +118,10 @@ function getFilter(type) {
 
 function setFilter(type, value) {
     filters[type] = value;
+}
+
+function setVoteFloor(min_votes) {
+    vote_floor = min_votes;
 }
 
 //sets the username based on what the server gives us
@@ -543,6 +548,34 @@ function vote(type, id, dir) {
         post.setUsersVote(dir);
         changeVoteImg(type, id, 'out', opp);  //changes the opposite vote image incase that was the last vote
         changeVoteImg(type, id, 'out', dir);
+    
+    if (data.votes == vote_floor) {
+        
+         if(type == "question") {
+                    
+                    //necessary to reset min-height so the hide function works
+                    //  if you wanted to remove the animations, take out ALL code beneath
+                    //  to the next else statement EXCEPT the ones that end in .remove
+                    $("#postContainer_" + type + id).css('height', $("#postContainer_" + type + id).css('min-height'));
+                    $("#postContainer_" + type + id).css('min-height', '0px');
+                    $("#postContainer_" + type + id).hide(2000, function() {
+                        $("#postContainer_" + type + id).remove();
+                    });
+                    $("#commentsContainer_" + type + id).hide(2000, function() {
+                        $("#commentsContainer_" + type + id).remove();
+                    });
+                    $("#replyContainer_" + type + id).hide(2000, function() {
+                        $("#replyContainer_" + type + id).remove();
+                    });
+                }
+                else {
+                    //deletes the comment from the questions storage and hides it then removes
+                    getQuestionById(getCommentById(id).getQuestionId()).deleteComment(id);
+                    $("#commentContainer_" + type + id).hide(2000, function() {
+                        $("#commentContainer_" + type + id).remove();
+                    }
+                )}
+    }
     }, 'json');
 }
 
