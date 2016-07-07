@@ -99,7 +99,7 @@ var defaultPostSize = 0;                //Default height of a post, used to dete
 var deviceType = "desktop";             //Initially assumes mobile and is changed further down if the user is on desktop
 var defaultLimit = 15;                  //default limit on number of questions to display
 var openMenu = "none";                  //currently opened menu (ex. 'sort', 'search', etc...) used in close menu function
-var acceptableLinkCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuwxyz.:/?=";  //characters that are allowed in a video link
+var acceptableLinkCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz.:/?=";  //characters that are allowed in a video link
 
 //filter settings
 var filters = [];                       //holds all of the current filters used, seen below
@@ -183,24 +183,22 @@ function clearQuestions() {
 
 //shows/hides new question container
 function toggleQuestionForm() {
-	$(".newQuestionContainer").slideToggle("slow", function() {
-	    //when the animation is done playing, focuses the keyboard on the textarea
-	    $("#newQuestionTextarea").focus();
-	});
+    if(deviceType != 'desktop') {
+        $(".newQuestionContainer").slideToggle("slow", function() {
+	        //when the animation is done playing, focuses the keyboard on the textarea
+	        $("#newQuestionTextarea").focus();
+	    });
+    }
+    else
+        $("#newQuestionTextarea").focus();
 	
-	if($(".newQuestion").html() != "Cancel") {
-	  	$(".newQuestion").html("Cancel");
-	}
-	else {
-        $(".newQuestion").html("Ask A Question");
-	    $("#newQuestionTextarea").val("");
-	}
+	$("#newQuestionTextarea").val("");
 }
 
 //shows/hides reply form container
 function toggleReplyForm(id) {
     var type = "question";
-	$("#replyContainer_" + type + id).slideToggle("slow", function(){
+	$("#replyContainer_" + type + id).slideToggle(500, function(){
 	    $("#newPostTextArea_" + type + id).focus();
 	});
 	if($("#replyButton_" + type + id).html() != "cancel")
@@ -406,6 +404,11 @@ function resizePosts() {
             defaultPostSize = parseInt($("#postContainer_" + type + question.getId()).css('height'));
             if(defaultPostSize >= 275)
                 deviceType = "mobile";
+        }
+        
+        if(deviceType == 'desktop') {
+            $(".newQuestionContainer").show();
+            $(".newPostTitle").remove();
         }
         
         //Parse int because the .css('height') will return a string, '100px' or something like that
@@ -717,7 +720,7 @@ function reloadQuestions() {
         //if the user has a search in place, it adds what they search for and a clear button
         if(keyword != 'none') {
             if(deviceType == "desktop")
-                filter += " | ";  //a nice pipe for effect
+               filter += " | ";  //a nice pipe for effect
             else
                 filter += "</br>";
             filter += "search: " + keyword;
@@ -725,6 +728,13 @@ function reloadQuestions() {
         }
         
         $(".filterName").html(filter);
+        
+        //makes footer stick to bottom if not enough quesitons are showing
+        //  otherwise it goes to very bottom of page
+        if($("body").height() > $(window).height())
+            $(".footer").css('position', 'relative');
+        else
+            $(".footer").css('position', 'absolute');
     });
 }
 
@@ -775,14 +785,14 @@ function toggleComments(id) {
             $("#commentsContainer_" + type + id).show();
             resizeComments(id);
             $("#commentsContainer_" + type + id).hide();
-            $("#commentsContainer_" + type + id).slideToggle("slow");
+            $("#commentsContainer_" + type + id).slideToggle(500);
             $("#showCommentsButton_" + type + id).html("hide comments<br> ");  //changes the button to say hide commensts
             initializeCommentLayout(id);
         });
     }
     //if the comments are already shown, it will hide the comments and change the show comments button back to saying show comments
     else {
-        $("#commentsContainer_" + type + id).slideToggle("slow");
+        $("#commentsContainer_" + type + id).slideToggle(500);
         $("#showCommentsButton_" + type + id).html("show comments<br>(" + getQuestionById(id).getCommentCount() + ")");
         question.setCommentsShown(false);
     }
@@ -976,9 +986,9 @@ function setFilterButtonColors() {
     $(".sortMenuOption").css("color", "black");
     
     //the id's of the options are set so that this will work
-    $("#creator_" + getFilter('creator')).css("color", "1f268b");     //id ex 'creator_mine' or 'creator_all'
-    $("#answered_" + getFilter('answered')).css("color", "1f268b");   //id ex 'answered_1' (1 for answered questions only 0 for unanaswered only)
-    $("#" + getFilter('orderby') + "_" +  getFilter('direction')).css("color", "1f268b");  //id ex 'votes_asc' or 'date_desc'
+    $("#creator_" + getFilter('creator')).css("color", "#1f268b");     //id ex 'creator_mine' or 'creator_all'
+    $("#answered_" + getFilter('answered')).css("color", "#1f268b");   //id ex 'answered_1' (1 for answered questions only 0 for unanaswered only)
+    $("#" + getFilter('orderby') + "_" +  getFilter('direction')).css("color", "#1f268b");  //id ex 'votes_asc' or 'date_desc'
 }
 
 //increases the limit on the amount of shown questions, reloads ALL questions with a larger limit
@@ -1001,7 +1011,7 @@ function toggleSearchBar() {
         
     else {
         openMenu = "none";
-        $(".searchTextarea").val('');
+        $(".searchTextArea").val('');
     }
         
     $(".searchBar").slideToggle('fast', function() {$("#searchTextarea").focus();});
@@ -1009,7 +1019,7 @@ function toggleSearchBar() {
 
 //extracts the keyword from the search bar, reloads the questions with that set as the new keyword
 function search() {
-    var keyword = $(".searchTextarea").val();
+    var keyword = $("#searchTextarea").val();
     keyword = keyword.trim();
     if(keyword == ""){
         keyword = "none"; //a keyword of 'none' means there is no search in effect

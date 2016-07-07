@@ -1,7 +1,6 @@
+<!DOCTYPE HTML>
 <html>
 <head>
-
-	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 	<script src="/js/scripts.js"></script>
 	<link rel="stylesheet" media="screen and (max-device-width: 800px)" href="/css/style.css">
@@ -49,7 +48,7 @@ $(document).ready(function() {
 	});
 
 	setInterval(function() {
-	    if (scrolled) {
+	    if (scrolled && deviceType == 'mobile') {
 	        var top = $(this).scrollTop();
 	        
 	        //if the use scrolls own, hide the header and move all fixed elements beneath it upwards
@@ -80,7 +79,9 @@ $(document).ready(function() {
 </script>
 
 <body>
-	<div class="header">
+	<div class="header" 
+	onmouseenter="$('.header').addClass('shownHeader');" 
+	onmouseleave="$('.header').removeClass('shownHeader');">
 		<div class="headerImgContainer">
 			<img class="containedImg headerImg" src="/img/menubutton.png" alt="menu" onclick="showSortMenu()">
 		</div>
@@ -91,14 +92,22 @@ $(document).ready(function() {
 			<img class="containedImg headerImg" src="/img/newQuestion.png" alt='new question' onclick="toggleQuestionForm()">
 		</div>
 		<div class="headerImgContainer" onclick="window.location = '/account'">
-			<img class="containedImg headerImg" src="/img/account.png">
+			<img class="containedImg headerImg" src="/img/account.png" alt="account">
 		</div>
+		<div class="headerMenuArrow">
+			<img class="containedImg headerImg headerMenuArrowImg" src="/img/menuarrow.png" alt="arrow">
+		</div>
+	</div>
+	
+	<div class="searchBar">
+		<textarea rows="1" placeholder="search" class="searchTextArea" id="searchTextarea" required></textarea>
+		<button class="searchButton" onclick="search()">search</button>
 	</div>
 	
 	<div class="newQuestionContainer">
 		<br><label for='question' class="newPostTitle">New Question</label><br>
-		<textarea placeholder= "Enter question here" class="newPostTextarea" id="newQuestionTextarea" required></textarea><br>
-		<button class='postButton' onclick="submitQuestion()">Create</button>
+		<textarea placeholder= "Enter Question" class="newPostTextarea" id="newQuestionTextarea" rows=3 required></textarea><br>
+		<button class='postButton' onclick="submitQuestion()">Submit</button>
 	</div>
 	
 	<div class="backgroundCover" onclick="closeMenu('none')">
@@ -162,11 +171,6 @@ $(document).ready(function() {
 		</div>
 	</div>
 	
-	<div class="searchBar">
-		<textarea rows="1" placeholder="search" class="searchTextArea" id="searchTextarea" required></textarea>
-		<button class="searchButton" onclick="search()">search</button>
-	</div>
-	
 	<div class="replyMenuContainer">
 		<div class="replyMenuTitle">
 			ATTENTION
@@ -211,15 +215,15 @@ $(document).ready(function() {
 		show more
 	</div>
 	
-	<div class="footer">
+	<footer class="footer">
+		<div class="logoContainer"> 
+			<img class="containedImg" src="/img/logo.png" alt="LOGO">
+		</div>
 		<a href="https://www.youtube.com/channel/UCwSuyK7EsrNN02Z92bI34gA/feed" target="_blank">
 			<div class="youtubeContainer">
 				<img src="/img/lightYoutube.png" alt="youtube" class="inline containedImg" > KSTN
 			</div>
 		</a>
-		<div class="logoContainer"> 
-			<img class="containedImg" src="/img/logo.png" alt="LOGO">
-		</div>
 		<div class="privacyPolicyButtonContainer linkContainer" onclick="showPrivacyPolicy()">
 			Privacy Policy
 		</div>
@@ -234,7 +238,7 @@ $(document).ready(function() {
 		<div class="version">
 			v<%=$self->version%>
 		</div>
-	</div>
+	</footer>
 	
 	<!-- All html under here is extracted by the js, parsed and used for comments and questions, then reinserted into the page -->
 
@@ -297,7 +301,7 @@ $(document).ready(function() {
 		
 		<div class="replyContainer" id="replyContainer_TYPEID">
             <label class='newPostTitle' for='comment'>Reply</label>
-            <br><textarea class = "newPostTextArea" id="newPostTextArea_TYPEID" placeholder= "Enter reply here"></textarea><br>
+            <br><textarea class = "newPostTextarea" id="newPostTextArea_TYPEID" placeholder= "Enter reply here"></textarea><br>
             <button class="postButton" onclick="readyReply(ID)">Post</button>
 		</div>
 			
