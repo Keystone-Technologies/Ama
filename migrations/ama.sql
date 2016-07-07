@@ -55,11 +55,10 @@ insert into answers (comment_id, question_id, username) values
   (9, 3, 'anonymous2');
   
 create table if not exists feedbacks (
-  feedback_id int not null,
+  feedback_id serial primary key,
   feedback_comment text not null,
   created timestamptz not null default now(),
 );
-insert into answers(feedback_id, feedback_comment) values (1, 'feedback');
 
 create table if not exists votes (
   entry_type  text not null,
