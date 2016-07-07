@@ -421,6 +421,8 @@ a {
 
 /*****************************content n such*******************************/
 .content {
+	position: relative;
+    top: 30px;
 	max-width: 1200px;
 	min-width: 700px;
 	min-height: 10px;
