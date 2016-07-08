@@ -86,7 +86,7 @@ sub getQuestions {
   'where ';
   
   if($creator eq 'my') {
-    $sql = $sql . 'username::int = ' . $self->username . ' and ';
+    $sql = $sql . "username = '" . $self->username . "' and ";
   }
   
   if($keyword ne 'none') {
