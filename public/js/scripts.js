@@ -579,69 +579,6 @@ function sendfeedback_comment(){
     })
 }
 
-function sendFlagReport(id) {
-    var type = "POST";
-    var question;
-    var comment;
-    var url;
-    
-    //if the post is not a comment
-    //  sets the url to correct url and gets the question
-    if(id.toString().indexOf('_') == -1) {
-        question = getQuestionById(id);
-        url = "api/questions/flag/" + id;
-        if(question.isFlagged())
-            type = "DELETE";
-    }
-    
-    //otherwise changes the url and gets the correct question and comment
-    else {
-        question = getQuestionById(id.substring(0, id.indexOf('_')));
-        comment = question.getCommentById(id);
-        url = "api/comments/flag/" + id.substring(id.indexOf('_') + 1);
-        if(comment.isFlagged())
-            type="DELETE";
-    }
-        
-    $.ajax({
-        url: url,
-        type: type,
-        dataType: 'json'
-    }).done(function(data){
-        if(data) {
-            //if data has been sent back, success is assumed. 
-            //  correctly hides or shows the correct post
-            if(id.toString().indexOf('_') == -1) {
-                if(question.isFlagged()) {
-                    show(id)
-                    question.setFlagged(0);
-                    //makes sure that if a big post has been flagged and the page refreshed
-                    // the post is resized when revelead
-                    resizePosts();
-                }
-                else {
-                    hide(id);
-                    question.setFlagged(1);
-                }
-            }
-            else {
-                if(comment.isFlagged()) {
-                    show(id)
-                    comment.setFlagged(0);
-                    resizeComments(id.substring(0,id.indexOf('_')));
-                }
-                else {
-                    hide(id);
-                    comment.setFlagged(1);
-                }
-            }
-            
-        }
-        else
-            console.log("Oh no an error!"); //hah probably make this more specific
-    });
-}
-
 function submitQuestion() {
     var text = $("#newQuestionTextarea").val();
     text = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
