@@ -5,16 +5,18 @@ use Ama::Model::Questions;
 use Ama::Model::Comments;
 use Ama::Model::Answers;
 use Ama::Model::Votes;
-use Ama::Model::Flags;
 use Ama::Model::Emailfeedback;
+
 use Mojo::Pg;
-our $VERSION = '1.2';
+use Ama::Model::OAuth2;
+our $VERSION = '2.0';
 
 sub startup {
   my $self = shift;
 
   # Configuration
-  $self->plugin('Config');
+  my $config = $self->plugin('Config');
+ 
   $self->secrets($self->config('secrets'));
   $self->sessions->default_expiration(86400*365*10); # 10yr cookie
 
@@ -24,17 +26,44 @@ sub startup {
   $self->helper(comments => sub { state $comments = Ama::Model::Comments->new(pg => shift->pg) });
   $self->helper(answers => sub { state $votes = Ama::Model::Answers->new(pg => shift->pg) });
   $self->helper(votes => sub { state $votes = Ama::Model::Votes->new(pg => shift->pg) });
-  $self->helper(flags => sub { state $votes = Ama::Model::Flags->new(pg => shift->pg) });
   $self->helper(emailfeedback => sub { state $emailfeedback = Ama::Model::Emailfeedback->new(pg => shift->pg) });
+  $self->helper('model.oauth2' => sub { state $votes = Ama::Model::OAuth2->new(pg => shift->pg) });
   $self->hook(around_action => sub {
     my ($next, $c, $action, $last) = @_;
     $c->session->{username} ||= time;
+    $c->session->{username} = $c->session('id') if $c->session('id');
+    my $admin = 0; #by default the user is not an admin
+    
+    if ($c->session('id') ) { #if the user has logged in with OAuth
+      if ( defined $self->pg->db->query('select id from users where id = ?', $c->session->{username})->hash ) {
+        $admin = $self->pg->db->query('select admin from users where id = ?', $c->session->{username})->hash->{admin}; #set admin to 1 or 0
+      }
+      else {
+        my $token = $c->session('token') || {};
+        delete $c->session->{$_} foreach keys %{$c->session};
+        $token->{$_} = {} foreach keys %$token;
+        $c->session(token => $token);
+        $c->redirect_to($config->{on_logout});
+      }
+    }
+    
+    $c->session->{admin} = $admin; #updates cookie's admin variable
     $c->questions->username($c->session->{username});
+    $c->questions->admin($c->session->{admin}); #sends the admin info to the model (lib/Ama/Model/Questions.pm)
     $c->comments->username($c->session->{username});
+    $c->comments->admin($c->session->{admin}); #sends the admin info to the model (lib/Ama/Model/Comments.pm)
     $c->answers->username($c->session->{username});
+    $c->answers->admin($c->session->{admin}); #sends the admin info to the model (lib/Ama/Model/Answers.pm)
     $c->votes->username($c->session->{username});
-    $c->flags->username($c->session->{username});
     return $next->();
+  });
+  
+$self->plugin("OAuth2Accounts" => {
+  on_logout => '/',
+  on_success => 'questions',
+  on_error => 'account',
+  on_connect => sub { shift->model->oauth2->store(@_) },
+  providers => $config->{oauth2},
   });
   
   $self->helper( 'version' => sub{$VERSION} );
@@ -53,11 +82,16 @@ sub startup {
 
   # Controller
   my $r = $self->routes;
-
-  $self->plugin('BrowserDetect');
   $r->get('/' => sub {
     my $self = shift;
-    $self->redirect_to($self->browser->mobile ? 'questions' : 'questions');
+    $self->redirect_to('questions');
+  });
+  
+   $r->get('/connect/:provider' => sub {
+    my $self = shift;
+    warn $self->session('id');
+    return $self->redirect_to('connectprovider', {provider => $self->param('provider')}) unless $self->session('id');
+    $self->redirect_to('questions');
   });
   $r->get('/questions')->to('questions#index')->name('questions'); # Display all questions
   $r->get('/questions/create')->to('questions#create')->name('create_question'); # Display empty form
@@ -66,6 +100,8 @@ sub startup {
   $r->get('/questions/:question_id/edit')->to('questions#edit')->name('edit_question'); # Display filled-out form
   $r->put('/questions/:question_id')->to('questions#update')->name('update_question'); # Update DB and redirect to show_question
   $r->delete('/questions/:question_id')->to('questions#remove')->name('remove_question'); # Delete from DB and redirect to questions
+  $r->delete('/removeAll')->to('questions#removeAll')->name('removeAll'); #Delete every question
+  $r->get('/questions/:creator/:answered/:orderby/:direction/:limit/:keyword')->to('questions#getQuestions')->name('get_answered');
   $r->post('/feedback_comment')->to('emailfeedback#submit')->name('submit_feedback');
 
   $r->get('/questions/:question_id/comments')->to('comments#index')->name('comments');
@@ -76,9 +112,7 @@ sub startup {
   $r->get('/comments/:comment_id/edit')->to('comments#edit')->name('edit_comment');
   $r->put('/comments/:comment_id')->to('comments#update')->name('update_comment');
   $r->delete('/comments/:comment_id')->to('comments#remove')->name('remove_comment');
-
-  $r->get('/questions/:creator/:answered/:orderby/:direction')->to('questions#get')->name('get_answered');
-
+  
   my $api = $r->under('/api'); # Require Ajax (need to do)
 
   $api->post('/answers/:question_id/:comment_id')->to('answers#mark')->name('mark_comment_as_answer');
@@ -91,6 +125,7 @@ sub startup {
   $api->delete('/:entry_type/flag/:entry_id')->to('flags#remove')->name('remove_flag');
   
   $api->post('/feedback_comment')->to('emailfeedback#submit')->name('submit_emailfeedback');
+
 }
 
 1;

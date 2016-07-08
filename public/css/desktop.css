@@ -2,7 +2,8 @@ body {
 	margin:0;
 	padding:0px;
 	height:100%;
-	background-color: eeeeee; /* For browsers that do not support gradients */
+	background-color: eeeeee;
+	overflow: scroll;
 }
 
 * {
@@ -15,6 +16,25 @@ body {
 	width:100%;
 	background-color:2d3338;
 	z-index:1;
+}
+
+.accountButton {
+	position:absolute;
+	left:0;
+	bottom: 0;
+    font-size: 1.5em;
+    text-align: center;
+    white-space: nowrap;
+    margin-top: 32px;
+    color:white;
+    text-decoration: underline;
+    margin-bottom: 10px;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.accountButton:hover {
+	color: #0066ff;
 }
 
 .logoContainer {
@@ -69,7 +89,7 @@ body {
 	border: 3px solid black;
 	border-radius: 10px;
 	box-sizing: border-box;
-	z-index: 1;
+	z-index: 2;
 }
 
 .newQuestion:hover {
@@ -102,7 +122,7 @@ body {
 	position: fixed;
 	width: 250px;
 	top: 40px;
-	z-index: 1;
+	z-index: 2;
 	background-color: white;
 }
 .feedback_commentContainer {
@@ -163,7 +183,7 @@ body {
 	bottom:0;
 	left:0;
 	right:0;
-	z-index: 1;
+	z-index: 3;
 }
 
 /************************sort menu container ********************/
@@ -179,7 +199,7 @@ body {
 	max-width:400px;
 	min-height: 300px;
 	max-height: 320px;
-	z-index:2;
+	z-index:3;
 	border: 5px solid black;
 	box-sizing: border-box;
 }
@@ -246,47 +266,193 @@ body {
 .filterContainer {
 	position:relative;
 	max-width: 1200px;
-	min-width: 810px;
+	min-width: 700px;
 	margin: auto;
 }
 
 .filterName {
-	-webkit-user-select: none; /* Chrome/Safari */        
-	-moz-user-select: none; /* Firefox */
-	-ms-user-select: none; /* IE10+ */
-
-	/* Rules below not implemented in browsers yet */
-	-o-user-select: none;
-	user-select: none;
-	
 	display: inline-block;
 	font-size: 1.5em;
+}
+
+.clearButton {
+	display: inline-block;
+	text-decoration: underline;
+	border-radius:15px;
+	cursor: pointer;
 }
 
 .sortMenuButtonContainer {
 	position: absolute;
 	display: inline-block;
-	right:2%;
+	right:8%;
 	top:0;
 	bottom:0;
 	height:100%;
 }
 
+.searchButtonContainer {
+	position: absolute;
+	right: 1%;
+	top: 0;
+	bottom: 0;
+	height: 100%;
+}
+
+/*************search bar****************/
+
+.searchBar {
+	position: relative;
+	background-color: f4f4f4;
+	width: 100%;
+	max-width:1200px;
+	min-width:700px;
+	margin:auto;
+	top: 0px;
+	height: 30px;
+	padding: 10px;
+	display: flex;
+    justify-content: center; /* align horizontal */
+    align-items: center; /* align vertical */
+}
+
+.searchTextArea {
+	display: inline-block;
+	border:none;
+	width: 75%;
+	height: auto;
+	font-size:1.5em;
+}
+
+.searchButton {
+	display: inline-block;
+	text-align: center;
+	margin: auto;
+	font-size: 1em;
+}
+
+/********reply menu ************/
+
+.replyMenuContainer {
+	position: fixed;
+	top: 30%;
+	height: 320px;
+	width: 400px;
+	left:50%;
+	transform: translateX(-50%);
+	background-color: white;
+	z-index: 3;
+	border: 3px solid black;
+	box-sizing: border-box;
+}
+
+.replyMenuTitle {
+	width: 100%;
+	text-align: center;
+	font-size: 1.5em;
+	font-weight: bold;
+}
+
+.replyMenuDescription {
+	position: relative;
+	top: 5px;
+	width: 100%;
+	text-align: center;
+	font-size: 1em;
+	color: 777777;
+}
+
+.replyMenuSecondDescription {
+	position: relative;
+	top: 35px;
+	width: 100%;
+	text-align: center;
+	font-size: 1em;
+	color: 777777;
+}
+
+.replyMenuLinkContainer {
+	position: relative;
+	top: 15px;
+	text-align: center;
+	width: 100%;
+	font-size: 1em;
+}
+
+.replyMenuTextarea {
+	font-size: 1em;
+	width: 98%;
+	border: 1px solid;
+	border-color: e6e6e6;
+	resize: none;
+}
+
+.replyMenuStartingTimeContainer {
+	width:100%;
+	position: relative;
+	top: 30px;
+	text-align: center;
+	font-size: 1em;
+}
+
+.replyMenuTimeInput {
+	font-size: 1em;
+	width: 15%;
+	border: 1px solid;
+	border-color: e6e6e6;
+	resize: none;
+	text-align: right;
+}
+
+.replyMenuButtonsContainer {
+	position: relative;
+	display: flex;
+	top: 5%;
+	width: 100%;
+	height: 30%;
+	justify-content: center;
+	align-items: center;
+}
+
+.replyMenuButton {
+	position: relative;
+	display: inline-block;
+	margin:auto;
+	font-size: 1.5em;
+	cursor: pointer;
+}
+
+.replyMenuButton:hover {
+	color: 1f268b;;
+}
+
+/*****************************content n such*******************************/
 .content {
 	max-width: 1200px;
-	min-width: 810px;
+	min-width: 700px;
 	min-height: 10px;
 	margin: auto;
 	background-color:white;
 	padding: 15px;
 }
 
+.showMoreButton {
+	padding: 20px;
+	text-align: center;
+	font-size: 1.5em;
+	color:00004c;
+	cursor:pointer;
+}
+
+.showMoreButton:hover {
+	font-size: 1.6em;
+}
+
 /*question container contains info for a quesiton*/
 
 .postContainer {
-	display:inline-block;
 	position: relative;
-	height: auto;
+	overflow:hidden;
 	width: 100%;
 	min-height: 150px;
 	max-width: 100%;
@@ -304,6 +470,7 @@ body {
 	left: 0%;
 	max-height: 275px;
 	width: 5%;
+	min-width: 60px;
 }
 
 .containedImg {
@@ -340,7 +507,7 @@ body {
 	width: 100%;
 }
 
-/*button container contains buttons, like flag, trash, etc..*/
+/*button container contains buttons, like trash*/
 
 .buttonContainer {
 	position: absolute;
@@ -356,19 +523,16 @@ body {
 .deleteButtonContainer {
 	position: absolute;
 	height: 25%;
-	top: 15%;
+	width:100%;
+	top: 35%;
+	z-index:1;
 }
 
-.flagButtonContainer {
+.linkButtonContainer {
 	position: absolute;
 	height: 25%;
+	width:100%;
 	bottom: 15%;
-}
-
-.answerButtonContainer {
-	position: absolute;
-	height:25%;
-	top: 75%;
 }
 
 /*post text and info contains post text, time created... */
@@ -395,7 +559,6 @@ body {
 	transform: translateY(-50%);
 	font-size: 1.2em;
 	padding: 15px;
-	cursor: default;
 	font-weight: bold;
 }
 
@@ -436,20 +599,14 @@ body {
 
 .commentsContainer {
 	width:100%;
-	overflow:auto;
-}
-
-.commentPadding {
-	position:relative;
-	float:left;
-	width:10%;
+	overflow:visible;
 }
 
 .commentContainer {
 	position:relative;
-	float:left;
+	left:10%;
 	height: 100px;
-	width:88%;
+	width:90%;
 	border-bottom: 1px solid;
 	border-bottom-color: 747474;
 	border-left: 1px solid;
@@ -465,6 +622,7 @@ body {
 	width: 5%;
 	height: 100%;
 	max-height: 100px;
+	min-width: 53px;
 }
 
 .commentUpVoteContainer {
@@ -512,14 +670,13 @@ body {
 	top: 50%;
 	transform: translateY(-50%);
 	font-size: 1em;
-	cursor: default;
 }
 
 .commentPostInfoContainer {
 	position:absolute;
 	bottom:0;
 	width: 100%;
-	height: 30px;
+	height: 35px;
 	
 }
 
@@ -530,7 +687,7 @@ body {
 	height:100%;
 }
 
-.commentFlagButtonContainer {
+.commentLinkButtonContainer {
 	position:relative;
 	float:left;
 	width:25%;

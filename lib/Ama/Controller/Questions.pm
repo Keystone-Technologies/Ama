@@ -22,6 +22,7 @@ sub edit {
 
 sub index {
   my $self = shift;
+  $self->stash(user => $self->model->oauth2->find($self->session('id')));
   $self->stash(questions => $self->questions->all);
   $self->respond_to(
     json => {json => $self->stash('questions')},
@@ -29,13 +30,15 @@ sub index {
   );
 }
 
-sub get {
+sub getQuestions {
   my $self = shift;
   my $creator = $self->param('creator');
   my $answered = $self->param('answered');
   my $orderby = $self->param('orderby');
   my $direction = $self->param('direction');
-  $self->stash(questions => $self->questions->getQuestions($creator, $answered, $orderby, $direction));
+  my $limit = $self->param('limit');
+  my $keyword = $self->param('keyword');
+  $self->stash(questions => $self->questions->getQuestions($creator, $answered, $orderby, $direction, $limit, $keyword));
   $self->respond_to(
     json=> {json => $self->stash('questions')},
     any => {},
@@ -46,6 +49,14 @@ sub remove {
   my $self = shift;
   my $question_id = $self->param('question_id');
   $self->stash('question' => $self->questions->remove($question_id));
+  $self->respond_to(
+    json => {json => $self->stash('question')},
+  );
+}
+
+sub removeAll {
+  my $self = shift;
+  $self->stash('question' => $self->questions->removeAll());
   $self->respond_to(
     json => {json => $self->stash('question')},
   );
