@@ -291,6 +291,17 @@ function initializeLayout() {
     $(".replyContainer").hide();
     var type = "question";
     
+    //sets the default post size if it has never been set.
+    if(deviceType == 'desktop') {
+        $(".newQuestionContainer").show();
+        $(".newPostTitle").remove();
+        defaultPostSize = 150;
+    }
+    else {
+        defaultPostSize = 275;
+    }
+    
+    
     //iterates through each question and hides certain containers within it
     for(var i = 0; i < getQuestionCount(); i ++)
     {
@@ -402,20 +413,13 @@ function initializeCommentLayout(id) {
 //resizes all questions so if they have a lot of text, a scroll bar does not appear
 function resizePosts() {
     var type = "question";
+    
+    if(getQuestionCount() == 0) {
+        
+    }
+    
     for(var i = 0; i < getQuestionCount(); i ++) {
         var question = getQuestion(i);
-        
-        //sets the default post size if it has never been set. This helps the program determine whether or not the use is on mobile or on desktop version
-        if(defaultPostSize == 0) {
-            defaultPostSize = parseInt($("#postContainer_" + type + question.getId()).css('height'));
-            if(defaultPostSize >= 275)
-                deviceType = "mobile";
-        }
-        
-        if(deviceType == 'desktop') {
-            $(".newQuestionContainer").show();
-            $(".newPostTitle").remove();
-        }
         
         //Parse int because the .css('height') will return a string, '100px' or something like that
         var num = parseInt($("#textContainer_" + type + question.getId()).css('height'));

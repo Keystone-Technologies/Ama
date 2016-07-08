@@ -250,10 +250,11 @@ a {
 .searchBar {
 	position: fixed;
 	width: 100%;
-	max-width:1200px;
+	max-width:1000px;
 	min-width:700px;
-	margin:auto;
 	top: 30px;
+	left: 50%;
+	transform: translateX(-50%);
 	z-index: 2;
 	height: 30px;
 	padding: 10px;

@@ -32,6 +32,15 @@ $(document).ready(function() {
     //this is where it should set the last viewed options, something like that with cookies
     reloadQuestions();
     
+    //determines if the user is on mobile or desktop based on what css file is loaded
+    //  on the desktop css, overflow is set
+    //  on mobile it is not
+    //  device type is set to desktop automatically so we only need to check if it is mobile
+    if($('body').css('overflow') != 'scroll')
+    {
+    	deviceType = 'mobile';
+    }
+    
     $(window).resize(function() {
     	resizePosts();
     	for(var i = 0; i < getQuestionCount(); i ++) {
