@@ -54,12 +54,6 @@ insert into answers (comment_id, question_id, username) values
   (3, 1, 'anonymous1'),
   (9, 3, 'anonymous2');
   
-create table if not exists feedbacks (
-  feedback_id serial primary key,
-  feedback_comment text not null,
-  created timestamptz not null default now(),
-);
-
 create table if not exists votes (
   entry_type  text not null,
   entry_id    int not null,
@@ -230,3 +224,14 @@ DROP FUNCTION commentcount();
 --5 up
 
 --5 down
+
+--6 up
+create table if not exists feedbacks (
+  feedback_id serial primary key,
+  feedback_comment text not null,
+  created timestamptz not null default now()
+);
+
+--6 down
+
+drop table if exists feedbacks;

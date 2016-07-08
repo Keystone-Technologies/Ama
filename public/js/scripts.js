@@ -182,19 +182,19 @@ function toggleQuestionForm() {
 }
 //shows/hides feedback container
 function togglefeedbackForm() {
-	$(".feedbackContainer").slideToggle("slow", function() {
-	    if($(".feedback").html() == "Cancel") {
-	        $("#feedbackTextarea").focus();
+	$(".feedback_commentContainer").slideToggle("slow", function() {
+	    if($(".feedback_comment").html() == "Cancel") {
+	        $("#feedback_commentTextarea").focus();
 	    }
 	});
 	
-	if($(".feedback").html() != "Cancel") {
-	  	$(".feedback").html("Cancel");
+	if($(".feedback_comment").html() != "Cancel") {
+	  	$(".feedback_comment").html("Cancel");
 	}
 	else {
-        $(".feedback").html("Leave Your Feedback");
-	    $("#feedbackTextarea").val("");
-	    $("#feedbackTextarea").focusout();
+        $(".feedback_comment").html("Leave Your Feedback");
+	    $("#feedback_commentTextarea").val("");
+	    $("#feedback_commentTextarea").focusout();
 	}
 }
 //
@@ -518,17 +518,11 @@ function vote(id, dir) {
     }, 'json');
 }
 
-function sendfeedback(){
-    var feedback = $("#feedbackTextarea").val();
-    $.post("/api/feedback",{feedback:feedback},function(data){
-        if(data.ok == "true"){
-            $(".filterName").html("feedback submitted");
-            togglefeedbackForm();
-        }
-        else{
-            alert("feedback not submitted");
-            togglefeedbackForm();
-        }
+function sendfeedback_comment(){
+    var feedback_comment = $("#feedback_commentTextarea").val();
+    $.post("/api/feedback_comment",{feedback_comment:feedback_comment},function(data){
+        $(".filterName").html("feedback submit result:"+ data.message);
+        togglefeedbackForm();
     })
 }
 

@@ -6,6 +6,7 @@ use Ama::Model::Comments;
 use Ama::Model::Answers;
 use Ama::Model::Votes;
 use Ama::Model::Flags;
+use Ama::Model::Emailfeedback;
 use Mojo::Pg;
 our $VERSION = '1.2';
 
@@ -24,6 +25,7 @@ sub startup {
   $self->helper(answers => sub { state $votes = Ama::Model::Answers->new(pg => shift->pg) });
   $self->helper(votes => sub { state $votes = Ama::Model::Votes->new(pg => shift->pg) });
   $self->helper(flags => sub { state $votes = Ama::Model::Flags->new(pg => shift->pg) });
+  $self->helper(emailfeedback => sub { state $emailfeedback = Ama::Model::Emailfeedback->new(pg => shift->pg) });
   $self->hook(around_action => sub {
     my ($next, $c, $action, $last) = @_;
     $c->session->{username} ||= time;
@@ -64,7 +66,7 @@ sub startup {
   $r->get('/questions/:question_id/edit')->to('questions#edit')->name('edit_question'); # Display filled-out form
   $r->put('/questions/:question_id')->to('questions#update')->name('update_question'); # Update DB and redirect to show_question
   $r->delete('/questions/:question_id')->to('questions#remove')->name('remove_question'); # Delete from DB and redirect to questions
-  $r->post('/feedbacks')->to('feedbacks#store')->name('store_feedback');
+  $r->post('/feedback_comment')->to('emailfeedback#submit')->name('submit_feedback');
 
   $r->get('/questions/:question_id/comments')->to('comments#index')->name('comments');
   $r->get('/questions/:question_id/comment/create')->to('comments#create')->name('create_comment');
@@ -88,7 +90,7 @@ sub startup {
   $api->post('/:entry_type/flag/:entry_id')->to('flags#raise')->name('raise_flag');
   $api->delete('/:entry_type/flag/:entry_id')->to('flags#remove')->name('remove_flag');
   
-  $api->post('/feedback')->to('emailfeedback#submit')->name('submit_emailfeedback');
+  $api->post('/feedback_comment')->to('emailfeedback#submit')->name('submit_emailfeedback');
 }
 
 1;
