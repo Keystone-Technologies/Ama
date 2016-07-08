@@ -611,7 +611,7 @@ function submitQuestion() {
             setFilter('answered', '0');
             setFilter('orderby', 'created');
             setFilter('direction', 'desc');
-            setFilter('limit', '15');
+            setFilter('limit', 15);
             reloadQuestions();
         }
     });
