@@ -1,146 +1,135 @@
 body {
 	margin:0;
 	padding:0px;
-	height:100%;
-	background-color: eeeeee;
+	padding-top: 60px;
+	height: auto;
+	background-color: #eeeeee;
 	overflow: scroll;
 }
 
 * {
 	font-family: Verdana, Geneva, sans-serif;
+	word-wrap: break-word;
 }
+
+a {
+	text-decoration: none;
+}
+
+/*********************************header yeah aw yeah********************/
+
+/*
+.header {
+	position: fixed;
+	top: 75px;
+	padding-left: 20px;
+	right: -170px;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-around;
+	align-items: center;
+	border-radius: 25px 0px 0px 25px;
+	width:180px;
+	height: 150px;
+	background-color: #42474B;
+	z-index:1;
+	transition: right 0.5s ease-in-out;
+}
+
+.shownHeader {
+	right: 0px;
+}
+
+*/
 
 .header {
-    position:relative;
-	height:150px;
-	width:100%;
-	background-color:2d3338;
-	z-index:1;
+	
 }
 
-.accountButton {
-	position:absolute;
-	left:0;
-	bottom: 0;
-    font-size: 1.5em;
-    text-align: center;
-    white-space: nowrap;
-    margin-top: 32px;
-    color:white;
-    text-decoration: underline;
-    margin-bottom: 10px;
-    z-index: 1;
-    cursor: pointer;
+.headerImg {
+	-webkit-filter: invert(100%);
+	filter: invert(100%);
 }
 
-.accountButton:hover {
-	color: #0066ff;
+.menuButtonContainer {
+	position: fixed;
+	top: 5px;
+	left: 5px;
 }
 
-.logoContainer {
-	position: absolute;
-	top: 15%;
-	left:40%;
-	margin-left: auto;
-	margin-right: auto;
+.searchButtonContainer {
+	position: fixed;
+	top: 5px;
+	left: 50px;
 }
 
-.logoImg {
-	max-width:500px;
-	max-height:100px;
-	width: auto;
-	height: auto;
+.accountButtonContainer {
+	position: fixed;
+	top: 5px;
+	right: 5px;
 }
 
-.version {
-	position: absolute;
-	color: b4b4b4;
-	left: 48%;
-	top: 85%;
+.newQuestionButtonContainer {
+	height:0px !important;
+	width:0px;
 }
 
-.youtube {
-	position: absolute;
-	right: 0px;
-	bottom: 0px;
-	text-align:center;
-	cursor: pointer;
-}
-
-.youtubeImg {
-	max-width:200px;
-	max-height:100px;
-	width: auto;
-	height: auto;
-}
-
-/*button to push to make a new quesiton */
-
-.newQuestion {
-    position:fixed;
-    width:250px;
-	height:40px;
-	top: 0px;
-	text-align: center;
-	font-size: 1.5em;
-	font-weight: bold;
-	background-color:green;
-	cursor: pointer;
-	border: 3px solid black;
-	border-radius: 10px;
-	box-sizing: border-box;
-	z-index: 2;
-}
-
-.newQuestion:hover {
-	background-color:00CC00;
+.headerImgContainer {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 40px;
+	width: 40px;
+	z-index: 3;
 }
 
 /*container that pops up when you push button to make new question */
 
 .newQuestionContainer {
-	position: fixed;
-	width: 250px;
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	width: 100%;
+	max-width: 1230px;
+	margin:auto;
 	top: 40px;
-	z-index: 2;
-	background-color: white;
+	padding-top: 20px;
+	padding-bottom: 40px;
+	background-color: #eeeeee;
 }
 
 .newPostTitle {
-	display:block;
 	text-align: center;
 	font-size: 1.5em;
 }
 
 .newPostTextarea {
-	display:block;
-	font-size: 1em;
-	margin:auto;
+	font-size: 0.8em;
 	width: 75%;
-	height: 200px;
+	margin:auto;
+	resize: none;
 }
 
 .postButton {
-	width:75%;
 	height:40px;
-	background-color:green;
+	background-color: #42474B;
 	border: 3px solid black;
+	color: #eeeeee;
 	border-radius: 10px;
 	display:block;
 	margin:auto;
-	font-size:1.5em;
+	font-size:1.1em;
 	cursor:pointer;
 	font-weight: bold;
 }
 
 .postButton:hover {
-	background-color:00CC00;
+	background-color: #00CC00;
 }
 
-.padding {
-	width:100%;
-	height: 10px;
-}
+/*********************************white cover that goes over the background ********************/
 
 .backgroundCover {
 	position:fixed;
@@ -214,7 +203,7 @@ body {
 }
 
 .sortMenuButton:hover {
-	color: 1f268b;
+	color: #1f268b;
 }
 
 .sortMenuButtonText {
@@ -230,8 +219,16 @@ body {
 /*****filter container *****/
 
 .filterContainer {
-	position:relative;
-	max-width: 1200px;
+	position: fixed;
+	top: 0;
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: #42474B;
+	color: white;
+	text-align: center;
+	z-index: 2;
+	width: 100%;
+	padding: 10px;
 	min-width: 700px;
 	margin: auto;
 }
@@ -248,36 +245,22 @@ body {
 	padding-left: 10px;
 }
 
-.sortMenuButtonContainer {
-	position: absolute;
-	display: inline-block;
-	right:8%;
-	top:0;
-	bottom:0;
-	height:100%;
-}
-
-.searchButtonContainer {
-	position: absolute;
-	right: 1%;
-	top: 0;
-	bottom: 0;
-	height: 100%;
-}
-
 /*************search bar****************/
 
 .searchBar {
-	position: relative;
-	background-color: f4f4f4;
+	position: fixed;
 	width: 100%;
-	max-width:1200px;
+	max-width:1000px;
 	min-width:700px;
-	margin:auto;
-	top: 0px;
+	top: 30px;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 2;
 	height: 30px;
 	padding: 10px;
+	padding-top: 60px;
 	display: flex;
+	background-color: #42474B;
     justify-content: center; /* align horizontal */
     align-items: center; /* align vertical */
 }
@@ -325,7 +308,7 @@ body {
 	width: 100%;
 	text-align: center;
 	font-size: 1em;
-	color: 777777;
+	color: #777777;
 }
 
 .replyMenuSecondDescription {
@@ -334,7 +317,7 @@ body {
 	width: 100%;
 	text-align: center;
 	font-size: 1em;
-	color: 777777;
+	color: #777777;
 }
 
 .replyMenuLinkContainer {
@@ -349,7 +332,7 @@ body {
 	font-size: 1em;
 	width: 98%;
 	border: 1px solid;
-	border-color: e6e6e6;
+	border-color: #e6e6e6;
 	resize: none;
 }
 
@@ -365,7 +348,7 @@ body {
 	font-size: 1em;
 	width: 15%;
 	border: 1px solid;
-	border-color: e6e6e6;
+	border-color: #e6e6e6;
 	resize: none;
 	text-align: right;
 }
@@ -389,11 +372,62 @@ body {
 }
 
 .replyMenuButton:hover {
-	color: 1f268b;;
+	color: #1f268b;;
+}
+
+.replyContainer {
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	width: 100%;
+	padding: 10px;
+}
+
+/********************************privacy policy container **************************/
+
+.privacyPolicyContainer {
+	position: fixed;
+	top: 35%;
+	left: 30%;
+	right: 30%;
+	height: 30%;
+	background-color: white;
+	z-index: 3;
+	border: 3px solid black;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.privacyTitle {
+	position:relative;
+	top: 50px;
+	font-size: 2em;
+}
+
+.privacyContent {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: 1.1em;
+	text-align: center;
+}
+
+.closePrivacyButton {
+	position: relative;
+	top: 35%;
+	margin: auto;
+	border-radius: 50px;
+	text-align: center;
+	font-size: 1.5em;
+	cursor: pointer;
 }
 
 /*****************************content n such*******************************/
 .content {
+	position: relative;
+    top: 30px;
 	max-width: 1200px;
 	min-width: 700px;
 	min-height: 10px;
@@ -403,15 +437,67 @@ body {
 }
 
 .showMoreButton {
+	position: relative;
+	top: 25px;
 	padding: 20px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	height: 30px;
 	text-align: center;
 	font-size: 1.5em;
-	color:00004c;
+	color: #00004c;
 	cursor:pointer;
 }
 
 .showMoreButton:hover {
 	font-size: 1.6em;
+}
+
+/*************** footer ********************/
+
+.footer {
+	position: relative;
+	bottom: -25px;
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	flex-wrap: wrap;
+	width: 100%;
+	height: 200px;
+	background-color: #42474B;
+}
+
+.logoContainer {
+	flex: 0 1 100%;
+	height: 100px;
+}
+
+.version {
+	position: absolute;
+	bottom:0;
+	right:0;
+	color: #b4b4b4;
+	font-size: 1.5em;
+}
+
+.youtubeContainer {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 1.2em;
+	color: #9fa6ad;
+	height: 30px;
+}
+
+.inline {
+	display: inline-block !important;
+}
+
+.linkContainer {
+	font-size: 1.2em;
+	text-decoration: none !important;
+	color: #9fa6ad;
+	cursor: pointer;
 }
 
 /*question container contains info for a quesiton*/
@@ -424,7 +510,7 @@ body {
 	max-width: 100%;
 	margin-top: 25px;
 	border-bottom: 1px solid;
-	border-bottom-color: 747474;
+	border-bottom-color: #747474;
 	box-sizing:border-box;
 }
 
@@ -535,7 +621,7 @@ body {
 	width: 100%;
 	text-align: center;
 	font-size: 1em;
-	color: 747474;
+	color: #747474;
 }
 
 .postActionContainer {
@@ -548,7 +634,7 @@ body {
 }
 
 .postActionContainer:hover {
-	color: 1f268b;
+	color: #1f268b;
 	font-size: 1.08em;
 }
 
@@ -574,9 +660,9 @@ body {
 	height: 100px;
 	width:90%;
 	border-bottom: 1px solid;
-	border-bottom-color: 747474;
+	border-bottom-color: #747474;
 	border-left: 1px solid;
-	border-left-color: 747474;
+	border-left-color: #747474;
 	box-sizing:border-box;
 }
 
@@ -591,7 +677,7 @@ body {
 	min-width: 53px;
 }
 
-.commentUpVoteContainer {
+.commentUpvoteContainer {
     position: absolute;
 	height: 30%;
 	top: 10%;
@@ -608,7 +694,7 @@ body {
 	font-family: courier;
 }
 
-.commentDownVoteContainer {
+.commentDownvoteContainer {
     position: absolute;
 	height:30%;
 	bottom: 10%;
@@ -674,5 +760,5 @@ body {
 	top: 50%;
 	transform: translateY(-50%);
 	text-align:center;
-	color: 747474;
+	color: #747474;
 }

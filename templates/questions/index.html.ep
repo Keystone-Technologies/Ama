@@ -1,7 +1,6 @@
+<!DOCTYPE HTML>
 <html>
 <head>
-
-	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 	<script src="/js/scripts.js"></script>
 	<link rel="stylesheet" media="screen and (max-device-width: 800px)" href="/css/style.css">
@@ -24,6 +23,7 @@ $(document).ready(function() {
 	$(".backgroundCover").hide();
 	$(".searchBar").hide();
 	$(".replyMenuContainer").hide();
+	$(".privacyPolicyContainer").hide();
 	
     setCurrentUser("<%=session 'username'%>");
     setAdmin("<%=session 'admin'%>");
@@ -31,6 +31,15 @@ $(document).ready(function() {
     
     //this is where it should set the last viewed options, something like that with cookies
     reloadQuestions();
+    
+    //determines if the user is on mobile or desktop based on what css file is loaded
+    //  on the desktop css, overflow is set
+    //  on mobile it is not
+    //  device type is set to desktop automatically so we only need to check if it is mobile
+    if($('body').css('overflow') != 'scroll')
+    {
+    	deviceType = 'mobile';
+    }
     
     $(window).resize(function() {
     	resizePosts();
@@ -41,23 +50,36 @@ $(document).ready(function() {
     	}
     });
     
-    $(window).scroll(function() {
-		if(deviceType == "mobile") {
-			if($(window).scrollTop() > 500 && $(".newQuestionContainer").css('display') != 'none') {
-				$(".padding").css('height','200px');
-				$(".filterContainer").css({"position":"fixed", "top":"100"});
-			}
-			else if($(window).scrollTop() > 100 && $(".newQuestionContainer").css('display') == 'none') {
-				$(".padding").css('height','200px');
-				$(".filterContainer").css({"position":"fixed", "top":"100"});
-			}
-			else {
-				$(".padding").css('height','100px');
-				$(".filterContainer").css({"position":"relative", "top":"0"});
-			}
-		}
+    var scrolled = false;   //did the user recently scroll
+    var lastTop = 0;        //last top of view window in pixels
+    
+    $(window).scroll(function(event){
+	    scrolled = true;
 	});
-	
+
+	setInterval(function() {
+	    if (scrolled && deviceType == 'mobile') {
+	        var top = $(this).scrollTop();
+	        
+	        //if the use scrolls own, hide the header and move all fixed elements beneath it upwards
+	        // also makes sure that they are not too close to the top for the header to be hidden
+	        if(lastTop < top && top > 90) {
+	    	 	$(".header").css('top', '-100px');
+	        	$(".filterContainer").css('top', '0');
+	        	$(".newQuestionContainer").css('top', '100px');
+	        }
+	        //if the user scrolls up, reveal the header and move the filter container down 
+	        else {
+	        	$(".header").css('top', '0');
+	        	$(".filterContainer").css('top', '100px');
+	        	$(".newQuestionContainer").css('top', '200px');
+	        }
+	        
+	        lastTop = top;
+	        scrolled = false;
+	    }
+	}, 250);  //this number is the number of ms before checking if the user scrolled. The higher this number is, the slower the site will run
+
 	//Whenever someone makes a change to one of the time inputs on the time menu
 	//  this function is called and it changes the link appropriately
 	$(".replyMenuTimeInput").bind('input propertychange', function() {
@@ -67,33 +89,30 @@ $(document).ready(function() {
 </script>
 
 <body>
-	<div class="header">
-		<div class="accountButton" onclick="window.location = '/account'">
-			Account
+	<div class="header" >
+		<div class="headerImgContainer menuButtonContainer">
+			<img class="containedImg headerImg" title="Change Filter" src="/img/menubutton.png" alt="menu" onclick="showSortMenu()">
 		</div>
-		<div class="logoContainer"> 
-			<img class="logoImg" src="/img/logo.png" alt="LOGO">
+		<div class="headerImgContainer searchButtonContainer">
+			<img class="containedImg headerImg" title="Search" src="/img/searchbutton.png" alt="search" onclick="toggleSearchBar()">
 		</div>
-		<div class="version">
-			v<%=$self->version%>
+		<div class="headerImgContainer newQuestionButtonContainer">
+			<img class="containedImg headerImg" title="New Question" src="/img/newQuestion.png" alt='new question' onclick="toggleQuestionForm()">
 		</div>
-		<div class="youtube">
-			<a href="https://www.youtube.com/channel/UCwSuyK7EsrNN02Z92bI34gA/feed" target="_blank">
-				<img class="youtubeImg" src="/img/youtubehover.png" alt="YOUTUBE">
-			</a>
+		<div class="headerImgContainer accountButtonContainer" onclick="window.location = '/account'">
+			<img class="containedImg headerImg" title="Account Settings" src="/img/account.png" alt="account">
 		</div>
 	</div>
 	
-	<div class="padding"></div>
-	
-	<div class="newQuestion" onclick="toggleQuestionForm()">
-		Ask A Question
+	<div class="searchBar">
+		<textarea rows="1" placeholder="search" class="searchTextArea" id="searchTextarea" required></textarea>
+		<button class="searchButton" onclick="search()">search</button>
 	</div>
 	
 	<div class="newQuestionContainer">
 		<br><label for='question' class="newPostTitle">New Question</label><br>
-		<textarea placeholder= "Enter question here" class="newPostTextarea" id="newQuestionTextarea" required></textarea><br>
-		<button class='postButton' onclick="submitQuestion()">Create</button>
+		<textarea placeholder= "Enter Question" class="newPostTextarea" id="newQuestionTextarea" rows=3 required></textarea><br>
+		<button class='postButton' onclick="submitQuestion()">Submit</button>
 	</div>
 	
 	<div class="backgroundCover" onclick="closeMenu('none')">
@@ -152,20 +171,9 @@ $(document).ready(function() {
 	</div>
 	
 	<div class="filterContainer">
-		<div class="sortMenuButtonContainer">
-			<img class="containedImg" src="/img/menubutton.png" alt="menu" onclick="showSortMenu()">
-		</div>
 		<div class="filterName">
 			filter
 		</div>
-		<div class="searchButtonContainer">
-			<img class="containedImg" src="/img/searchbutton.png" alt="search" onclick="toggleSearchBar()">
-		</div>
-	</div>
-	
-	<div class="searchBar">
-		<textarea rows="1" placeholder="search" class="searchTextArea" id="searchTextarea" required></textarea>
-		<button class="searchButton" onclick="search()">search</button>
 	</div>
 	
 	<div class="replyMenuContainer">
@@ -192,6 +200,18 @@ $(document).ready(function() {
 		</div>
 	</div>
 	
+	<div class="privacyPolicyContainer">
+		<div class="privacyTitle">
+			Privacy Policy
+		</div>
+		<div class="privacyContent">
+			Here is the content of the privacy policy. It is kinda long, so we gotta make sure it wraps. Hopefully people really like this privacy policy. Hopefully it does not scare people away.
+		</div>
+		<button class="closePrivacyButton" onclick="closeMenu('none')">
+			Close
+		</button>
+	</div>
+	
 	<div class="content">
 		
 	</div>
@@ -199,6 +219,33 @@ $(document).ready(function() {
 	<div class="showMoreButton" onclick="showMore()">
 		show more
 	</div>
+	
+	<footer class="footer">
+		<div class="logoContainer"> 
+			<img class="containedImg" src="/img/logo.png" alt="LOGO">
+		</div>
+		<a href="https://www.youtube.com/channel/UCwSuyK7EsrNN02Z92bI34gA/feed" target="_blank">
+			<div class="youtubeContainer">
+				<img src="/img/lightYoutube.png" alt="youtube" class="inline containedImg" > KSTN
+			</div>
+		</a>
+		<div class="privacyPolicyButtonContainer linkContainer" onclick="showPrivacyPolicy()">
+			Privacy Policy
+		</div>
+		<a href="https://www.keystone-technologies.com/" target="_blank">
+			<div class="websiteContainer linkContainer">
+				Company Website
+			</div>
+		</a>
+		<div class="feedbackButtonContainer linkContainer" onclick="console.log('not yet implemented!');">
+			Submit Feedback
+		</div>
+		<div class="version">
+			v<%=$self->version%>
+		</div>
+	</footer>
+	
+	<!-- All html under here is extracted by the js, parsed and used for comments and questions, then reinserted into the page -->
 
 	<div class="singlePost">
 		<div class= "postContainer" id="postContainer_TYPEID">
@@ -206,6 +253,7 @@ $(document).ready(function() {
 				<div class="upvoteContainer">
 					<img class="containedImg" src="/img/smalluparrow.png" alt="uparrow"
 					id="upvote_TYPEID"
+					title="Vote Up"
 					onmouseenter="changeVoteImg('TYPE', ID, 'in', 'up')"
 					onmouseleave="changeVoteImg('TYPE', ID, 'out', 'up')"
 					onclick="vote('TYPE', ID, 'up')">
@@ -216,6 +264,7 @@ $(document).ready(function() {
 				<div class="downvoteContainer">
 					<img class="containedImg" src="/img/smalldownarrow.png" alt="downarrow"
 					id="downvote_TYPEID"
+					title="Vote Down"
 					onmouseenter="changeVoteImg('TYPE', ID, 'in', 'down')"
 					onmouseleave="changeVoteImg('TYPE', ID, 'out', 'down')"
 					onclick="vote('TYPE', ID, 'down')">
@@ -223,7 +272,7 @@ $(document).ready(function() {
 				<div class="linkButtonContainer" id="linkButtonContainer_TYPEID">
 					<a href="LINK" target='_blank'>
 					<img class= "containedImg" src="/img/youtubebutton.png" alt="youtube" 
-					title="video answer"
+					title="Go To Video"
 					onmouseenter="this.src='/img/youtubebuttonhover.png'" 
 					onmouseleave="this.src='/img/youtubebutton.png'" >
 					</a>
@@ -232,6 +281,7 @@ $(document).ready(function() {
 			<div class="buttonContainer" id="buttonContainer_TYPEID">
 				<div class="deleteButtonContainer" id="deleteButtonContainer_TYPEID">
 					<img class= "containedImg" src="/img/trash.png" alt="delete" 
+					title="Delete Question"
 					onmouseenter="this.src='/img/opentrash.png'" 
 					onmouseleave="this.src='/img/trash.png'" 
 					onclick="deletePost('TYPE', ID)">
@@ -260,7 +310,7 @@ $(document).ready(function() {
 		
 		<div class="replyContainer" id="replyContainer_TYPEID">
             <label class='newPostTitle' for='comment'>Reply</label>
-            <br><textarea class = "newPostTextArea" id="newPostTextArea_TYPEID" placeholder= "Enter reply here"></textarea><br>
+            <br><textarea class = "newPostTextarea" id="newPostTextArea_TYPEID" placeholder= "Enter reply here"></textarea><br>
             <button class="postButton" onclick="readyReply(ID)">Post</button>
 		</div>
 			
@@ -274,6 +324,7 @@ $(document).ready(function() {
 				<div class="commentUpvoteContainer">
 					<img class="containedImg" src="/img/smalluparrow.png" alt="uparrow"
 					id="upvote_TYPEID"
+					title="Vote Up"
 					onmouseenter="changeVoteImg('TYPE', ID, 'in', 'up')"
 					onmouseleave="changeVoteImg('TYPE', ID, 'out', 'up')"
 					onclick="vote('TYPE', ID, 'up')">
@@ -284,6 +335,7 @@ $(document).ready(function() {
 				<div class="commentDownvoteContainer">
 					<img class="containedImg" src="/img/smalldownarrow.png" alt="downarrow"
 					id="downvote_TYPEID"
+					title="Vote Down"
 					onmouseenter="changeVoteImg('TYPE', ID, 'in', 'down')"
 					onmouseleave="changeVoteImg('TYPE', ID, 'out', 'down')"
 					onclick="vote('TYPE', ID, 'down')">
@@ -300,6 +352,7 @@ $(document).ready(function() {
 				<div class="commentPostInfoContainer">
 					<div class="commentDeleteButtonContainer" id="deleteButtonContainer_TYPEID">
 						<img class= "containedImg" src="/img/trash.png" alt="delete" 
+						title="Delete Comment"
 						onmouseenter="this.src='/img/opentrash.png'" 
 						onmouseleave="this.src='/img/trash.png'" 
 						onclick="deletePost('TYPE', ID)">
@@ -308,7 +361,7 @@ $(document).ready(function() {
 					<div class="commentLinkButtonContainer" id="linkButtonContainer_TYPEID">
 						<a href="LINK" target='_blank'>
 						<img class= "containedImg" src="/img/youtubebutton.png" alt="youtube link" 
-						title="go to video"
+						title="Go To Video"
 						onmouseenter="this.src='/img/youtubebuttonhover.png'"
 						onmouseleave="this.src='/img/youtubebutton.png'">
 						</a>
@@ -317,6 +370,7 @@ $(document).ready(function() {
 					<div class="commentAnswerButtonContainer" id="answerButtonContainer_TYPEID">
 						<img class="containedImg" src="/img/checkmark.png" alt="Checkmark"
 						id="answerImg_TYPEID"
+						title="Mark As Answered"
 						onmouseenter="changeCheckMark(ID, 'in')"
 						onmouseleave="changeCheckMark(ID, 'out')"
 						onclick="markAnswer(ID)">
