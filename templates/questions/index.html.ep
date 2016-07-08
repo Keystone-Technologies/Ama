@@ -91,16 +91,16 @@ $(document).ready(function() {
 <body>
 	<div class="header" >
 		<div class="headerImgContainer menuButtonContainer">
-			<img class="containedImg headerImg" src="/img/menubutton.png" alt="menu" onclick="showSortMenu()">
+			<img class="containedImg headerImg" title="Change Filter" src="/img/menubutton.png" alt="menu" onclick="showSortMenu()">
 		</div>
 		<div class="headerImgContainer searchButtonContainer">
-			<img class="containedImg headerImg" src="/img/searchbutton.png" alt="search" onclick="toggleSearchBar()">
+			<img class="containedImg headerImg" title="Search" src="/img/searchbutton.png" alt="search" onclick="toggleSearchBar()">
 		</div>
 		<div class="headerImgContainer newQuestionButtonContainer">
-			<img class="containedImg headerImg" src="/img/newQuestion.png" alt='new question' onclick="toggleQuestionForm()">
+			<img class="containedImg headerImg" title="New Question" src="/img/newQuestion.png" alt='new question' onclick="toggleQuestionForm()">
 		</div>
 		<div class="headerImgContainer accountButtonContainer" onclick="window.location = '/account'">
-			<img class="containedImg headerImg" src="/img/account.png" alt="account">
+			<img class="containedImg headerImg" title="Account Settings" src="/img/account.png" alt="account">
 		</div>
 	</div>
 	
@@ -253,6 +253,7 @@ $(document).ready(function() {
 				<div class="upvoteContainer">
 					<img class="containedImg" src="/img/smalluparrow.png" alt="uparrow"
 					id="upvote_TYPEID"
+					title="Vote Up"
 					onmouseenter="changeVoteImg('TYPE', ID, 'in', 'up')"
 					onmouseleave="changeVoteImg('TYPE', ID, 'out', 'up')"
 					onclick="vote('TYPE', ID, 'up')">
@@ -263,6 +264,7 @@ $(document).ready(function() {
 				<div class="downvoteContainer">
 					<img class="containedImg" src="/img/smalldownarrow.png" alt="downarrow"
 					id="downvote_TYPEID"
+					title="Vote Down"
 					onmouseenter="changeVoteImg('TYPE', ID, 'in', 'down')"
 					onmouseleave="changeVoteImg('TYPE', ID, 'out', 'down')"
 					onclick="vote('TYPE', ID, 'down')">
@@ -270,7 +272,7 @@ $(document).ready(function() {
 				<div class="linkButtonContainer" id="linkButtonContainer_TYPEID">
 					<a href="LINK" target='_blank'>
 					<img class= "containedImg" src="/img/youtubebutton.png" alt="youtube" 
-					title="video answer"
+					title="Go To Video"
 					onmouseenter="this.src='/img/youtubebuttonhover.png'" 
 					onmouseleave="this.src='/img/youtubebutton.png'" >
 					</a>
@@ -279,6 +281,7 @@ $(document).ready(function() {
 			<div class="buttonContainer" id="buttonContainer_TYPEID">
 				<div class="deleteButtonContainer" id="deleteButtonContainer_TYPEID">
 					<img class= "containedImg" src="/img/trash.png" alt="delete" 
+					title="Delete Question"
 					onmouseenter="this.src='/img/opentrash.png'" 
 					onmouseleave="this.src='/img/trash.png'" 
 					onclick="deletePost('TYPE', ID)">
@@ -321,6 +324,7 @@ $(document).ready(function() {
 				<div class="commentUpvoteContainer">
 					<img class="containedImg" src="/img/smalluparrow.png" alt="uparrow"
 					id="upvote_TYPEID"
+					title="Vote Up"
 					onmouseenter="changeVoteImg('TYPE', ID, 'in', 'up')"
 					onmouseleave="changeVoteImg('TYPE', ID, 'out', 'up')"
 					onclick="vote('TYPE', ID, 'up')">
@@ -331,6 +335,7 @@ $(document).ready(function() {
 				<div class="commentDownvoteContainer">
 					<img class="containedImg" src="/img/smalldownarrow.png" alt="downarrow"
 					id="downvote_TYPEID"
+					title="Vote Down"
 					onmouseenter="changeVoteImg('TYPE', ID, 'in', 'down')"
 					onmouseleave="changeVoteImg('TYPE', ID, 'out', 'down')"
 					onclick="vote('TYPE', ID, 'down')">
@@ -347,6 +352,7 @@ $(document).ready(function() {
 				<div class="commentPostInfoContainer">
 					<div class="commentDeleteButtonContainer" id="deleteButtonContainer_TYPEID">
 						<img class= "containedImg" src="/img/trash.png" alt="delete" 
+						title="Delete Comment"
 						onmouseenter="this.src='/img/opentrash.png'" 
 						onmouseleave="this.src='/img/trash.png'" 
 						onclick="deletePost('TYPE', ID)">
@@ -355,7 +361,7 @@ $(document).ready(function() {
 					<div class="commentLinkButtonContainer" id="linkButtonContainer_TYPEID">
 						<a href="LINK" target='_blank'>
 						<img class= "containedImg" src="/img/youtubebutton.png" alt="youtube link" 
-						title="go to video"
+						title="Go To Video"
 						onmouseenter="this.src='/img/youtubebuttonhover.png'"
 						onmouseleave="this.src='/img/youtubebutton.png'">
 						</a>
@@ -364,6 +370,7 @@ $(document).ready(function() {
 					<div class="commentAnswerButtonContainer" id="answerButtonContainer_TYPEID">
 						<img class="containedImg" src="/img/checkmark.png" alt="Checkmark"
 						id="answerImg_TYPEID"
+						title="Mark As Answered"
 						onmouseenter="changeCheckMark(ID, 'in')"
 						onmouseleave="changeCheckMark(ID, 'out')"
 						onclick="markAnswer(ID)">
