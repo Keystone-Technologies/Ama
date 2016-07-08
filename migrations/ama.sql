@@ -253,3 +253,7 @@ alter table users alter admin set default 0;
 -- 5 down
 
 alter table users alter admin drop default;
+
+--6 up
+
+--6 down

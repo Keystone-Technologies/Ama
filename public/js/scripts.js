@@ -482,20 +482,20 @@ function deletePost(type, id) {
                     //  to the next else statement EXCEPT the ones that end in .remove
                     $("#postContainer_" + type + id).css('height', $("#postContainer_" + type + id).css('min-height'));
                     $("#postContainer_" + type + id).css('min-height', '0px');
-                    $("#postContainer_" + type + id).hide(2000, function() {
+                    $("#postContainer_" + type + id).hide(500, function() {
                         $("#postContainer_" + type + id).remove();
                     });
-                    $("#commentsContainer_" + type + id).hide(2000, function() {
+                    $("#commentsContainer_" + type + id).hide(500, function() {
                         $("#commentsContainer_" + type + id).remove();
                     });
-                    $("#replyContainer_" + type + id).hide(2000, function() {
+                    $("#replyContainer_" + type + id).hide(500, function() {
                         $("#replyContainer_" + type + id).remove();
                     });
                 }
                 else {
                     //deletes the comment from the questions storage and hides it then removes
                     getQuestionById(getCommentById(id).getQuestionId()).deleteComment(id);
-                    $("#commentContainer_" + type + id).hide(2000, function() {
+                    $("#commentContainer_" + type + id).hide(500, function() {
                         $("#commentContainer_" + type + id).remove();
                     });
                 }
