@@ -85,13 +85,13 @@ $(document).ready(function() {
 <body>
 	<div class="header" >
 		<div class="headerImgContainer menuButtonContainer">
-			<img class="containedImg headerImg" src="/img/menubutton.png" alt="menu" onclick="showSortMenu()">
+			<img class="containedImg" src="/img/menubutton.png" alt="menu" onclick="showSortMenu()">
 		</div>
 		<div class="headerImgContainer searchButtonContainer">
-			<img class="containedImg headerImg" src="/img/searchbutton.png" alt="search" onclick="toggleSearchBar()">
+			<img class="containedImg" src="/img/searchbutton.png" alt="search" onclick="toggleSearchBar()">
 		</div>
 		<div class="headerImgContainer newQuestionButtonContainer">
-			<img class="containedImg headerImg" src="/img/newQuestion.png" alt='new question' onclick="toggleQuestionForm()">
+			<img class="containedImg" src="/img/newQuestion.png" alt='new question' onclick="toggleQuestionForm()">
 		</div>
 		<div class="headerImgContainer accountButtonContainer" onclick="window.location = '/account'">
 			% if ($c->session('id')){
@@ -108,7 +108,7 @@ $(document).ready(function() {
 				<% $avatar_url = '/img/account.png'; %>
 			%}
 			
-			<img class="containedImg headerImg" src= <%= $avatar_url %> alt="account">
+			<img class="containedImg" src= <%= $avatar_url %> alt="account">
 		</div>
 	</div>
 	
