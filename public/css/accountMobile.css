@@ -30,7 +30,7 @@ body {
 
 .version {
 	position: absolute;
-	color: b4b4b4;
+	color: #b4b4b4;
 	font-size: 1.5em;
 	left: 0%;
 	bottom: 0%;
@@ -59,7 +59,7 @@ body {
     margin-top: 30px;
     margin-bottom: 30px;
     padding: 5px;
-    color: 757575;
+    color: #757575;
     border: 2px solid grey;
     border-radius: 15px;
 }

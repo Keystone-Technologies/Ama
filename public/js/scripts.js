@@ -100,7 +100,8 @@ var deviceType = "desktop";             //Initially assumes mobile and is change
 var defaultLimit = 15;                  //default limit on number of questions to display
 var openMenu = "none";                  //currently opened menu (ex. 'sort', 'search', etc...) used in close menu function
 var acceptableLinkCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz.:/?=_";  //characters that are allowed in a video link
-var vote_floor = '';
+var vote_floor = '';                    //stores minimum number of votes needed for a question to be deleted
+var loggedIn = false;;                           //whether or not the user is logged in
 
 //filter settings
 var filters = [];                       //holds all of the current filters used, seen below
