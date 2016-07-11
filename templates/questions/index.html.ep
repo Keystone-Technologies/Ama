@@ -5,7 +5,9 @@
 	<script src="/js/scripts.js"></script>
 	<link rel="stylesheet" media="screen and (max-device-width: 800px)" href="/css/style.css">
 	<link rel="stylesheet" media="screen and (min-device-width: 800px)" href="/css/desktop.css">
+	<% use Gravatar::URL; %>
 	<% my $user = $c->model->oauth2->find($c->session('id')); %>
+	<%my $gravatar = gravatar_url( email => $c->session->{email} , rating => 'pg'); %>
 </head>
 <title>Ask Me Anything</title>
 <script>
@@ -98,8 +100,15 @@ $(document).ready(function() {
 			%if ($c->session->{admin} == 1) {
 			<div class="Name">*</div>
 			%}
+			<% my $avatar_url; %>
+			% if ($c->session('id')){
+        		 <% $avatar_url = $gravatar; %>
+			%}
+			% else {
+				<% $avatar_url = '/img/account.png'; %>
+			%}
 			
-			<img class="containedImg headerImg" src="/img/account.png" alt="account">
+			<img class="containedImg headerImg" src= <%= $avatar_url %> alt="account">
 		</div>
 	</div>
 	
