@@ -37,7 +37,6 @@ sub startup {
         if (!$c->session->{email}) {
           my $email = $self->pg->db->query('select email from users where id = ?', $c->session->{username})->hash->{email};
           $c->session->{email} = $email;
-          warn "\n\n Ben sucks at conditions \n\n";
         }
       }
       else {
@@ -89,7 +88,6 @@ $self->plugin("OAuth2Accounts" => {
   
    $r->get('/connect/:provider' => sub {
     my $self = shift;
-    warn $self->session('id');
     return $self->redirect_to('connectprovider', {provider => $self->param('provider')}) unless $self->session('id');
     $self->redirect_to('questions');
   });
