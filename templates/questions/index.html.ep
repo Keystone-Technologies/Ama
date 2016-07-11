@@ -32,14 +32,11 @@ $(document).ready(function() {
 		loggedIn = true;
 	%}
 	
-	if(loggedIn) {
-		$("#signInTitle").remove();
-		$("#signInContainer").remove();
-		if(!getAdmin()) {
-			$("#adminButtonContainer").remove();
-		}
+	if(!getAdmin()) {
+		$("#adminButtonContainer").remove();
 	}
-	else {
+	
+	if(!loggedIn) {
 		$("#accountOptionsTitle").hide();
 		$("#adminButtonContainer").remove();
 		$("#logoutContainer").remove();
