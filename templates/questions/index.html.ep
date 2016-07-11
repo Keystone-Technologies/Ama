@@ -115,13 +115,13 @@ $(document).ready(function() {
 		<div class="headerImgContainer newQuestionButtonContainer">
 			<img class="containedImg" src="/img/newQuestion.png" alt='new question' onclick="toggleQuestionForm()">
 		</div>
-		<div class="headerImgContainer accountButtonContainer" onclick="window.location = '/account'" 
+		<div class="headerImgContainer accountButtonContainer"
 		onmouseenter="$('.accountMenuContainer').css({top:'50px', right:'0px'})">
-			% if ($c->session('id')){
-        	<div class="Name"><%= $user->{first_name}%></div>
-			%}
 			%if ($c->session->{admin} == 1) {
 			<div class="Name">*</div>
+			%}
+			% if ($c->session('id')){
+			<div class="Name"><%= $user->{first_name}%></div>
 			%}
 			<% my $avatar_url; %>
 			% if ($c->session('id')){
@@ -139,7 +139,7 @@ $(document).ready(function() {
 		<div class="title" id="accountOptionsTitle">
 			Account Options
 		</div>
-		<div class="option" id="adminButtonContainer" onclick="document.location = '/account'">
+		<div class="option" id="adminButtonContainer" onclick="document.location = '/admin'">
 			Admin
 		</div>
 		<div class="option" id="logoutContainer" onclick="document.location='/logout'">
