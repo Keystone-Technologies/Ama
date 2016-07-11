@@ -100,7 +100,8 @@ var deviceType = "desktop";             //Initially assumes mobile and is change
 var defaultLimit = 15;                  //default limit on number of questions to display
 var openMenu = "none";                  //currently opened menu (ex. 'sort', 'search', etc...) used in close menu function
 var acceptableLinkCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz.:/?=_";  //characters that are allowed in a video link
-var vote_floor = '';
+var vote_floor = '';                    //stores minimum number of votes needed for a question to be deleted
+var loggedIn = false;;                           //whether or not the user is logged in
 
 //filter settings
 var filters = [];                       //holds all of the current filters used, seen below
@@ -291,6 +292,17 @@ function initializeLayout() {
     $(".replyContainer").hide();
     var type = "question";
     
+    //sets the default post size if it has never been set.
+    if(deviceType == 'desktop') {
+        $(".newQuestionContainer").show();
+        $(".newPostTitle").remove();
+        defaultPostSize = 150;
+    }
+    else {
+        defaultPostSize = 275;
+    }
+    
+    
     //iterates through each question and hides certain containers within it
     for(var i = 0; i < getQuestionCount(); i ++)
     {
@@ -402,20 +414,13 @@ function initializeCommentLayout(id) {
 //resizes all questions so if they have a lot of text, a scroll bar does not appear
 function resizePosts() {
     var type = "question";
+    
+    if(getQuestionCount() == 0) {
+        
+    }
+    
     for(var i = 0; i < getQuestionCount(); i ++) {
         var question = getQuestion(i);
-        
-        //sets the default post size if it has never been set. This helps the program determine whether or not the use is on mobile or on desktop version
-        if(defaultPostSize == 0) {
-            defaultPostSize = parseInt($("#postContainer_" + type + question.getId()).css('height'));
-            if(defaultPostSize >= 275)
-                deviceType = "mobile";
-        }
-        
-        if(deviceType == 'desktop') {
-            $(".newQuestionContainer").show();
-            $(".newPostTitle").remove();
-        }
         
         //Parse int because the .css('height') will return a string, '100px' or something like that
         var num = parseInt($("#textContainer_" + type + question.getId()).css('height'));
@@ -485,20 +490,20 @@ function deletePost(type, id) {
                     //  to the next else statement EXCEPT the ones that end in .remove
                     $("#postContainer_" + type + id).css('height', $("#postContainer_" + type + id).css('min-height'));
                     $("#postContainer_" + type + id).css('min-height', '0px');
-                    $("#postContainer_" + type + id).hide(2000, function() {
+                    $("#postContainer_" + type + id).hide(500, function() {
                         $("#postContainer_" + type + id).remove();
                     });
-                    $("#commentsContainer_" + type + id).hide(2000, function() {
+                    $("#commentsContainer_" + type + id).hide(500, function() {
                         $("#commentsContainer_" + type + id).remove();
                     });
-                    $("#replyContainer_" + type + id).hide(2000, function() {
+                    $("#replyContainer_" + type + id).hide(500, function() {
                         $("#replyContainer_" + type + id).remove();
                     });
                 }
                 else {
                     //deletes the comment from the questions storage and hides it then removes
                     getQuestionById(getCommentById(id).getQuestionId()).deleteComment(id);
-                    $("#commentContainer_" + type + id).hide(2000, function() {
+                    $("#commentContainer_" + type + id).hide(500, function() {
                         $("#commentContainer_" + type + id).remove();
                     });
                 }
@@ -607,7 +612,7 @@ function submitQuestion() {
             setFilter('answered', '0');
             setFilter('orderby', 'created');
             setFilter('direction', 'desc');
-            setFilter('limit', '15');
+            setFilter('limit', 15);
             reloadQuestions();
         }
     });
