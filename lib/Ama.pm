@@ -34,6 +34,11 @@ sub startup {
     if ($c->session('id') ) { #if the user has logged in with OAuth
       if ( defined $self->pg->db->query('select id from users where id = ?', $c->session->{username})->hash ) {
         $admin = $self->pg->db->query('select admin from users where id = ?', $c->session->{username})->hash->{admin}; #set admin to 1 or 0
+        if (!$c->session->{email}) {
+          my $email = $self->pg->db->query('select email from users where id = ?', $c->session->{username})->hash->{email};
+          $c->session->{email} = $email;
+          warn "\n\n Ben sucks at conditions \n\n";
+        }
       }
       else {
         my $token = $c->session('token') || {};
