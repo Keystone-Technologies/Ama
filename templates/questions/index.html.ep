@@ -28,7 +28,7 @@ $(document).ready(function() {
     setCurrentUser("<%=session 'username'%>");
     setAdmin("<%=session 'admin'%>");
     setVoteFloor("<%= $self->config->{vote_floor}%>");
-    
+
     //this is where it should set the last viewed options, something like that with cookies
     reloadQuestions();
     
@@ -102,6 +102,9 @@ $(document).ready(function() {
 		<div class="headerImgContainer accountButtonContainer" onclick="window.location = '/account'">
 			<img class="containedImg headerImg" title="Account Settings" src="/img/account.png" alt="account">
 		</div>
+		<div class="filterName">
+			filter
+		</div>
 	</div>
 	
 	<div class="searchBar">
@@ -168,12 +171,6 @@ $(document).ready(function() {
 			</div>
 		</div>
 		
-	</div>
-	
-	<div class="filterContainer">
-		<div class="filterName">
-			filter
-		</div>
 	</div>
 	
 	<div class="replyMenuContainer">
@@ -245,7 +242,7 @@ $(document).ready(function() {
 		</div>
 	</footer>
 	
-	<!-- All html under here is extracted by the js, parsed and used for comments and questions, then reinserted into the page -->
+	<!-- All html under here is extracted by the js, parsed and used for comments and questions, then reinserted into content div -->
 
 	<div class="singlePost">
 		<div class= "postContainer" id="postContainer_TYPEID">
