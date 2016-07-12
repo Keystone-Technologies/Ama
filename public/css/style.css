@@ -48,6 +48,14 @@ body {
 	padding-left: 10px;
 }
 
+/**********************account menu ****************************/
+.accountMenuContainer {
+	position: absolute;
+	width:0px;
+	height:0px;
+	overflow:hidden;
+}
+
 /*container that pops up when you push button to make new question */
 
 .newQuestionContainer {

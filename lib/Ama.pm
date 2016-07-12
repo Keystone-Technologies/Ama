@@ -34,6 +34,10 @@ sub startup {
     if ($c->session('id') ) { #if the user has logged in with OAuth
       if ( defined $self->pg->db->query('select id from users where id = ?', $c->session->{username})->hash ) {
         $admin = $self->pg->db->query('select admin from users where id = ?', $c->session->{username})->hash->{admin}; #set admin to 1 or 0
+        if (!$c->session->{email}) {
+          my $email = $self->pg->db->query('select email from users where id = ?', $c->session->{username})->hash->{email};
+          $c->session->{email} = $email;
+        }
       }
       else {
         my $token = $c->session('token') || {};
@@ -59,7 +63,7 @@ sub startup {
 $self->plugin("OAuth2Accounts" => {
   on_logout => '/',
   on_success => 'questions',
-  on_error => 'account',
+  on_error => 'questions',
   on_connect => sub { shift->model->oauth2->store(@_) },
   providers => $config->{oauth2},
   });
@@ -84,9 +88,13 @@ $self->plugin("OAuth2Accounts" => {
   
    $r->get('/connect/:provider' => sub {
     my $self = shift;
-    warn $self->session('id');
     return $self->redirect_to('connectprovider', {provider => $self->param('provider')}) unless $self->session('id');
     $self->redirect_to('questions');
+  });
+
+  $r->get('/admin' => sub {
+    my $self = shift;
+    $self->render('admin');
   });
   $r->get('/questions')->to('questions#index')->name('questions'); # Display all questions
   $r->get('/questions/create')->to('questions#create')->name('create_question'); # Display empty form
