@@ -5,6 +5,9 @@
 	<script src="/js/scripts.js"></script>
 	<link rel="stylesheet" media="screen and (max-device-width: 800px)" href="/css/style.css">
 	<link rel="stylesheet" media="screen and (min-device-width: 800px)" href="/css/desktop.css">
+	<% use Gravatar::URL; %>
+	<% my $user = $c->model->oauth2->find($c->session('id')); %>
+	<%my $gravatar = gravatar_url( email => $c->session->{email} , rating => 'pg'); %>
 </head>
 <title>Ask Me Anything</title>
 <script>
@@ -28,6 +31,19 @@ $(document).ready(function() {
     setCurrentUser("<%=session 'username'%>");
     setAdmin("<%=session 'admin'%>");
     setVoteFloor("<%= $self->config->{vote_floor}%>");
+    % if ($c->session('id')){
+		loggedIn = true;
+	%}
+	
+	if(!getAdmin()) {
+		$("#adminButtonContainer").remove();
+	}
+	
+	if(!loggedIn) {
+		$("#accountOptionsTitle").hide();
+		$("#adminButtonContainer").remove();
+		$("#logoutContainer").remove();
+	}
     
     //this is where it should set the last viewed options, something like that with cookies
     reloadQuestions();
@@ -78,7 +94,7 @@ $(document).ready(function() {
 	        lastTop = top;
 	        scrolled = false;
 	    }
-	}, 250);  //this number is the number of ms before checking if the user scrolled. The higher this number is, the slower the site will run
+	}, 100);  //this number is the number of ms before checking if the user scrolled. The higher this number is, the slower the site will run
 
 	//Whenever someone makes a change to one of the time inputs on the time menu
 	//  this function is called and it changes the link appropriately
@@ -91,16 +107,55 @@ $(document).ready(function() {
 <body>
 	<div class="header" >
 		<div class="headerImgContainer menuButtonContainer">
-			<img class="containedImg headerImg" title="Change Filter" src="/img/menubutton.png" alt="menu" onclick="showSortMenu()">
+			<img class="containedImg" src="/img/menubutton.png" alt="menu" onclick="showSortMenu()">
 		</div>
 		<div class="headerImgContainer searchButtonContainer">
-			<img class="containedImg headerImg" title="Search" src="/img/searchbutton.png" alt="search" onclick="toggleSearchBar()">
+			<img class="containedImg" src="/img/searchbutton.png" alt="search" onclick="toggleSearchBar()">
 		</div>
 		<div class="headerImgContainer newQuestionButtonContainer">
-			<img class="containedImg headerImg" title="New Question" src="/img/newQuestion.png" alt='new question' onclick="toggleQuestionForm()">
+			<img class="containedImg" src="/img/newQuestion.png" alt='new question' onclick="toggleQuestionForm()">
 		</div>
-		<div class="headerImgContainer accountButtonContainer" onclick="window.location = '/account'">
-			<img class="containedImg headerImg" title="Account Settings" src="/img/account.png" alt="account">
+		<div class="headerImgContainer accountButtonContainer"
+		onmouseenter="$('.accountMenuContainer').css({top:'50px', right:'0px'})">
+			%if ($c->session->{admin} == 1) {
+			<div class="Name">*</div>
+			%}
+			% if ($c->session('id')){
+			<div class="Name"><%= $user->{first_name}%></div>
+			%}
+			<% my $avatar_url; %>
+			% if ($c->session('id')){
+        		 <% $avatar_url = $gravatar; %>
+			%}
+			% else {
+				<% $avatar_url = '/img/account.png'; %>
+			%}
+			
+			<img class="containedImg" src= <%= $avatar_url %> alt="account">
+		</div>
+	</div>
+	
+	<div class="accountMenuContainer" onmouseenter="$(this).css({top:'50px', right:'0px'})" onmouseleave="$(this).css({top:'-250px', right:'-300px'})">
+		<div class="title" id="accountOptionsTitle">
+			Account Options
+		</div>
+		<div class="option" id="adminButtonContainer" onclick="document.location = '/admin'">
+			Admin
+		</div>
+		<div class="option" id="logoutContainer" onclick="document.location='/logout'">
+			Logout
+		</div>
+		<div class ="title" id="signInTitle">
+			Sign In
+		</div>
+		
+		<div class="signInContainer" id="signInContainer">
+			<div class= "signInOption" onclick="document.location = '/account/google'">
+				<img class="containedImg" src="/img/google.png">oogle
+			</div>
+			<div class="signInOption" onclick="document.location = '/account/facebook'">
+				<img class="containedImg" src="/img/facebook.png">acebook
+			</div>
 		</div>
 	</div>
 	
