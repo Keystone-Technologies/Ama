@@ -145,7 +145,7 @@ $(document).ready(function() {
 	
 	<div class="accountMenuContainer" 
 	onmouseenter="if(deviceType != 'mobile') $(this).css({top:'75px'})" 
-	onmouseleave="if(deviceType != 'mobile') $(this).css('top', '-' + ($(this).height() - 75) + 'px');console.log('-' + $(this).css('height') )">
+	onmouseleave="if(deviceType != 'mobile') $(this).css('top', '-' + ($(this).height() - 75) + 'px');">
 		<div class="title" id="accountOptionsTitle">
 			Account Options
 		</div>
