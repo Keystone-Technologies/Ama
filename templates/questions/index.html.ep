@@ -53,9 +53,12 @@ $(document).ready(function() {
     //  on the desktop css, overflow is set
     //  on mobile it is not
     //  device type is set to desktop automatically so we only need to check if it is mobile
-    if($('body').css('overflow') != 'scroll')
-    {
+    if($('body').css('overflow') != 'scroll'){
     	deviceType = 'mobile';
+    }
+    
+    if(deviceType == 'mobile') {
+    	$(".accountMenuContainer").hide();
     }
     
     $(window).resize(function() {
@@ -117,7 +120,8 @@ $(document).ready(function() {
 			<img class="containedImg" src="/img/newQuestion.png" alt='new question' onclick="toggleQuestionForm()">
 		</div>
 		<div class="headerImgContainer accountButtonContainer"
-		onmouseenter="$('.accountMenuContainer').css({top:'50px', right:'0px'})">
+		onmouseenter="if(deviceType != 'mobile') $('.accountMenuContainer').css({top:'75px'})"
+		onclick="showAccountMenu()">
 			%if ($c->session->{admin} == 1) {
 			<div class="Name">*</div>
 			%}
@@ -134,9 +138,14 @@ $(document).ready(function() {
 			
 			<img class="containedImg" src= <%= $avatar_url %> alt="account">
 		</div>
+		<div class="filterName">
+			filter
+		</div>
 	</div>
 	
-	<div class="accountMenuContainer" onmouseenter="$(this).css({top:'50px', right:'0px'})" onmouseleave="$(this).css({top:'-250px', right:'-300px'})">
+	<div class="accountMenuContainer" 
+	onmouseenter="if(deviceType != 'mobile') $(this).css({top:'75px'})" 
+	onmouseleave="if(deviceType != 'mobile') $(this).css('top', '-' + ($(this).height() - 75) + 'px');console.log('-' + $(this).css('height') )">
 		<div class="title" id="accountOptionsTitle">
 			Account Options
 		</div>
@@ -157,9 +166,6 @@ $(document).ready(function() {
 			<div class="signInOption" onclick="document.location = '/account/facebook'">
 				<img class="containedImg" src="/img/facebook.png">acebook
 			</div>
-		</div>
-		<div class="filterName">
-			filter
 		</div>
 	</div>
 	

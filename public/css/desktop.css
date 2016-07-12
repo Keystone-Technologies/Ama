@@ -45,6 +45,7 @@ a {
 
 .accountButtonContainer {
 	right: 5px;
+	cursor: default !important;
 }
 
 .newQuestionButtonContainer {
@@ -73,12 +74,12 @@ a {
 	flex-direction: column;
 	align-items: center;
 	top: -100px;
-	right: -300px;
+	right: 5px;
 	width: 300px;
 	z-index: 1;
 	color: #c5c5c5;
 	background-color: #42474B;
-	border-radius: 0 0 0 50px;
+	border-radius: 0 0 50px 50px;
 	transition: right 0.5s ease-in-out, top 0.5s ease-in-out;
 }
 

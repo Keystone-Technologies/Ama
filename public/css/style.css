@@ -50,10 +50,64 @@ body {
 
 /**********************account menu ****************************/
 .accountMenuContainer {
-	position: absolute;
-	width:0px;
-	height:0px;
-	overflow:hidden;
+	position: fixed;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	top: 175px;
+	left: 20px;
+	right: 20px;
+	z-index: 3;
+	color: #c5c5c5;
+	background-color: #42474B;
+	border-radius: 15px;
+	transition: right 0.5s ease-in-out, top 0.5s ease-in-out;
+}
+
+.title {
+    width: 95%;
+    font-size: 4.5em;
+    text-align: center;
+    margin-top: 15px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid black;
+    border-color: #c5c5c5;
+}
+
+.option {
+	display: inline-block;
+    font-size: 3.5em;
+    text-align: center;
+    white-space: nowrap;
+    margin-top: 30px;
+    width: auto;
+    padding: 5px;
+    color: #858585;
+    border: 2px solid grey;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.option:hover {
+    background-color: #f8f8f8;
+    color: black;
+}
+
+.signInContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 95%;
+    cursor: pointer;
+}
+
+.signInOption {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.7em;
+    margin: 15px;
 }
 
 /*container that pops up when you push button to make new question */
