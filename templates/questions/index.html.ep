@@ -28,6 +28,7 @@ $(document).ready(function() {
 	$(".searchBar").hide();
 	$(".replyMenuContainer").hide();
 	$(".privacyPolicyContainer").hide();
+	$(".feedbackFormContainer").hide();
 	
     setCurrentUser("<%=session 'username'%>");
     setAdmin("<%=session 'admin'%>");
