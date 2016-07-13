@@ -47,11 +47,6 @@ a {
   	
 }
 
-.headerImg {
-	-webkit-filter: invert(100%);
-	filter: invert(100%);
-}
-
 .menuButtonContainer {
 	position: fixed;
 	top: 5px;
@@ -148,42 +143,43 @@ a {
     width: 40%;
 }
 
-.feedback_comment {
-	position:fixed;
-	right:0px;
-	width:300px;
-	height:40px;
-	top: 0px;
-	text-align: center;
-	font-size: 1.5em;
-	font-weight: bold;
-	background-color:green;
-	cursor: pointer;
-	border: 3px solid black;
-	border-radius: 10px;
-	box-sizing: border-box;
-	z-index: 1;
-}
+/*************feedback menu ***********/
 
-.feedback_comment:hover {
-	background-color:00CC00;
-}
-
-.feedback_commentTextarea {
-	display:block;
-	font-size: 1em;
-	margin:auto;
-	width: 75%;
-	height: 200px;
-}
-
-.feedback_commentContainer {
+.feedbackMenuContainer {
 	position: fixed;
-	right:0px;
-	width: 300px;
-	top: 40px;
-	z-index: 1;
+	top: 30%;
+	left: 30%;
+	right: 30%;
+	bottom: 30%;
 	background-color: white;
+	border: 3px solid black;
+	z-index: 3;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-direction: column;
+}
+
+.feedbackTitle {
+	font-size: 2em;
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+
+.feedbackTextarea {
+	resize: none;
+	font-size: 1em;
+	flex-grow: 1;
+	max-height: 60%;
+}
+
+.feedbackButton {
+	font-size: 1.5em;
+	border: none;
+	border-radius: 15px;
+	padding: 10px;
+	margin: 10px;
+	cursor: pointer;
 }
 
 /*container that pops up when you push button to make new question */
