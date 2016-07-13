@@ -562,23 +562,16 @@ function vote(type, id, dir) {
     }, 'json');
 }
 
-//submits a new question to store in the database, and then refreshes the questions
-//  with a different filter
-function submitQuestion() {
-    var text = $("#newQuestionTextarea").val();
-    text = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');  //closes XSS vulnerabilities
-    
-    //sending the data as a json requires this hash form of data(i think, never tried it without it)
-    var data = {
-        question: text  //'question' is the key and 'text' is the associated data
 function sendfeedback_comment(){
     var feedback_comment = $("#feedback_commentTextarea").val();
     $.post("/api/feedback_comment",{feedback_comment:feedback_comment},function(data){
         $(".filterName").html("feedback submit result:"+ data.message);
         togglefeedbackForm();
-    })
+    });
 }
 
+//submits a new question to store in the database, and then refreshes the questions
+//  with a different filter
 function submitQuestion() {
     var text = $("#newQuestionTextarea").val();
     text = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -606,10 +599,7 @@ function submitQuestion() {
     });
 }
 
-function sendReply(id) {
-    var text = $("#newPostTextArea_" + id).val();
-    text = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-//readys a reply to be sent to the server
+//Readies reply to be sent to server
 function readyReply(id) {
     var type = "question";
     var text = $("#newPostTextArea_" + type + id).val();
