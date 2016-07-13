@@ -1,4 +1,4 @@
-package Ama::Model::feedback;
+package Ama::Model::Feedback;
 use Mojo::Base -base;
 
 has 'pg';
