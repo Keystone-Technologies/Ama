@@ -388,10 +388,10 @@ body {
 
 .privacyPolicyContainer {
 	position: fixed;
-	top: 20%;
-	left: 10%;
-	right: 10%;
-	height: 60%;
+	top: 10%;
+	left: 5%;
+	right: 5%;
+	height: 80%;
 	background-color: white;
 	z-index: 2;
 	border: 3px solid black;
@@ -402,7 +402,7 @@ body {
 
 .privacyTitle {
 	position:relative;
-	top: 50px;
+	top: 10px;
 	font-size: 4em;
 }
 
@@ -416,7 +416,7 @@ body {
 
 .closePrivacyButton {
 	position: relative;
-	top: 35%;
+	top: 43%;
 	margin: auto;
 	border-radius: 50px;
 	text-align: center;
