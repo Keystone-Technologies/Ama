@@ -61,7 +61,8 @@ sub store {
 
   my $question_id = $self->param('question_id');
   my $comment = $self->param('comment');
-  $self->stash('comment' => $self->comments->add($question_id, $comment));
+  my $video_link = $self->param('video_link');
+  $self->stash('comment' => $self->comments->add($question_id, $comment, $video_link));
   $self->respond_to(
     json => {json => $self->stash('comment')},
     any => sub { $self->redirect_to('questions')},

@@ -4,6 +4,7 @@ use Mojo::Base -base;
 use Ama::Model::Votes;
 has 'pg';
 has 'username';
+has 'admin';
 has 'votes' => sub {
   my $self = shift;
   my $votes = Ama::Model::Votes->new(pg => $self->pg);
@@ -74,6 +75,7 @@ sub getQuestions {
     'question, '.
     "to_char(questions.created, 'MM/DD/YYYY HH12:MI:SS') as created, ".
     'username, '.
+    '(select video_link from comments where comment_id = (select comment_id from answers where question_id = questions.question_id)) as video_link, ' .
     "votes('questions',questions.question_id) votes, ".
     "(select vote from votes where entry_type = 'questions' and entry_id = questions.question_id and username = ?) as my_vote, ".
     "flagged('questions',questions.question_id) flagged, ".
@@ -84,26 +86,48 @@ sub getQuestions {
   'where ';
   
   if($creator eq 'my') {
-    $sql = $sql . 'username::int = ' . $self->username . ' and ';
+    $sql = $sql . "username = '" . $self->username . "' and ";
   }
   
   if($keyword ne 'none') {
-    $sql = $sql . "question like '%" . $keyword . "%' and ";
+    $sql = $sql . "LOWER(question) like LOWER('%" . $keyword . "%') and ";
   }
   
   $sql = $sql .  'answered(question_id)::int = ? '.
-  'order by ' . $orderby . ' ' . $direction . ' ' .
+  'order by ' . $orderby . ' ' . $direction . ', question_id asc ' .
   'limit ?; ';
   
   $self->pg->db->query($sql, $self->username, $answered, $limit)->hashes->to_array }
-
+  
 sub find { shift->pg->db->query('select * from questions where question_id = ?', shift)->hash }
 
 sub remove {
   my ($self, $question_id) = @_;
-  my $results = eval {
+  my $results =  eval {
+  if($self->{admin} ==1) {
+    my $sql = 'delete from questions where question_id = ? returning *';
+    $self->pg->db->query($sql, $question_id)->hash;
+  }
+  else {
     my $sql = 'delete from questions where question_id = ? and username = ? and not answered(question_id) returning *';
     $self->pg->db->query($sql, $question_id, $self->username)->hash;
+  }
+  };
+  if ($results) {
+    $@ ? { error => $@ } : $results;
+  }
+  else {
+    error => "Couldn't delete question";
+  }
+}
+
+sub removeAll {
+  my $self = shift;
+  my $results = eval {
+    if ($self->{admin} == 1) {
+      my $sql = 'delete from questions';
+      $self->pg->db->query($sql);
+    }
   };
   if ($results) {
     $@ ? { error => $@ } : $results;
