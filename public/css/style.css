@@ -46,6 +46,8 @@ body {
 	overflow:hidden;
 }
 
+/************feedbackComment **************/
+
 .feedback_comment {
 	width:100%;
 	height:100px;
@@ -61,8 +63,24 @@ body {
 	line-height: 100px;
 	z-index: 1;
 }
+
 .feedback_comment:hover {
 	background-color:00CC00;
+}
+
+.feedback_commentContainer {
+	position: static;
+	width: 100%;
+	height: 400px;
+	top:206px;
+}
+
+.feedback_commentTextarea {
+	display:block;
+	font-size: 1.5em;
+	margin:auto;
+	width: 75%;
+	height: 200px;
 }
 
 /*container that pops up when you push button to make new question */
@@ -76,12 +94,6 @@ body {
 	transition: top 0.2s ease-in-out;
 	z-index: 1;
 }
-.feedback_commentContainer {
-	position: static;
-	width: 100%;
-	height: 400px;
-	top:206px;
-}
 
 .newPostTitle {
 	display:block;
@@ -90,13 +102,6 @@ body {
 }
 
 .newPostTextarea {
-	display:block;
-	font-size: 1.5em;
-	margin:auto;
-	width: 75%;
-	height: 200px;
-}
-.feedback_commentTextarea {
 	display:block;
 	font-size: 1.5em;
 	margin:auto;

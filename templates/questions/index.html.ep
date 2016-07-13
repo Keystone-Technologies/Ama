@@ -174,15 +174,13 @@ $(document).ready(function() {
 	<div class="backgroundCover" onclick="closeMenu('none')">
 	
 	</div>
-	<div class="feedback_comment" onclick="javascript:togglefeedbackForm();">
-		leave Your Feedback
-	</div>
 	
-	<div class="feedback_commentContainer">
+	<div class="feedbackFormContainer">
 		<br><label for='feedback_comment' class="newPostTitle">What could we do to make our AMA better?</label><br>
 		<textarea placeholder= "We appreciate your feedback" class="feedback_commentTextarea" id="feedback_commentTextarea" required></textarea><br>
 		<button class='postButton' onclick="sendfeedback_comment()">Submit</button>
 	</div>
+	
 	<div class="backgroundCover" onclick="closeSortMenu('cancel')">
 	 
 	</div>
@@ -306,7 +304,7 @@ $(document).ready(function() {
 				Company Website
 			</div>
 		</a>
-		<div class="feedbackButtonContainer linkContainer" onclick="console.log('not yet implemented!');">
+		<div class="feedbackButtonContainer linkContainer" onclick="toggleFeedbackForm();">
 			Submit Feedback
 		</div>
 		<div class="version">

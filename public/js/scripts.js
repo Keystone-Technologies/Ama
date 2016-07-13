@@ -200,8 +200,9 @@ function toggleQuestionForm() {
 	
 	$("#newQuestionTextarea").val("");
 }
+
 //shows/hides feedback container
-function togglefeedbackForm() {
+function toggleFeedbackForm() {
 	$(".feedback_commentContainer").slideToggle("slow", function() {
 	    if($(".feedback_comment").html() == "Cancel") {
 	        $("#feedback_commentTextarea").focus();
@@ -217,7 +218,7 @@ function togglefeedbackForm() {
 	    $("#feedback_commentTextarea").focusout();
 	}
 }
-//
+
 //shows/hides reply form container
 function toggleReplyForm(id) {
     var type = "question";
