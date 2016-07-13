@@ -118,12 +118,17 @@ $(document).ready(function() {
 
 		<div class="headerImgContainer accountButtonContainer" onmouseenter="$('.accountMenuContainer').css({top:'50px', right:'0px'})">
 
-			% if ($c->session->{admin} == 1) {
-				<div class="Name">*</div>
+			
+			% if ($c->session->{admin}){
+				<img class="adminImg" src="/img/badge.png" alt="admin" title="You have admin privilages">
+				<div class="name" ><%= $user->{first_name}%></div>
 			%}
-			% if ($c->session('id')){
-				<div class="Name"><%= $user->{first_name}%></div>
+			% elsif ($c->session('id')){
+				<div class="name"><%= $user->{first_name}%></div>
 			%}
+			
+			
+			 
 
 			<% my $avatar_url; %>
 			% if ($c->session('id')){

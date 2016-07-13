@@ -85,6 +85,11 @@ a {
 	padding-right: 30px;
 }
 
+.adminImg {
+	height: 18px;
+	width: 18px;
+}
+
 /*ACCOUNT MENU *********************************/
 
 .accountMenuContainer {
@@ -303,7 +308,7 @@ a {
 	font-size: 1.5em;
 }
 
-.Name {
+.name {
 	display: inline-block;
 	font-size: 1.5em;
 	color: white;
