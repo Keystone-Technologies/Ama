@@ -30,11 +30,6 @@ a {
 	z-index: 2;
 }
 
-.headerImg {
-	-webkit-filter: invert(100%);
-	filter: invert(100%);
-}
-
 .menuButtonContainer {
 	left: 5px;
 }
@@ -155,6 +150,46 @@ a {
 	height:20px;
 	cursor: pointer;
 	padding-left: 10px;
+}
+/*************feedback menu ***********/
+
+.feedbackMenuContainer {
+	position: fixed;
+	top: 30%;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 30%;
+	min-width: 290px;
+	bottom: 30%;
+	background-color: white;
+	border: 3px solid black;
+	z-index: 3;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-direction: column;
+}
+
+.feedbackTitle {
+	font-size: 2em;
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+
+.feedbackTextarea {
+	resize: none;
+	font-size: 1em;
+	flex-grow: 1;
+	max-height: 60%;
+}
+
+.feedbackButton {
+	font-size: 1.5em;
+	border: none;
+	border-radius: 15px;
+	padding: 10px;
+	margin: 10px;
+	cursor: pointer;
 }
 
 /*container that pops up when you push button to make new question */

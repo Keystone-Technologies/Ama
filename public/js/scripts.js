@@ -201,6 +201,7 @@ function toggleQuestionForm() {
 	$("#newQuestionTextarea").val("");
 }
 
+
 //shows/hides reply form container
 function toggleReplyForm(id) {
     var type = "question";
@@ -587,15 +588,21 @@ function vote(type, id, dir) {
     }, 'json');
 }
 
+function submitFeedback(){
+    var feedback = $(".feedbackTextarea").val();
+    $.post("/api/feedback_comment",{feedback_comment: feedback},function(data){
+        $(".filterName").html("feedback submit result: "+ data.message);
+        closeMenu();
+    });
+}
+
 //submits a new question to store in the database, and then refreshes the questions
 //  with a different filter
 function submitQuestion() {
     var text = $("#newQuestionTextarea").val();
-    text = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');  //closes XSS vulnerabilities
-    
-    //sending the data as a json requires this hash form of data(i think, never tried it without it)
-    var data = {
-        question: text  //'question' is the key and 'text' is the associated data
+    text = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    var question = {
+        question: text
     };
     
     $.ajax({
@@ -603,7 +610,7 @@ function submitQuestion() {
         type: "POST",
         contentType:"application/x-www-form-urlencoded",
         dataType: 'json',
-        data: data
+        data: question
     }).done(function(data) {
         if(data.question_id) {
             //hides the question form, updates filters and reloads questions
@@ -618,7 +625,7 @@ function submitQuestion() {
     });
 }
 
-//readys a reply to be sent to the server
+//Readies reply to be sent to server
 function readyReply(id) {
     var type = "question";
     var text = $("#newPostTextArea_" + type + id).val();
@@ -974,6 +981,16 @@ function setReplyMenuTimes(link) {
     $("#replyMenuLinkTextarea").val(link);
 }
 
+//shows/hides feedback container
+function showFeedbackMenu() {
+	openMenu = "feedback";
+	$(".backgroundCover").fadeTo(1, 0);
+    $(".feedbackMenuContainer").fadeTo(1, 0);
+    $(".backgroundCover").show();
+    $(".feedbackMenuContainer").show();
+    $(".backgroundCover").fadeTo(400, 0.65);
+    $(".feedbackMenuContainer").fadeTo(400, 1);
+}
 function showAccountMenu() {
     if(deviceType == 'desktop')
         return;
@@ -1019,6 +1036,9 @@ function closeMenu(save) {
         openMenu = "none";
     }
     
+    if(openMenu == "feedback") {
+        $(".feedbackMenuContainer").fadeTo(400, 0, function() { $(".feedbackMenuContainer").hide()});
+    }
     if(openMenu == "account") {
         $(".accountMenuContainer").fadeTo(400, 0, function() { $(".accountMenuContainer").hide()});
         openMenu = 'none';

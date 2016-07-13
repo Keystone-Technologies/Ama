@@ -5,6 +5,8 @@ use Ama::Model::Questions;
 use Ama::Model::Comments;
 use Ama::Model::Answers;
 use Ama::Model::Votes;
+use Ama::Model::feedback;
+
 use Mojo::Pg;
 use Ama::Model::OAuth2;
 our $VERSION = '2.0';
@@ -24,6 +26,7 @@ sub startup {
   $self->helper(comments => sub { state $comments = Ama::Model::Comments->new(pg => shift->pg) });
   $self->helper(answers => sub { state $votes = Ama::Model::Answers->new(pg => shift->pg) });
   $self->helper(votes => sub { state $votes = Ama::Model::Votes->new(pg => shift->pg) });
+  $self->helper(feedback => sub { state $feedback = Ama::Model::feedback->new(pg => shift->pg) });
   $self->helper('model.oauth2' => sub { state $votes = Ama::Model::OAuth2->new(pg => shift->pg) });
   $self->hook(around_action => sub {
     my ($next, $c, $action, $last) = @_;
@@ -81,6 +84,9 @@ $self->plugin("OAuth2Accounts" => {
   $self->plugin('AssetPack');
   $self->asset('ama.js' => 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js');
 
+  # Mojolicious
+  $self->plugin('Sendgrid' =>{config => $self -> config -> {sendgrid}});
+
   # Controller
   my $r = $self->routes;
   $r->get('/' => sub {
@@ -123,6 +129,9 @@ $self->plugin("OAuth2Accounts" => {
 
   $api->post('/:entry_type/vote/:entry_id/:vote', [vote => [qw(up down)]])->to('votes#cast')->name('cast_vote');
   $api->delete('/:entry_type/vote/:entry_id')->to('votes#uncast')->name('uncast_vote');
+
+  
+  $api->post('/feedback')->to('feedback#submit')->name('submit_feedback');
 }
 
 1;

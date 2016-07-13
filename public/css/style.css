@@ -110,6 +110,44 @@ body {
     margin: 15px;
 }
 
+/************feedback container **************/
+
+.feedbackMenuContainer {
+	position: fixed;
+	top: 175px;
+	left: 10%;
+	right: 10%;
+	height: 900px;
+	background-color: white;
+	border: 3px solid black;
+	z-index: 2;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-direction: column;
+}
+
+.feedbackTitle {
+	font-size: 4em;
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+
+.feedbackTextarea {
+	resize: none;
+	font-size: 2.5em;
+	flex-grow: 1;
+	max-height: 60%;
+}
+
+.feedbackButton {
+	font-size: 3em;
+	border: none;
+	border-radius: 15px;
+	padding: 10px;
+	margin: 10px;
+}
+
 /*container that pops up when you push button to make new question */
 
 .newQuestionContainer {
