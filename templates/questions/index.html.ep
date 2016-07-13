@@ -5,9 +5,7 @@
 	<script src="/js/scripts.js"></script>
 	<link rel="stylesheet" media="screen and (max-device-width: 800px)" href="/css/style.css">
 	<link rel="stylesheet" media="screen and (min-device-width: 800px)" href="/css/desktop.css">
-	<% use Gravatar::URL; %>
 	<% my $user = $c->model->oauth2->find($c->session('id')); %>
-	<%my $gravatar = gravatar_url( email => $c->session->{email} , rating => 'pg'); %>
 </head>
 <title>Ask Me Anything</title>
 <script>
@@ -33,6 +31,7 @@ $(document).ready(function() {
     setCurrentUser("<%=session 'username'%>");
     setAdmin("<%=session 'admin'%>");
     setVoteFloor("<%= $self->config->{vote_floor}%>");
+    
     % if ($c->session('id')){
 		loggedIn = true;
 	%}
@@ -54,9 +53,12 @@ $(document).ready(function() {
     //  on the desktop css, overflow is set
     //  on mobile it is not
     //  device type is set to desktop automatically so we only need to check if it is mobile
-    if($('body').css('overflow') != 'scroll')
-    {
+    if($('body').css('overflow') != 'scroll'){
     	deviceType = 'mobile';
+    }
+    
+    if(deviceType == 'mobile') {
+    	$(".accountMenuContainer").hide();
     }
     
     $(window).resize(function() {
@@ -98,6 +100,15 @@ $(document).ready(function() {
 	    }
 	}, 100);  //this number is the number of ms before checking if the user scrolled. The higher this number is, the slower the site will run
 
+	setInterval(function(){
+		//makes footer stick to bottom if not enough quesitons are showing
+        //  otherwise it goes to very bottom of page
+        if($("body").height() > $(window).height() - $(".footer").height())
+            $(".footer").css('position', 'relative');
+        else
+            $(".footer").css('position', 'absolute');
+	}, 100)
+
 	//Whenever someone makes a change to one of the time inputs on the time menu
 	//  this function is called and it changes the link appropriately
 	$(".replyMenuTimeInput").bind('input propertychange', function() {
@@ -111,33 +122,49 @@ $(document).ready(function() {
 		<div class="headerImgContainer menuButtonContainer">
 			<img class="containedImg" src="/img/menubutton.png" alt="menu" onclick="showSortMenu()">
 		</div>
+
 		<div class="headerImgContainer searchButtonContainer">
 			<img class="containedImg" src="/img/searchbutton.png" alt="search" onclick="toggleSearchBar()">
 		</div>
+
 		<div class="headerImgContainer newQuestionButtonContainer">
 			<img class="containedImg" src="/img/newQuestion.png" alt='new question' onclick="toggleQuestionForm()">
 		</div>
+
 		<div class="headerImgContainer accountButtonContainer"
-		onmouseenter="$('.accountMenuContainer').css({top:'50px', right:'0px'})">
-			%if ($c->session->{admin} == 1) {
-			<div class="Name">*</div>
+		onmouseenter="if(deviceType != 'mobile') $('.accountMenuContainer').css({top:'75px'})"
+		onclick="showAccountMenu()">
+
+			
+			% if ($c->session->{admin}){
+				<img class="adminImg" src="/img/badge.png" alt="admin" title="You have admin privilages">
+				<div class="name" ><%= $user->{first_name}%></div>
 			%}
-			% if ($c->session('id')){
-			<div class="Name"><%= $user->{first_name}%></div>
-			%}
-			<% my $avatar_url; %>
-			% if ($c->session('id')){
-        		 <% $avatar_url = $gravatar; %>
-			%}
-			% else {
-				<% $avatar_url = '/img/account.png'; %>
+			% elsif ($c->session('id')){
+				<div class="name"><%= $user->{first_name}%></div>
 			%}
 			
+			
+			 
+
+			<% my $avatar_url; %>
+			% if ($c->session('id')){
+				<% $avatar_url = $self->gravatar->url({email => $self->session->{email} , rating => 'pg'}); %>
+			%}
+			% else {
+				<% $avatar_url = "/img/account.png"; %>
+			%}
+
 			<img class="containedImg" src= <%= $avatar_url %> alt="account">
+		</div>
+		<div class="filterName">
+			filter
 		</div>
 	</div>
 	
-	<div class="accountMenuContainer" onmouseenter="$(this).css({top:'50px', right:'0px'})" onmouseleave="$(this).css({top:'-250px', right:'-300px'})">
+	<div class="accountMenuContainer" 
+	onmouseenter="if(deviceType != 'mobile') $(this).css({top:'75px'})" 
+	onmouseleave="if(deviceType != 'mobile') $(this).css('top', '-' + ($(this).height() - 75) + 'px');">
 		<div class="title" id="accountOptionsTitle">
 			Account Options
 		</div>
@@ -235,12 +262,6 @@ $(document).ready(function() {
 		
 	</div>
 	
-	<div class="filterContainer">
-		<div class="filterName">
-			filter
-		</div>
-	</div>
-	
 	<div class="replyMenuContainer">
 		<div class="replyMenuTitle">
 			ATTENTION
@@ -312,7 +333,7 @@ $(document).ready(function() {
 		</div>
 	</footer>
 	
-	<!-- All html under here is extracted by the js, parsed and used for comments and questions, then reinserted into the page -->
+	<!-- All html under here is extracted by the js, parsed and used for comments and questions, then reinserted into content div -->
 
 	<div class="singlePost">
 		<div class= "postContainer" id="postContainer_TYPEID">

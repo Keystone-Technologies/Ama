@@ -776,13 +776,6 @@ function reloadQuestions() {
         }
         
         $(".filterName").html(filter);
-        
-        //makes footer stick to bottom if not enough quesitons are showing
-        //  otherwise it goes to very bottom of page
-        if($("body").height() > $(window).height())
-            $(".footer").css('position', 'relative');
-        else
-            $(".footer").css('position', 'absolute');
     });
 }
 
@@ -998,6 +991,19 @@ function showFeedbackMenu() {
     $(".backgroundCover").fadeTo(400, 0.65);
     $(".feedbackMenuContainer").fadeTo(400, 1);
 }
+function showAccountMenu() {
+    if(deviceType == 'desktop')
+        return;
+        
+    openMenu = "account";
+    
+    $(".backgroundCover").fadeTo(1, 0);
+    $(".accountMenuContainer").fadeTo(1, 0);
+    $(".backgroundCover").show();
+    $(".accountMenuContainer").show();
+    $(".backgroundCover").fadeTo(400, 0.65);
+    $(".accountMenuContainer").fadeTo(400, 1);
+}
 
 //closes whatever menu is currently open based on the GLOBAL openMenu variable
 //  save parameter is used only if the sort menu is being closed. It is set as 'save' ONLY if the user
@@ -1032,6 +1038,10 @@ function closeMenu(save) {
     
     if(openMenu == "feedback") {
         $(".feedbackMenuContainer").fadeTo(400, 0, function() { $(".feedbackMenuContainer").hide()});
+    }
+    if(openMenu == "account") {
+        $(".accountMenuContainer").fadeTo(400, 0, function() { $(".accountMenuContainer").hide()});
+        openMenu = 'none';
     }
     
     //background cover is the white cover that appears when opening search menu/sort menu

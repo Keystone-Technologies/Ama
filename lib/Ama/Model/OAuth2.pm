@@ -24,7 +24,6 @@ sub store {
     unless ( $self->pg->db->query('select id from providers where provider_id = ?', $mapped->{id})->rows ) {
       $self->pg->db->query('insert into providers (id, provider_id, provider) values (?, ?, ?)', $id, $mapped->{id}, $provider);
     }
-  } else {
   }
 }
 
