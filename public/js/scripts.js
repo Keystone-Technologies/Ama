@@ -589,7 +589,7 @@ function vote(type, id, dir) {
 
 function submitFeedback(){
     var feedback = $(".feedbackTextarea").val();
-    $.post("/api/feedback_comment",{feedback_comment: feedback},function(data){
+    $.post("/api/feedback",{feedback: feedback},function(data){
         $(".filterName").html("feedback submit result: "+ data.message);
         closeMenu();
     });

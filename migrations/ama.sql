@@ -255,7 +255,7 @@ alter table users alter admin set default 0;
 alter table users alter admin drop default;
 
 --6 up
-create table if not exists feedbacks (
+create table if not exists feedback (
   feedback_id serial primary key,
   feedback_comment text not null,
   created timestamptz not null default now()
@@ -263,4 +263,4 @@ create table if not exists feedbacks (
 
 --6 down
 
-drop table if exists feedbacks;
+drop table if exists feedback;
