@@ -100,6 +100,15 @@ $(document).ready(function() {
 	    }
 	}, 100);  //this number is the number of ms before checking if the user scrolled. The higher this number is, the slower the site will run
 
+	setInterval(function(){
+		//makes footer stick to bottom if not enough quesitons are showing
+        //  otherwise it goes to very bottom of page
+        if($("body").height() > $(window).height() - $(".footer").height())
+            $(".footer").css('position', 'relative');
+        else
+            $(".footer").css('position', 'absolute');
+	}, 100)
+
 	//Whenever someone makes a change to one of the time inputs on the time menu
 	//  this function is called and it changes the link appropriately
 	$(".replyMenuTimeInput").bind('input propertychange', function() {

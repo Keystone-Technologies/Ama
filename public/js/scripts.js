@@ -769,13 +769,6 @@ function reloadQuestions() {
         }
         
         $(".filterName").html(filter);
-        
-        //makes footer stick to bottom if not enough quesitons are showing
-        //  otherwise it goes to very bottom of page
-        if($("body").height() > $(window).height())
-            $(".footer").css('position', 'relative');
-        else
-            $(".footer").css('position', 'absolute');
     });
 }
 
