@@ -46,41 +46,42 @@ body {
 	overflow:hidden;
 }
 
-/************feedbackComment **************/
+/************feedback container **************/
 
-.feedback_comment {
-	width:100%;
-	height:100px;
-	top: 100px;
-	text-align: center;
-	font-size: 3em;
-	font-weight: bold;
-	background-color:green;
-	cursor: pointer;
+.feedbackMenuContainer {
+	position: fixed;
+	top: 175px;
+	left: 10%;
+	right: 10%;
+	height: 900px;
+	background-color: white;
 	border: 3px solid black;
-	border-radius: 10px;
-	box-sizing: border-box;
-	line-height: 100px;
-	z-index: 1;
+	z-index: 2;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-direction: column;
 }
 
-.feedback_comment:hover {
-	background-color:00CC00;
+.feedbackTitle {
+	font-size: 4em;
+	padding-top: 15px;
+	padding-bottom: 15px;
 }
 
-.feedback_commentContainer {
-	position: static;
-	width: 100%;
-	height: 400px;
-	top:206px;
+.feedbackTextarea {
+	resize: none;
+	font-size: 2.5em;
+	flex-grow: 1;
+	max-height: 60%;
 }
 
-.feedback_commentTextarea {
-	display:block;
-	font-size: 1.5em;
-	margin:auto;
-	width: 75%;
-	height: 200px;
+.feedbackButton {
+	font-size: 3em;
+	border: none;
+	border-radius: 15px;
+	padding: 10px;
+	margin: 10px;
 }
 
 /*container that pops up when you push button to make new question */
