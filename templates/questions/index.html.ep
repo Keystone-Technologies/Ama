@@ -97,6 +97,8 @@ $(document).ready(function() {
 	</div>
 	
 	<div class="backgroundCover" onclick="closeMenu('none')">
+	
+	</div>
 	<div class="feedback_comment" onclick="javascript:togglefeedbackForm();">
 		leave Your Feedback
 	</div>

@@ -584,7 +584,7 @@ function submitQuestion() {
         type: "POST",
         contentType:"application/x-www-form-urlencoded",
         dataType: 'json',
-        data: data
+        data: question
     }).done(function(data) {
         if(data.question_id) {
             //hides the question form, updates filters and reloads questions
