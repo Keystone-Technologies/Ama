@@ -5,7 +5,7 @@ use Ama::Model::Questions;
 use Ama::Model::Comments;
 use Ama::Model::Answers;
 use Ama::Model::Votes;
-use Ama::Model::Emailfeedback;
+use Ama::Model::feedback;
 
 use Mojo::Pg;
 use Ama::Model::OAuth2;
@@ -26,7 +26,7 @@ sub startup {
   $self->helper(comments => sub { state $comments = Ama::Model::Comments->new(pg => shift->pg) });
   $self->helper(answers => sub { state $votes = Ama::Model::Answers->new(pg => shift->pg) });
   $self->helper(votes => sub { state $votes = Ama::Model::Votes->new(pg => shift->pg) });
-  $self->helper(emailfeedback => sub { state $emailfeedback = Ama::Model::Emailfeedback->new(pg => shift->pg) });
+  $self->helper(feedback => sub { state $feedback = Ama::Model::feedback->new(pg => shift->pg) });
   $self->helper('model.oauth2' => sub { state $votes = Ama::Model::OAuth2->new(pg => shift->pg) });
   $self->hook(around_action => sub {
     my ($next, $c, $action, $last) = @_;
@@ -111,7 +111,6 @@ $self->plugin("OAuth2Accounts" => {
   $r->delete('/questions/:question_id')->to('questions#remove')->name('remove_question'); # Delete from DB and redirect to questions
   $r->delete('/removeAll')->to('questions#removeAll')->name('removeAll'); #Delete every question
   $r->get('/questions/:creator/:answered/:orderby/:direction/:limit/:keyword')->to('questions#getQuestions')->name('get_answered');
-  $r->post('/feedback_comment')->to('emailfeedback#submit')->name('submit_feedback');
 
   $r->get('/questions/:question_id/comments')->to('comments#index')->name('comments');
   $r->get('/questions/:question_id/comment/create')->to('comments#create')->name('create_comment');
@@ -131,8 +130,7 @@ $self->plugin("OAuth2Accounts" => {
   $api->delete('/:entry_type/vote/:entry_id')->to('votes#uncast')->name('uncast_vote');
 
   
-  $api->post('/feedback_comment')->to('emailfeedback#submit')->name('submit_emailfeedback');
-
+  $api->post('/feedback')->to('feedback#submit')->name('submit_feedback');
 }
 
 1;

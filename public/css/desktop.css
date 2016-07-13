@@ -148,7 +148,7 @@ a {
     width: 40%;
 }
 
-.feedback_comment {
+.feedback {
 	position:fixed;
 	right:0px;
 	width:300px;
@@ -165,11 +165,11 @@ a {
 	z-index: 1;
 }
 
-.feedback_comment:hover {
+.feedback:hover {
 	background-color:00CC00;
 }
 
-.feedback_commentTextarea {
+.feedbackTextarea {
 	display:block;
 	font-size: 1em;
 	margin:auto;
@@ -177,7 +177,7 @@ a {
 	height: 200px;
 }
 
-.feedback_commentContainer {
+.feedbackContainer {
 	position: fixed;
 	right:0px;
 	width: 300px;

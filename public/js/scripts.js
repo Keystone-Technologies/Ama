@@ -203,19 +203,19 @@ function toggleQuestionForm() {
 
 //shows/hides feedback container
 function toggleFeedbackForm() {
-	$(".feedback_commentContainer").slideToggle("slow", function() {
-	    if($(".feedback_comment").html() == "Cancel") {
-	        $("#feedback_commentTextarea").focus();
+	$(".feedbackContainer").slideToggle("slow", function() {
+	    if($(".feedback").html() == "Cancel") {
+	        $("#feedbackTextarea").focus();
 	    }
 	});
 	
-	if($(".feedback_comment").html() != "Cancel") {
-	  	$(".feedback_comment").html("Cancel");
+	if($(".feedback").html() != "Cancel") {
+	  	$(".feedback").html("Cancel");
 	}
 	else {
-        $(".feedback_comment").html("Leave Your Feedback");
-	    $("#feedback_commentTextarea").val("");
-	    $("#feedback_commentTextarea").focusout();
+        $(".feedback").html("Leave Your Feedback");
+	    $("#feedbackTextarea").val("");
+	    $("#feedbackTextarea").focusout();
 	}
 }
 
@@ -605,9 +605,9 @@ function vote(type, id, dir) {
     }, 'json');
 }
 
-function sendfeedback_comment(){
-    var feedback_comment = $("#feedback_commentTextarea").val();
-    $.post("/api/feedback_comment",{feedback_comment:feedback_comment},function(data){
+function sendfeedback(){
+    var feedback = $("#feedbackTextarea").val();
+    $.post("/api/feedback",{feedback:feedback},function(data){
         $(".filterName").html("feedback submit result:"+ data.message);
         togglefeedbackForm();
     });

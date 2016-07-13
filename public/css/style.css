@@ -48,7 +48,7 @@ body {
 
 /************feedbackComment **************/
 
-.feedback_comment {
+.feedback {
 	width:100%;
 	height:100px;
 	top: 100px;
@@ -64,18 +64,18 @@ body {
 	z-index: 1;
 }
 
-.feedback_comment:hover {
+.feedback:hover {
 	background-color:00CC00;
 }
 
-.feedback_commentContainer {
+.feedbackContainer {
 	position: static;
 	width: 100%;
 	height: 400px;
 	top:206px;
 }
 
-.feedback_commentTextarea {
+.feedbackTextarea {
 	display:block;
 	font-size: 1.5em;
 	margin:auto;
