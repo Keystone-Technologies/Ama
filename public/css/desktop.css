@@ -1,7 +1,7 @@
 body {
 	margin:0;
 	padding:0px;
-	padding-top: 60px;
+	padding-top: 75px;
 	height: auto;
 	background-color: #eeeeee;
 	overflow: scroll;
@@ -18,33 +18,16 @@ a {
 
 /********************************* yeah aw yeah********************/
 
-/*
 .header {
-	position: fixed;
-	top: 75px;
-	padding-left: 20px;
-	right: -170px;
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	justify-content: space-around;
-	align-items: center;
-	border-radius: 25px 0px 0px 25px;
-	width:180px;
-	height: 150px;
 	background-color: #42474B;
-	z-index:1;
-	transition: right 0.5s ease-in-out;
-}
-
-.shownHeader {
-	right: 0px;
-}
-
-*/
-
-.header {
-  	
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: fixed;
+	top: 0px;
+	width: 100%;
+	height: 75px;
+	z-index: 2;
 }
 
 .headerImg {
@@ -53,21 +36,16 @@ a {
 }
 
 .menuButtonContainer {
-	position: fixed;
-	top: 5px;
 	left: 5px;
 }
 
 .searchButtonContainer {
-	position: fixed;
-	top: 5px;
 	left: 50px;
 }
 
 .accountButtonContainer {
-	position: fixed;
-	top: 5px;
 	right: 5px;
+	cursor: default !important;
 }
 
 .newQuestionButtonContainer {
@@ -76,6 +54,9 @@ a {
 }
 
 .headerImgContainer {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -90,6 +71,13 @@ a {
 	width: 18px;
 }
 
+.name {
+	display: inline-block;
+	font-size: 1.5em;
+	color: white;
+	text-align: center;
+}
+
 /*ACCOUNT MENU *********************************/
 
 .accountMenuContainer {
@@ -97,13 +85,13 @@ a {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	top: -100px;
-	right: -300px;
+	top: -300px;
+	right: 5px;
 	width: 300px;
 	z-index: 1;
 	color: #c5c5c5;
 	background-color: #42474B;
-	border-radius: 0 0 0 50px;
+	border-radius: 0 0 50px 50px;
 	transition: right 0.5s ease-in-out, top 0.5s ease-in-out;
 }
 
@@ -153,6 +141,22 @@ a {
     width: 40%;
 }
 
+/*****filter container *****/
+
+.filterName {
+	color: white;
+	display: inline-block;
+	font-size: 1.5em;
+	text-align: center;
+}
+
+.clearButton {
+	width:20px;
+	height:20px;
+	cursor: pointer;
+	padding-left: 10px;
+}
+
 /*container that pops up when you push button to make new question */
 
 .newQuestionContainer {
@@ -163,9 +167,8 @@ a {
 	width: 100%;
 	max-width: 1230px;
 	margin:auto;
-	top: 40px;
 	padding-top: 20px;
-	padding-bottom: 40px;
+	padding-bottom: 20px;
 	background-color: #eeeeee;
 }
 
@@ -285,42 +288,6 @@ a {
 	font-size: 2em;
 }
 
-/*****filter container *****/
-
-.filterContainer {
-	position: fixed;
-	top: 0;
-	left: 50%;
-	transform: translateX(-50%);
-	background-color: #42474B;
-	color: white;
-	text-align: center;
-	z-index: 2;
-	width: 100%;
-	height: 30px;
-	padding: 10px;
-	min-width: 700px;
-	margin: auto;
-}
-
-.filterName {
-	display: inline-block;
-	font-size: 1.5em;
-}
-
-.name {
-	display: inline-block;
-	font-size: 1.5em;
-	color: white;
-	text-align: center;
-}
-
-.clearButton {
-	width:20px;
-	height:20px;
-	cursor: pointer;
-	padding-left: 10px;
-}
 
 /*************search bar****************/
 
@@ -329,17 +296,16 @@ a {
 	width: 100%;
 	max-width:1000px;
 	min-width:700px;
-	top: 30px;
+	top: 75px;
 	left: 50%;
 	transform: translateX(-50%);
 	z-index: 2;
-	height: 30px;
 	padding: 10px;
-	padding-top: 60px;
 	display: flex;
 	background-color: #42474B;
     justify-content: center; /* align horizontal */
     align-items: center; /* align vertical */
+    border-radius: 0 0 20px 20px;
 }
 
 .searchTextArea {
@@ -504,7 +470,6 @@ a {
 /*****************************content n such*******************************/
 .content {
 	position: relative;
-    top: 30px;
 	max-width: 1200px;
 	min-width: 700px;
 	min-height: 10px;
@@ -515,10 +480,7 @@ a {
 
 .showMoreButton {
 	position: relative;
-	top: 25px;
 	padding: 20px;
-	padding-top: 5px;
-	padding-bottom: 5px;
 	height: 30px;
 	text-align: center;
 	font-size: 1.5em;
@@ -534,7 +496,7 @@ a {
 
 .footer {
 	position: relative;
-	bottom: -25px;
+	bottom: 0px;
 	display: flex;
 	align-items: center;
 	justify-content: space-around;

@@ -29,6 +29,7 @@ $(document).ready(function() {
     setCurrentUser("<%=session 'username'%>");
     setAdmin("<%=session 'admin'%>");
     setVoteFloor("<%= $self->config->{vote_floor}%>");
+    
     % if ($c->session('id')){
 		loggedIn = true;
 	%}
@@ -50,9 +51,12 @@ $(document).ready(function() {
     //  on the desktop css, overflow is set
     //  on mobile it is not
     //  device type is set to desktop automatically so we only need to check if it is mobile
-    if($('body').css('overflow') != 'scroll')
-    {
+    if($('body').css('overflow') != 'scroll'){
     	deviceType = 'mobile';
+    }
+    
+    if(deviceType == 'mobile') {
+    	$(".accountMenuContainer").hide();
     }
     
     $(window).resize(function() {
@@ -94,6 +98,15 @@ $(document).ready(function() {
 	    }
 	}, 100);  //this number is the number of ms before checking if the user scrolled. The higher this number is, the slower the site will run
 
+	setInterval(function(){
+		//makes footer stick to bottom if not enough quesitons are showing
+        //  otherwise it goes to very bottom of page
+        if($("body").height() > $(window).height() - $(".footer").height())
+            $(".footer").css('position', 'relative');
+        else
+            $(".footer").css('position', 'absolute');
+	}, 100)
+
 	//Whenever someone makes a change to one of the time inputs on the time menu
 	//  this function is called and it changes the link appropriately
 	$(".replyMenuTimeInput").bind('input propertychange', function() {
@@ -116,7 +129,9 @@ $(document).ready(function() {
 			<img class="containedImg" src="/img/newQuestion.png" alt='new question' onclick="toggleQuestionForm()">
 		</div>
 
-		<div class="headerImgContainer accountButtonContainer" onmouseenter="$('.accountMenuContainer').css({top:'50px', right:'0px'})">
+		<div class="headerImgContainer accountButtonContainer"
+		onmouseenter="if(deviceType != 'mobile') $('.accountMenuContainer').css({top:'75px'})"
+		onclick="showAccountMenu()">
 
 			
 			% if ($c->session->{admin}){
@@ -140,9 +155,14 @@ $(document).ready(function() {
 
 			<img class="containedImg" src= <%= $avatar_url %> alt="account">
 		</div>
+		<div class="filterName">
+			filter
+		</div>
 	</div>
 	
-	<div class="accountMenuContainer" onmouseenter="$(this).css({top:'50px', right:'0px'})" onmouseleave="$(this).css({top:'-250px', right:'-300px'})">
+	<div class="accountMenuContainer" 
+	onmouseenter="if(deviceType != 'mobile') $(this).css({top:'75px'})" 
+	onmouseleave="if(deviceType != 'mobile') $(this).css('top', '-' + ($(this).height() - 75) + 'px');">
 		<div class="title" id="accountOptionsTitle">
 			Account Options
 		</div>
@@ -232,12 +252,6 @@ $(document).ready(function() {
 		
 	</div>
 	
-	<div class="filterContainer">
-		<div class="filterName">
-			filter
-		</div>
-	</div>
-	
 	<div class="replyMenuContainer">
 		<div class="replyMenuTitle">
 			ATTENTION
@@ -307,7 +321,7 @@ $(document).ready(function() {
 		</div>
 	</footer>
 	
-	<!-- All html under here is extracted by the js, parsed and used for comments and questions, then reinserted into the page -->
+	<!-- All html under here is extracted by the js, parsed and used for comments and questions, then reinserted into content div -->
 
 	<div class="singlePost">
 		<div class= "postContainer" id="postContainer_TYPEID">
