@@ -13,6 +13,16 @@ our $VERSION = '2.0';
 
 sub startup {
   my $self = shift;
+  
+  $self->hook(before_dispatch => sub {
+    my $c = shift;
+    my $request_url = $c->req->url->to_abs;
+    if ($request_url->scheme eq 'http') {
+      $request_url->scheme('https');
+      $request_url->port(443);
+      $c->redirect_to($request_url);
+    }
+  });
 
   # Configuration
   my $config = $self->plugin('Config');
