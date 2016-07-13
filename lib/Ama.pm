@@ -83,7 +83,7 @@ $self->plugin("OAuth2Accounts" => {
   $self->asset('ama.js' => 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js');
 
   # Mojolicious
-  $self->plugin('Sendgrid' =>{config => $self -> config -> {sendgrid}});
+  $self->plugin('Sendgrid' =>{config => $self->config->{sendgrid}});
 
   # Controller
   my $r = $self->routes;

@@ -5,15 +5,15 @@ sub submit{
     my $self = shift;
     my $sendgrid = $self->sendgrid;
     my $feedback = $self->param('feedback');
-    my $send = $sendgrid -> mail(
+    my $send = $sendgrid->mail(
         text => $feedback,
-        to      => q(ajin@keystone-it.com),
-        #cc      => q(jsiems@keystone-it.com),
-        #bcc     => q(bmeyer@keystone-it.com),
-        from    => q(ajin@keystone-it.com),
+        to      => $self->config->{sendgrid}->{to},
+        cc      => $self->config->{sendgrid}->{cc},
+        bcc     => $self->config->{sendgrid}->{bcc},
+        from    => $self->config->{sendgrid}->{from},
         subject => "feedback received from AMA",)->send;
-    $self -> feedback->add($feedback);
-    $self -> render(json => $send ->res ->json);
+    $self->feedback->add($feedback);
+    $self->render(json => $send->res->json);
 }
 
 1;
