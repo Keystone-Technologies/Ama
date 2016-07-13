@@ -15,9 +15,10 @@ body {
 	top: 0;
 	transition: top 0.2s ease-in-out;
 	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
 	justify-content: space-between;
-	align-items: center;
-	height:100px;
+	height:200px;
 	width:100%;
 	background-color: #42474B;
 	z-index:1;
@@ -29,21 +30,84 @@ body {
 }
 
 .headerImgContainer {
-	height: 100%;
+	height: 100px;
 }
 
-.headerMenuArrow {
-	position: absolute;
-	height: 0px;
-	width: 0px;
+/*****filter container *****/
+
+.filterName {
+	text-align: center;
+	font-size: 2em;
+	color: #b4b4b4;
+	width:100%;
+}
+
+.clearButton {
+	width:35px;
+	height:35px;
+	padding-left: 10px;
 }
 
 /**********************account menu ****************************/
 .accountMenuContainer {
-	position: absolute;
-	width:0px;
-	height:0px;
-	overflow:hidden;
+	position: fixed;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	top: 175px;
+	left: 20px;
+	right: 20px;
+	z-index: 3;
+	color: #c5c5c5;
+	background-color: #42474B;
+	border-radius: 15px;
+	transition: right 0.5s ease-in-out, top 0.5s ease-in-out;
+}
+
+.title {
+    width: 95%;
+    font-size: 4.5em;
+    text-align: center;
+    margin-top: 15px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid black;
+    border-color: #c5c5c5;
+}
+
+.option {
+	display: inline-block;
+    font-size: 3.5em;
+    text-align: center;
+    white-space: nowrap;
+    margin-top: 30px;
+    width: auto;
+    padding: 5px;
+    color: #858585;
+    border: 2px solid grey;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.option:hover {
+    background-color: #f8f8f8;
+    color: black;
+}
+
+.signInContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 95%;
+    cursor: pointer;
+}
+
+.signInOption {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.7em;
+    margin: 15px;
 }
 
 /*container that pops up when you push button to make new question */
@@ -156,38 +220,6 @@ body {
 	display: inline-block;
 	text-align: center;
 	font-size: 5em;
-}
-
-/*****filter container *****/
-
-.filterContainer {
-	position: fixed;
-	max-width: 1200px;
-	min-width: 810px;
-	width: 100%;
-	height: 100px;
-	top: 100px;
-	transition: top 0.2s ease-in-out;
-	z-index: 1;
-	margin: auto;
-	background-color: #42474B;
-}
-
-.filterName {
-	position:relative;
-	top:50%;
-	transform:translateY(-50%);
-	text-align: center;
-	font-size: 2em;
-	color: #b4b4b4;
-	width:100%;
-	cursor: pointer;
-}
-
-.clearButton {
-	width:35px;
-	height:35px;
-	padding-left: 10px;
 }
 
 /*************search bar****************/
