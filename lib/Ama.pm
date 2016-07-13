@@ -68,6 +68,8 @@ $self->plugin("OAuth2Accounts" => {
   providers => $config->{oauth2},
   });
   
+  $self->plugin("Gravatar");
+
   $self->helper( 'version' => sub{$VERSION} );
 
   # Migrate to latest version if necessary
@@ -92,10 +94,9 @@ $self->plugin("OAuth2Accounts" => {
     $self->redirect_to('questions');
   });
 
-  $r->get('/admin' => sub {
-    my $self = shift;
-    $self->render('admin');
-  });
+  $r->get('/admin');
+
+
   $r->get('/questions')->to('questions#index')->name('questions'); # Display all questions
   $r->get('/questions/create')->to('questions#create')->name('create_question'); # Display empty form
   $r->post('/questions')->to('questions#store')->name('store_question'); # Insert into DB and redirect to show_question

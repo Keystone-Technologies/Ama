@@ -5,9 +5,7 @@
 	<script src="/js/scripts.js"></script>
 	<link rel="stylesheet" media="screen and (max-device-width: 800px)" href="/css/style.css">
 	<link rel="stylesheet" media="screen and (min-device-width: 800px)" href="/css/desktop.css">
-	<% use Gravatar::URL; %>
 	<% my $user = $c->model->oauth2->find($c->session('id')); %>
-	<%my $gravatar = gravatar_url( email => $c->session->{email} , rating => 'pg'); %>
 </head>
 <title>Ask Me Anything</title>
 <script>
@@ -122,29 +120,39 @@ $(document).ready(function() {
 		<div class="headerImgContainer menuButtonContainer">
 			<img class="containedImg" src="/img/menubutton.png" alt="menu" onclick="showSortMenu()">
 		</div>
+
 		<div class="headerImgContainer searchButtonContainer">
 			<img class="containedImg" src="/img/searchbutton.png" alt="search" onclick="toggleSearchBar()">
 		</div>
+
 		<div class="headerImgContainer newQuestionButtonContainer">
 			<img class="containedImg" src="/img/newQuestion.png" alt='new question' onclick="toggleQuestionForm()">
 		</div>
+
 		<div class="headerImgContainer accountButtonContainer"
 		onmouseenter="if(deviceType != 'mobile') $('.accountMenuContainer').css({top:'75px'})"
 		onclick="showAccountMenu()">
-			%if ($c->session->{admin} == 1) {
-			<div class="Name">*</div>
+
+			
+			% if ($c->session->{admin}){
+				<img class="adminImg" src="/img/badge.png" alt="admin" title="You have admin privilages">
+				<div class="name" ><%= $user->{first_name}%></div>
 			%}
-			% if ($c->session('id')){
-			<div class="Name"><%= $user->{first_name}%></div>
-			%}
-			<% my $avatar_url; %>
-			% if ($c->session('id')){
-        		 <% $avatar_url = $gravatar; %>
-			%}
-			% else {
-				<% $avatar_url = '/img/account.png'; %>
+			% elsif ($c->session('id')){
+				<div class="name"><%= $user->{first_name}%></div>
 			%}
 			
+			
+			 
+
+			<% my $avatar_url; %>
+			% if ($c->session('id')){
+				<% $avatar_url = $self->gravatar->url({email => $self->session->{email} , rating => 'pg'}); %>
+			%}
+			% else {
+				<% $avatar_url = "/img/account.png"; %>
+			%}
+
 			<img class="containedImg" src= <%= $avatar_url %> alt="account">
 		</div>
 		<div class="filterName">
