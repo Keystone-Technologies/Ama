@@ -201,24 +201,6 @@ function toggleQuestionForm() {
 	$("#newQuestionTextarea").val("");
 }
 
-//shows/hides feedback container
-function toggleFeedbackForm() {
-	$(".feedback_commentContainer").slideToggle("slow", function() {
-	    if($(".feedback_comment").html() == "Cancel") {
-	        $("#feedback_commentTextarea").focus();
-	    }
-	});
-	
-	if($(".feedback_comment").html() != "Cancel") {
-	  	$(".feedback_comment").html("Cancel");
-	}
-	else {
-        $(".feedback_comment").html("Leave Your Feedback");
-	    $("#feedback_commentTextarea").val("");
-	    $("#feedback_commentTextarea").focusout();
-	}
-}
-
 //shows/hides reply form container
 function toggleReplyForm(id) {
     var type = "question";
@@ -605,11 +587,11 @@ function vote(type, id, dir) {
     }, 'json');
 }
 
-function sendfeedback_comment(){
-    var feedback_comment = $("#feedback_commentTextarea").val();
-    $.post("/api/feedback_comment",{feedback_comment:feedback_comment},function(data){
-        $(".filterName").html("feedback submit result:"+ data.message);
-        togglefeedbackForm();
+function submitFeedback(){
+    var feedback = $(".feedbackTextarea").val();
+    $.post("/api/feedback_comment",{feedback_comment: feedback},function(data){
+        $(".filterName").html("feedback submit result: "+ data.message);
+        closeMenu();
     });
 }
 
@@ -1005,6 +987,17 @@ function setReplyMenuTimes(link) {
     $("#replyMenuLinkTextarea").val(link);
 }
 
+//shows/hides feedback container
+function showFeedbackMenu() {
+	openMenu = "feedback";
+	$(".backgroundCover").fadeTo(1, 0);
+    $(".feedbackMenuContainer").fadeTo(1, 0);
+    $(".backgroundCover").show();
+    $(".feedbackMenuContainer").show();
+    $(".backgroundCover").fadeTo(400, 0.65);
+    $(".feedbackMenuContainer").fadeTo(400, 1);
+}
+
 //closes whatever menu is currently open based on the GLOBAL openMenu variable
 //  save parameter is used only if the sort menu is being closed. It is set as 'save' ONLY if the user
 //  hits the APPLY button in the sort menu
@@ -1034,6 +1027,10 @@ function closeMenu(save) {
     if(openMenu == "privacy") {
         $(".privacyPolicyContainer").fadeTo(400, 0, function() { $(".privacyPolicyContainer").hide()});
         openMenu = "none";
+    }
+    
+    if(openMenu == "feedback") {
+        $(".feedbackMenuContainer").fadeTo(400, 0, function() { $(".feedbackMenuContainer").hide()});
     }
     
     //background cover is the white cover that appears when opening search menu/sort menu

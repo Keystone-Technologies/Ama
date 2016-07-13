@@ -20,7 +20,6 @@ $(document).ready(function() {
     
     //hides all containers that are needed to be hidden
 	$(".newQuestionContainer").hide();
-	$(".feedback_commentContainer").hide();
 	$(".singleComment").remove();
 	$(".singlePost").remove();
 	$(".sortMenuContainer").hide();
@@ -28,7 +27,7 @@ $(document).ready(function() {
 	$(".searchBar").hide();
 	$(".replyMenuContainer").hide();
 	$(".privacyPolicyContainer").hide();
-	$(".feedbackFormContainer").hide();
+	$(".feedbackMenuContainer").hide();
 	
     setCurrentUser("<%=session 'username'%>");
     setAdmin("<%=session 'admin'%>");
@@ -176,14 +175,11 @@ $(document).ready(function() {
 	
 	</div>
 	
-	<div class="feedbackFormContainer">
-		<br><label for='feedback_comment' class="newPostTitle">What could we do to make our AMA better?</label><br>
-		<textarea placeholder= "We appreciate your feedback" class="feedback_commentTextarea" id="feedback_commentTextarea" required></textarea><br>
-		<button class='postButton' onclick="sendfeedback_comment()">Submit</button>
-	</div>
-	
-	<div class="backgroundCover" onclick="closeSortMenu('cancel')">
-	 
+	<div class="feedbackMenuContainer">
+		<div class="feedbackTitle">Submit Feedback</div>
+		<textarea class="feedbackTextarea" placeholder="feedback"></textarea>
+		<button class="feedbackButton" onclick="submitFeedback()">Submit</button>
+		<button class="feedbackButton" onclick="closeMenu('none')">Cancel</button>
 	</div>
 	
 	<div class="sortMenuContainer">
@@ -305,9 +301,11 @@ $(document).ready(function() {
 				Company Website
 			</div>
 		</a>
-		<div class="feedbackButtonContainer linkContainer" onclick="toggleFeedbackForm();">
+		
+		<div class="feedbackButtonContainer linkContainer" onclick="showFeedbackMenu();">
 			Submit Feedback
 		</div>
+		
 		<div class="version">
 			v<%=$self->version%>
 		</div>
