@@ -47,11 +47,6 @@ a {
   	
 }
 
-.headerImg {
-	-webkit-filter: invert(100%);
-	filter: invert(100%);
-}
-
 .menuButtonContainer {
 	position: fixed;
 	top: 5px;
@@ -148,42 +143,45 @@ a {
     width: 40%;
 }
 
-.feedback {
-	position:fixed;
-	right:0px;
-	width:300px;
-	height:40px;
-	top: 0px;
-	text-align: center;
-	font-size: 1.5em;
-	font-weight: bold;
-	background-color:green;
-	cursor: pointer;
+/*************feedback menu ***********/
+
+.feedbackMenuContainer {
+	position: fixed;
+	top: 30%;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 30%;
+	min-width: 290px;
+	bottom: 30%;
+	background-color: white;
 	border: 3px solid black;
-	border-radius: 10px;
-	box-sizing: border-box;
-	z-index: 1;
+	z-index: 3;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-direction: column;
 }
 
-.feedback:hover {
-	background-color:00CC00;
+.feedbackTitle {
+	font-size: 2em;
+	padding-top: 15px;
+	padding-bottom: 15px;
 }
 
 .feedbackTextarea {
-	display:block;
+	resize: none;
 	font-size: 1em;
-	margin:auto;
-	width: 75%;
-	height: 200px;
+	flex-grow: 1;
+	max-height: 60%;
 }
 
-.feedbackContainer {
-	position: fixed;
-	right:0px;
-	width: 300px;
-	top: 40px;
-	z-index: 1;
-	background-color: white;
+.feedbackButton {
+	font-size: 1.5em;
+	border: none;
+	border-radius: 15px;
+	padding: 10px;
+	margin: 10px;
+	cursor: pointer;
 }
 
 /*container that pops up when you push button to make new question */
