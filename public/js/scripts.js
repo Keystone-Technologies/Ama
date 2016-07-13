@@ -201,6 +201,7 @@ function toggleQuestionForm() {
 	$("#newQuestionTextarea").val("");
 }
 
+
 //shows/hides reply form container
 function toggleReplyForm(id) {
     var type = "question";
@@ -980,7 +981,6 @@ function setReplyMenuTimes(link) {
     $("#replyMenuLinkTextarea").val(link);
 }
 
-
 //shows/hides feedback container
 function showFeedbackMenu() {
 	openMenu = "feedback";
@@ -991,7 +991,6 @@ function showFeedbackMenu() {
     $(".backgroundCover").fadeTo(400, 0.65);
     $(".feedbackMenuContainer").fadeTo(400, 1);
 }
-
 //Shows account menu for mobile
 function showAccountMenu() {
     if(deviceType == 'desktop')

@@ -61,6 +61,18 @@ a {
 	padding-right: 30px;
 }
 
+.adminImg {
+	height: 18px;
+	width: 18px;
+}
+
+.name {
+	display: inline-block;
+	font-size: 1.5em;
+	color: white;
+	text-align: center;
+}
+
 /*ACCOUNT MENU *********************************/
 
 .accountMenuContainer {
@@ -68,7 +80,7 @@ a {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	top: -100px;
+	top: -300px;
 	right: 5px;
 	width: 300px;
 	z-index: 1;
@@ -124,6 +136,22 @@ a {
     width: 40%;
 }
 
+/*****filter container *****/
+
+.filterName {
+	color: white;
+	display: inline-block;
+	font-size: 1.5em;
+	text-align: center;
+}
+
+.clearButton {
+	width:20px;
+	height:20px;
+	cursor: pointer;
+	padding-left: 10px;
+}
+
 /*************feedback menu ***********/
 
 .feedbackMenuContainer {
@@ -163,22 +191,6 @@ a {
 	padding: 10px;
 	margin: 10px;
 	cursor: pointer;
-}
-
-/*****filter container *****/
-
-.filterName {
-	color: white;
-	display: inline-block;
-	font-size: 1.5em;
-	text-align: center;
-}
-
-.clearButton {
-	width:20px;
-	height:20px;
-	cursor: pointer;
-	padding-left: 10px;
 }
 
 /*container that pops up when you push button to make new question */
@@ -311,6 +323,7 @@ a {
 	text-align: center;
 	font-size: 2em;
 }
+
 
 /*************search bar****************/
 

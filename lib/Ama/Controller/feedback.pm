@@ -1,26 +1,21 @@
-package Ama::Controller::Emailfeedback;
+package Ama::Controller::feedback;
 use Mojo::Base 'Mojolicious::Controller';
 
 sub submit{
     my $self = shift;
     my $sendgrid = $self->sendgrid;
-    my $feedback_comment = $self->param('feedback_comment');
-    #$c -> feedback -> submit($feedback);
+    my $feedback = $self->param('feedback');
     warn $self -> req -> body;
     my $send = $sendgrid -> mail(
-        text => $feedback_comment,
+        text => $feedback,
         to      => q(ajin@keystone-it.com),
         cc      => q(jsiems@keystone-it.com),
         bcc     => q(bmeyer@keystone-it.com),
         from    => q(ajin@keystone-it.com),
         subject => "feedback received from AMA",)->send;
-    $self -> emailfeedback->add($feedback_comment);
+    $self -> emailfeedback->add($feedback);
     $self -> render(json => $send ->res ->json);
 }
 
- #$sendgrid->on(mail_send => sub {
-    #my ($sendgrid, $ua, $tx) = @_;
-    #say $tx->res->body;
- #});
 1;
  
