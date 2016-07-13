@@ -31,15 +31,18 @@
 		</div>
 	</div>
 	
+	
 	<div class="content">
+		
+		<!--
 		<div class="title">
 			Account Options
 		</div>
-	
+		-->
 		<div class="option" onclick="document.location = '/questions'">
 			return home
 		</div>
-	
+		<!--
 		<div class="option" id="logoutContainer" onclick="document.location='/logout'">
 			logout
 		</div>
@@ -55,6 +58,8 @@
 				<img class="containedImg" src="/img/facebook.png">acebook
 			</div>
 		</div>
+		-->
+		%if($c->session->{admin} == 1) {
 		
 		<div class="title" id="adminTitle">
 			Admin Options
@@ -63,6 +68,10 @@
 		<div class="option danger" id="deleteAllButton" onclick="deleteAll()">
 			delete all questions
 		</div>
+		%}
+		%else { 
+		<p>Nice try, Guy</p> 
+		%}
 	</div>
 </body>
 

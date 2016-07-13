@@ -99,7 +99,9 @@ var defaultPostSize = 0;                //Default height of a post, used to dete
 var deviceType = "desktop";             //Initially assumes mobile and is changed further down if the user is on desktop
 var defaultLimit = 15;                  //default limit on number of questions to display
 var openMenu = "none";                  //currently opened menu (ex. 'sort', 'search', etc...) used in close menu function
-var acceptableLinkCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuwxyz.:/?=_";  //characters that are allowed in a video link
+var acceptableLinkCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz.:/?=_";  //characters that are allowed in a video link
+var vote_floor = '';                    //stores minimum number of votes needed for a question to be deleted
+var loggedIn = false;;                           //whether or not the user is logged in
 
 //filter settings
 var filters = [];                       //holds all of the current filters used, seen below
@@ -117,6 +119,10 @@ function getFilter(type) {
 
 function setFilter(type, value) {
     filters[type] = value;
+}
+
+function setVoteFloor(min_votes) {
+    vote_floor = min_votes;
 }
 
 //sets the username based on what the server gives us
@@ -183,18 +189,16 @@ function clearQuestions() {
 
 //shows/hides new question container
 function toggleQuestionForm() {
-	$(".newQuestionContainer").slideToggle("slow", function() {
-	    //when the animation is done playing, focuses the keyboard on the textarea
-	    $("#newQuestionTextarea").focus();
-	});
+    if(deviceType != 'desktop') {
+        $(".newQuestionContainer").slideToggle("slow", function() {
+	        //when the animation is done playing, focuses the keyboard on the textarea
+	        $("#newQuestionTextarea").focus();
+	    });
+    }
+    else
+        $("#newQuestionTextarea").focus();
 	
-	if($(".newQuestion").html() != "Cancel") {
-	  	$(".newQuestion").html("Cancel");
-	}
-	else {
-        $(".newQuestion").html("Ask A Question");
-	    $("#newQuestionTextarea").val("");
-	}
+	$("#newQuestionTextarea").val("");
 }
 //shows/hides feedback container
 function togglefeedbackForm() {
@@ -217,7 +221,7 @@ function togglefeedbackForm() {
 //shows/hides reply form container
 function toggleReplyForm(id) {
     var type = "question";
-	$("#replyContainer_" + type + id).slideToggle("slow", function(){
+	$("#replyContainer_" + type + id).slideToggle(500, function(){
 	    $("#newPostTextArea_" + type + id).focus();
 	});
 	if($("#replyButton_" + type + id).html() != "cancel")
@@ -286,6 +290,7 @@ function initializeContent() {
             questionHTML = questionHTML.replace(/TEXT/g, question.getText());
             questionHTML = questionHTML.replace(/NUMCOMMENTS/g, question.getCommentCount());
             questionHTML = questionHTML.replace(/TIMEASKED/g, question.getTimeCreated());
+            questionHTML = questionHTML.replace(/LINK/g, question.getLink());
             contentHTML += questionHTML;  //adds the html for one new question filled with infoto content
         }
        $(".content").html(contentHTML); 
@@ -300,9 +305,20 @@ function initializeContent() {
 function initializeLayout() {
     //hides all comments and reply containers
     $(".commentsContainer").hide();
-    $(".linkButtonContainer").hide();
+    $(".linkButtonContainer").remove();
     $(".replyContainer").hide();
     var type = "question";
+    
+    //sets the default post size if it has never been set.
+    if(deviceType == 'desktop') {
+        $(".newQuestionContainer").show();
+        $(".newPostTitle").remove();
+        defaultPostSize = 150;
+    }
+    else {
+        defaultPostSize = 275;
+    }
+    
     
     //iterates through each question and hides certain containers within it
     for(var i = 0; i < getQuestionCount(); i ++)
@@ -415,15 +431,13 @@ function initializeCommentLayout(id) {
 //resizes all questions so if they have a lot of text, a scroll bar does not appear
 function resizePosts() {
     var type = "question";
+    
+    if(getQuestionCount() == 0) {
+        
+    }
+    
     for(var i = 0; i < getQuestionCount(); i ++) {
         var question = getQuestion(i);
-        
-        //sets the default post size if it has never been set. This helps the program determine whether or not the use is on mobile or on desktop version
-        if(defaultPostSize == 0) {
-            defaultPostSize = parseInt($("#postContainer_" + type + question.getId()).css('height'));
-            if(defaultPostSize >= 275)
-                deviceType = "mobile";
-        }
         
         //Parse int because the .css('height') will return a string, '100px' or something like that
         var num = parseInt($("#textContainer_" + type + question.getId()).css('height'));
@@ -493,20 +507,20 @@ function deletePost(type, id) {
                     //  to the next else statement EXCEPT the ones that end in .remove
                     $("#postContainer_" + type + id).css('height', $("#postContainer_" + type + id).css('min-height'));
                     $("#postContainer_" + type + id).css('min-height', '0px');
-                    $("#postContainer_" + type + id).hide(2000, function() {
+                    $("#postContainer_" + type + id).hide(500, function() {
                         $("#postContainer_" + type + id).remove();
                     });
-                    $("#commentsContainer_" + type + id).hide(2000, function() {
+                    $("#commentsContainer_" + type + id).hide(500, function() {
                         $("#commentsContainer_" + type + id).remove();
                     });
-                    $("#replyContainer_" + type + id).hide(2000, function() {
+                    $("#replyContainer_" + type + id).hide(500, function() {
                         $("#replyContainer_" + type + id).remove();
                     });
                 }
                 else {
                     //deletes the comment from the questions storage and hides it then removes
                     getQuestionById(getCommentById(id).getQuestionId()).deleteComment(id);
-                    $("#commentContainer_" + type + id).hide(2000, function() {
+                    $("#commentContainer_" + type + id).hide(500, function() {
                         $("#commentContainer_" + type + id).remove();
                     });
                 }
@@ -559,6 +573,34 @@ function vote(type, id, dir) {
         post.setUsersVote(dir);
         changeVoteImg(type, id, 'out', opp);  //changes the opposite vote image incase that was the last vote
         changeVoteImg(type, id, 'out', dir);
+    
+    if (data.votes == vote_floor) {
+        
+         if(type == "question") {
+                    
+                    //necessary to reset min-height so the hide function works
+                    //  if you wanted to remove the animations, take out ALL code beneath
+                    //  to the next else statement EXCEPT the ones that end in .remove
+                    $("#postContainer_" + type + id).css('height', $("#postContainer_" + type + id).css('min-height'));
+                    $("#postContainer_" + type + id).css('min-height', '0px');
+                    $("#postContainer_" + type + id).hide(2000, function() {
+                        $("#postContainer_" + type + id).remove();
+                    });
+                    $("#commentsContainer_" + type + id).hide(2000, function() {
+                        $("#commentsContainer_" + type + id).remove();
+                    });
+                    $("#replyContainer_" + type + id).hide(2000, function() {
+                        $("#replyContainer_" + type + id).remove();
+                    });
+                }
+                else {
+                    //deletes the comment from the questions storage and hides it then removes
+                    getQuestionById(getCommentById(id).getQuestionId()).deleteComment(id);
+                    $("#commentContainer_" + type + id).hide(2000, function() {
+                        $("#commentContainer_" + type + id).remove();
+                    }
+                )}
+    }
     }, 'json');
 }
 
@@ -593,7 +635,7 @@ function submitQuestion() {
             setFilter('answered', '0');
             setFilter('orderby', 'created');
             setFilter('direction', 'desc');
-            setFilter('limit', '15');
+            setFilter('limit', 15);
             reloadQuestions();
         }
     });
@@ -710,6 +752,11 @@ function reloadQuestions() {
         });
     }, 'json').done(function() {
     	initializeContent();
+    	
+    	if(getQuestionCount() < getFilter('limit'))
+    	    $(".showMoreButton").hide();
+    	else
+    	    $(".showMoreButton").show();
         
         //filter is the string which contains the current sorting and searching filter
         //  it is seen at the top of all the questions
@@ -739,15 +786,19 @@ function reloadQuestions() {
         
         //if the user has a search in place, it adds what they search for and a clear button
         if(keyword != 'none') {
-            if(deviceType == "desktop")
-                filter += " | ";  //a nice pipe for effect
-            else
                 filter += "</br>";
             filter += "search: " + keyword;
-            filter += " <div class='clearButton' onclick='setFilter(\"keyword\", \"none\");setFilter(\"limit\", 15);reloadQuestions()'>clear</div>";
+            filter += "<img class='clearButton headerImg' onclick='setFilter(\"keyword\", \"none\");setFilter(\"limit\", 15);reloadQuestions()' src='/img/clearSearchButton.png'>";
         }
         
         $(".filterName").html(filter);
+        
+        //makes footer stick to bottom if not enough quesitons are showing
+        //  otherwise it goes to very bottom of page
+        if($("body").height() > $(window).height())
+            $(".footer").css('position', 'relative');
+        else
+            $(".footer").css('position', 'absolute');
     });
 }
 
@@ -786,6 +837,7 @@ function toggleComments(id) {
                 commentHTML = commentHTML.replace(/VOTES/g, comment.getVotes());
                 commentHTML = commentHTML.replace(/TEXT/g, comment.getText());
                 commentHTML = commentHTML.replace(/TIMEASKED/g, comment.getTimeCreated());
+                commentHTML = commentHTML.replace(/LINK/g, comment.getLink());
                 commentsHTML += commentHTML;
             }
             question.setCommentsShown(true);
@@ -798,14 +850,14 @@ function toggleComments(id) {
             $("#commentsContainer_" + type + id).show();
             resizeComments(id);
             $("#commentsContainer_" + type + id).hide();
-            $("#commentsContainer_" + type + id).slideToggle("slow");
+            $("#commentsContainer_" + type + id).slideToggle(500);
             $("#showCommentsButton_" + type + id).html("hide comments<br> ");  //changes the button to say hide commensts
             initializeCommentLayout(id);
         });
     }
     //if the comments are already shown, it will hide the comments and change the show comments button back to saying show comments
     else {
-        $("#commentsContainer_" + type + id).slideToggle("slow");
+        $("#commentsContainer_" + type + id).slideToggle(500);
         $("#showCommentsButton_" + type + id).html("show comments<br>(" + getQuestionById(id).getCommentCount() + ")");
         question.setCommentsShown(false);
     }
@@ -978,6 +1030,11 @@ function closeMenu(save) {
         })
     }
     
+    if(openMenu == "privacy") {
+        $(".privacyPolicyContainer").fadeTo(400, 0, function() { $(".privacyPolicyContainer").hide()});
+        openMenu = "none";
+    }
+    
     //background cover is the white cover that appears when opening search menu/sort menu
     $(".backgroundCover").fadeTo(400, 0, function() {$(".backgroundCover").hide()});
 }
@@ -994,9 +1051,9 @@ function setFilterButtonColors() {
     $(".sortMenuOption").css("color", "black");
     
     //the id's of the options are set so that this will work
-    $("#creator_" + getFilter('creator')).css("color", "1f268b");     //id ex 'creator_mine' or 'creator_all'
-    $("#answered_" + getFilter('answered')).css("color", "1f268b");   //id ex 'answered_1' (1 for answered questions only 0 for unanaswered only)
-    $("#" + getFilter('orderby') + "_" +  getFilter('direction')).css("color", "1f268b");  //id ex 'votes_asc' or 'date_desc'
+    $("#creator_" + getFilter('creator')).css("color", "#1f268b");     //id ex 'creator_mine' or 'creator_all'
+    $("#answered_" + getFilter('answered')).css("color", "#1f268b");   //id ex 'answered_1' (1 for answered questions only 0 for unanaswered only)
+    $("#" + getFilter('orderby') + "_" +  getFilter('direction')).css("color", "#1f268b");  //id ex 'votes_asc' or 'date_desc'
 }
 
 //increases the limit on the amount of shown questions, reloads ALL questions with a larger limit
@@ -1019,7 +1076,7 @@ function toggleSearchBar() {
         
     else {
         openMenu = "none";
-        $(".searchTextarea").val('');
+        $(".searchTextArea").val('');
     }
         
     $(".searchBar").slideToggle('fast', function() {$("#searchTextarea").focus();});
@@ -1027,7 +1084,7 @@ function toggleSearchBar() {
 
 //extracts the keyword from the search bar, reloads the questions with that set as the new keyword
 function search() {
-    var keyword = $(".searchTextarea").val();
+    var keyword = $("#searchTextarea").val();
     keyword = keyword.trim();
     if(keyword == ""){
         keyword = "none"; //a keyword of 'none' means there is no search in effect
@@ -1056,18 +1113,12 @@ function extractLink(text) {
     return link;
 }
 
-//redirects user to whatever link is associated with the comment
-//  lots of this function will have to change after it is merged with refactoring branch
-function redirectToVideo(type, id) {
-    var post;
-    
-    if(type == "question")
-        post = getQuestionById(id);
-    else
-        post = getCommentById(id);
-    
-    //after refactoring changes are accepted, the above to lines will need to be changed to
-    //var comment = getCommentById(id);
-    
-    window.open(post.getLink(), '_blank'); //the '_blank' parameter makes it open in a new tab
+function showPrivacyPolicy() {
+    openMenu = 'privacy';
+    $(".backgroundCover").fadeTo(1, 0);
+    $(".privacyPolicyContainer").fadeTo(1, 0);
+    $(".backgroundCover").show();
+    $(".privacyPolicyContainer").show();
+    $(".backgroundCover").fadeTo(400, 0.65);
+    $(".privacyPolicyContainer").fadeTo(400, 1);
 }

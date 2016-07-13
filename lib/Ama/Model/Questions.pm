@@ -86,11 +86,11 @@ sub getQuestions {
   'where ';
   
   if($creator eq 'my') {
-    $sql = $sql . 'username::int = ' . $self->username . ' and ';
+    $sql = $sql . "username = '" . $self->username . "' and ";
   }
   
   if($keyword ne 'none') {
-    $sql = $sql . "question like '%" . $keyword . "%' and ";
+    $sql = $sql . "LOWER(question) like LOWER('%" . $keyword . "%') and ";
   }
   
   $sql = $sql .  'answered(question_id)::int = ? '.
