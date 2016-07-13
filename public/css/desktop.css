@@ -148,8 +148,10 @@ a {
 .feedbackMenuContainer {
 	position: fixed;
 	top: 30%;
-	left: 30%;
-	right: 30%;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 30%;
+	min-width: 290px;
 	bottom: 30%;
 	background-color: white;
 	border: 3px solid black;
