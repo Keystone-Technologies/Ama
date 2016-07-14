@@ -291,9 +291,17 @@ $(document).ready(function() {
 			Privacy Policy
 		</div>
 		<div class="privacyContent">
-			AMA uses "cookies" to enhance User experience. User's web browser places cookies on their hard drive for record-keeping purposes. Users are still completely anonymous. User may choose to set their web browser to refuse cookies, or to alert when cookies are being sent. If cookeis are disabled, note that some parts of the AMA site may not function properly.
-			<br><br>AMA also gives the user the option to sign in. When the user is signed in, the User is still entirely anonymous to all other users. However, when signed, it is possible for site moderators to track down specific people thorugh the database if neccesarry. Notice that if a user signs in, he/she loses an element of anonymity.
-			<br><br>If you have any questions about the privacy of this app, feel free to submit a new question with your question, or submit feedback with your question.
+			AMA uses "cookies" to enhance User experience. 
+			User's web browser places cookies on their hard drive to remember what questions\votes\replies belong to that computer. 
+			Users are still completely anonymous as the cookie stored is never associated with a name or an ip. 
+			A User may choose to set their web browser to refuse cookies, or to alert when cookies are being sent. 
+			If cookies are disabled, note that some parts of the AMA site may not function properly. 
+			For example, the user would no longer be able to check which questions he/she asked.
+			<br><br>AMA also gives the user the option to enable tracking with a google or facebook account, allowing the program to track their questions\votes\replies over multiple devices. 
+			When the user has tracking enabled, the user is still entirely anonymous to all other users. 
+			However, it is possible for site moderators to find specific people through the database if inappropriate behavior is displayed. 
+			Be aware that the user loses an element of anonymity when tracked, but only to site moderators.
+			<br><br>If you have any questions about the privacy of this app, feel free to submit a new question with AMA, or submit feedback with your question.
 			
 		</div>
 		<button class="closePrivacyButton" onclick="closeMenu('none')">

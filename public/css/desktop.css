@@ -466,11 +466,11 @@ a {
 
 .privacyPolicyContainer {
 	position: fixed;
-	top: 20%;
+	top: 10%;
 	left: 50%;
 	transform: translateX(-50%);
-	height: 60%;
-	min-width: 580px;
+	height: 70%;
+	min-width: 675px;
 	background-color: white;
 	z-index: 3;
 	border: 3px solid black;
