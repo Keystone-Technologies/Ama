@@ -8,8 +8,6 @@ sub submit{
     my $send = $sendgrid->mail(
         text => $feedback,
         to      => $self->config->{sendgrid}->{to},
-        cc      => $self->config->{sendgrid}->{cc},
-        bcc     => $self->config->{sendgrid}->{bcc},
         from    => $self->config->{sendgrid}->{from},
         subject => "feedback received from AMA",)->send;
     $self->feedback->add($feedback);
