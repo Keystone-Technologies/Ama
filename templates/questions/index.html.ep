@@ -161,13 +161,16 @@ $(document).ready(function() {
 				<% $avatar_url = "/img/account.png"; %>
 			%}
 
-			<img class="containedImg" src= <%= $avatar_url %> alt="account">
+			% if ($c->config->{oauth2}){
+				<img class="containedImg" src= <%= $avatar_url %> alt="account">
+			%}
 		</div>
 		<div class="filterName">
 			filter
 		</div>
 	</div>
 	
+	% if ($c->config->{oauth2}){
 	<div class="accountMenuContainer" 
 	onmouseenter="if(deviceType != 'mobile') $(this).css({top:'75px'})" 
 	onmouseleave="if(deviceType != 'mobile') $(this).css('top', '-' + ($(this).height() - 75) + 'px');">
@@ -193,6 +196,7 @@ $(document).ready(function() {
 			</div>
 		</div>
 	</div>
+	%}
 	
 	<div class="searchBar">
 		<textarea rows="1" placeholder="search" class="searchTextArea" id="searchTextarea" required></textarea>
