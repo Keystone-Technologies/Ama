@@ -17,8 +17,6 @@ sub startup {
   # Configuration
   my $config = $self->plugin('Config');
   
-  $self->plugin 'SecureOnly' => {secureport => $config->{secureport}};
- 
   $self->secrets($self->config('secrets'));
   $self->sessions->default_expiration(86400*365*10); # 10yr cookie
 

@@ -8,6 +8,12 @@
 	<% my $user = $c->model->oauth2->find($c->session('id')); %>
 </head>
 <title>Ask Me Anything</title>
+<script type="text/javascript">
+        if (window.location.protocol != "https:") {
+            window.location.href = "https:" + window.location.href.substring(window.location.protocol.length);
+        }
+</script>
+
 <script>
 $(document).ready(function() {
 	//extracts html from page and stores it in global variables
