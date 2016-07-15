@@ -991,6 +991,7 @@ function showFeedbackMenu() {
     $(".backgroundCover").fadeTo(400, 0.65);
     $(".feedbackMenuContainer").fadeTo(400, 1);
 }
+//Shows account menu for mobile
 function showAccountMenu() {
     if(deviceType == 'desktop')
         return;
@@ -1039,6 +1040,7 @@ function closeMenu(save) {
     if(openMenu == "feedback") {
         $(".feedbackMenuContainer").fadeTo(400, 0, function() { $(".feedbackMenuContainer").hide()});
     }
+    
     if(openMenu == "account") {
         $(".accountMenuContainer").fadeTo(400, 0, function() { $(".accountMenuContainer").hide()});
         openMenu = 'none';
