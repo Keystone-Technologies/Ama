@@ -1,91 +1,163 @@
 body {
 	margin:0;
-	padding:0px;
+	padding: 0px;
 	height:100%;
-	background: #white; /* For browsers that do not support gradients */
+	background: white;
 }
-
 
 * {
 	font-family: Verdana, Geneva, sans-serif;
+	word-wrap: break-word;
 }
 
 .header {
 	position: fixed;
-	height:100px;
+	top: 0;
+	transition: top 0.2s ease-in-out;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	height:200px;
 	width:100%;
-	background-color:2d3338;
+	background-color: #42474B;
 	z-index:1;
 }
 
-.logoContainer {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	margin:auto;
-	text-align:center;
+.headerImg {
+	-webkit-filter: invert(100%);
+	filter: invert(100%);
 }
 
-.logoImg {
-	max-width:500px;
-	max-height:100px;
-	width: auto;
-	height: auto;
+.headerImgContainer {
+	height: 100px;
 }
 
-.version {
-	position: absolute;
-	color: b4b4b4;
-	font-size: 1.5em;
-	left: 0%;
-	bottom: 0%;
-}
+/*****filter container *****/
 
-.youtube {
-	position: absolute;
-	right: 0px;
-	text-align:center;
-	cursor: pointer;
-}
-
-.youtubeImg {
-	max-width:500px;
-	max-height:100px;
-	width: auto;
-	height: auto;
-}
-
-/*button to push to make a new quesiton */
-
-.newQuestion {
-	width:100%;
-	height:100px;
-	top: 100px;
+.filterName {
 	text-align: center;
-	font-size: 3em;
-	font-weight: bold;
-	background-color:green;
-	cursor: pointer;
-	border: 3px solid black;
-	border-radius: 10px;
-	box-sizing: border-box;
-	line-height: 100px;
-	z-index: 1;
+	font-size: 2em;
+	color: #b4b4b4;
+	width:100%;
 }
 
-.newQuestion:hover {
-	background-color:00CC00;
+.clearButton {
+	width:35px;
+	height:35px;
+	padding-left: 10px;
+}
+
+/**********************account menu ****************************/
+.accountMenuContainer {
+	position: fixed;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	top: 175px;
+	left: 20px;
+	right: 20px;
+	z-index: 3;
+	color: #c5c5c5;
+	background-color: #42474B;
+	border-radius: 15px;
+	transition: right 0.5s ease-in-out, top 0.5s ease-in-out;
+}
+
+.title {
+    width: 95%;
+    font-size: 4.5em;
+    text-align: center;
+    margin-top: 15px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid black;
+    border-color: #c5c5c5;
+}
+
+.option {
+	display: inline-block;
+    font-size: 3.5em;
+    text-align: center;
+    white-space: nowrap;
+    margin-top: 30px;
+    width: auto;
+    padding: 5px;
+    color: #858585;
+    border: 2px solid grey;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.option:hover {
+    background-color: #f8f8f8;
+    color: black;
+}
+
+.signInContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 95%;
+    cursor: pointer;
+}
+
+.signInOption {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.7em;
+    margin: 15px;
+}
+
+/************feedback container **************/
+
+.feedbackMenuContainer {
+	position: fixed;
+	top: 175px;
+	left: 10%;
+	right: 10%;
+	height: 900px;
+	background-color: white;
+	border: 3px solid black;
+	z-index: 2;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-direction: column;
+}
+
+.feedbackTitle {
+	font-size: 4em;
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+
+.feedbackTextarea {
+	resize: none;
+	font-size: 2.5em;
+	flex-grow: 1;
+	max-height: 60%;
+}
+
+.feedbackButton {
+	font-size: 3em;
+	border: none;
+	border-radius: 15px;
+	padding: 10px;
+	margin: 10px;
 }
 
 /*container that pops up when you push button to make new question */
 
 .newQuestionContainer {
-	position: static;
+	position: fixed;
+	background-color: white;
 	width: 100%;
 	height: 400px;
-	top:206px;
+	top:200px;
+	transition: top 0.2s ease-in-out;
+	z-index: 1;
 }
 
 .newPostTitle {
@@ -116,12 +188,7 @@ body {
 }
 
 .postButton:hover {
-	background-color:00CC00;
-}
-
-.padding {
-	width:100%;
-	height: 100px;
+	background-color: #00CC00;
 }
 
 .backgroundCover {
@@ -193,60 +260,12 @@ body {
 	font-size: 5em;
 }
 
-/*****filter container *****/
-
-.filterContainer {
-	position:relative;
-	max-width: 1200px;
-	min-width: 810px;
-	width: 100%;
-	height: 100px;
-	z-index: 1;
-	margin: auto;
-	background-color:d6d6d6;
-}
-
-.filterName {
-	position:relative;
-	top:50%;
-	transform:translateY(-50%);
-	text-align: center;
-	font-size: 2em;
-	width:100%;
-	cursor: pointer;
-}
-
-.clearButton {
-	display: inline-block;
-	text-decoration: underline;
-	font-size:1.1em;
-	border-radius:15px;
-}
-
-.sortMenuButtonContainer {
-	position: absolute;
-	display: inline-block;
-	left:1%;
-	top:0;
-	bottom:0;
-	height:100%;
-	z-index: 1;
-}
-
-.searchButtonContainer {
-	position: absolute;
-	right: 1%;
-	top: 0;
-	bottom: 0;
-	height: 100%;
-}
-
 /*************search bar****************/
 
 .searchBar {
 	position: fixed;
-	background-color: f4f4f4;
-	z-index:2;
+	background-color: #f4f4f4;
+	z-index: 3;
 	width: 100%;
 	top: 0px;
 	height: 120px;
@@ -269,12 +288,143 @@ body {
 .searchButton {
 	display: inline-block;
 	margin:2.5%;
-	width: 20%;
+	width: 25%;
+	text-align: center;
+	font-size: 3em;
+	white-space: nowrap;
+}
+
+/********reply menu ************/
+
+.replyMenuContainer {
+	position: fixed;
+	top: 5%;
+	left: 10%;
+	right: 10%;
+	height: 1100px;
+	background-color: white;
+	z-index: 2;
+	border: 3px solid black;
+	box-sizing: border-box;
+}
+
+.replyMenuTitle {
+	width: 100%;
+	text-align: center;
+	font-size: 4em;
+	font-weight: bold;
+}
+
+.replyMenuDescription {
+	position: relative;
+	top: 50px;
+	width: 100%;
+	text-align: center;
+	font-size: 2em;
+	color: #777777;
+}
+
+.replyMenuSecondDescription {
+	position: relative;
+	top: 300px;
+	width: 100%;
+	text-align: center;
+	font-size: 2em;
+	color: #777777;
+}
+
+.replyMenuLinkContainer {
+	position: relative;
+	top: 100px;
+	text-align: center;
+	width: 100%;
+	font-size: 2em;
+}
+
+.replyMenuTextarea {
+	font-size: 1em;
+	width: 98%;
+	border: 1px solid;
+	border-color: #e6e6e6;
+	resize: none;
+}
+
+.replyMenuStartingTimeContainer {
+	width:100%;
+	height: 10%;
+	position: relative;
+	top: 200px;
+	text-align: center;
+	font-size: 2em;
+}
+
+.replyMenuTimeInput {
+	font-size: 1em;
+	width: 15%;
+	border: 1px solid;
+	border-color: #e6e6e6;
+	resize: none;
+	text-align: right;
+}
+
+.replyMenuButtonsContainer {
+	position: absolute;
+	display: flex;
+	bottom: 5%;
+	width: 100%;
+	height: 200px;
+	justify-content: center;
+	align-items: center;
+}
+
+.replyMenuButton {
+	position: relative;
+	display: inline-block;
+	margin:auto;
+	font-size: 3em;
+}
+
+/********************************privacy policy container **************************/
+
+.privacyPolicyContainer {
+	position: fixed;
+	top: 10%;
+	left: 5%;
+	right: 5%;
+	height: 80%;
+	background-color: white;
+	z-index: 2;
+	border: 3px solid black;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.privacyTitle {
+	position:relative;
+	top: 10px;
+	font-size: 4em;
+}
+
+.privacyContent {
+	margin-top: 20px;
+	font-size: 2.5em;
+	text-align: center;
+	overflow: scroll;
+	max-height: 80%;
+}
+
+.closePrivacyButton {
+	margin: auto;
+	border-radius: 50px;
 	text-align: center;
 	font-size: 3em;
 }
 
+/***** content and show more******/
+
 .content {
+	padding-top: 200px;
 	max-width: 1200px;
 	min-width: 810px;
 	margin: auto;
@@ -284,8 +434,71 @@ body {
 	padding: 50px;
 	text-align: center;
 	font-size: 2.5em;
-	color:00004c;
+	color: #00004c;
 	cursor:pointer;
+}
+
+/*************** footer ********************/
+
+.footer {
+	position: relative;
+	width: 100%;
+	height: 500px;
+	bottom: 0;
+	background-color: #42474B;
+}
+
+.logoContainer {
+	position: absolute;
+	top: 15px;
+	height: 100px;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.version {
+	position: absolute;
+	color: #b4b4b4;
+	font-size: 1.5em;
+	right: 0;
+	bottom: 0;
+}
+
+.youtubeContainer {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 2em;
+	color: #9fa6ad;
+	position: absolute;
+	top: 145px;
+	left: 50%;
+	transform: translateX(-50%);
+	height: 50px;
+}
+
+.inline {
+	display: inline-block !important;
+}
+
+.privacyPolicyButtonContainer {
+	top: 235px;
+}
+
+.websiteContainer {
+	top: 310px;
+}
+
+.feedbackButtonContainer {
+	top: 385px;
+}
+
+.linkContainer {
+	font-size: 1.6em;
+	color: #9fa6ad;
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
 }
 
 /*question container contains info for a quesiton*/
@@ -344,7 +557,7 @@ body {
 	width: 100%;
 }
 
-/*button container contains buttons, like flag, trash, etc..*/
+/*button container contains buttons, like trash, etc..*/
 
 .buttonContainer {
 	position: absolute;
@@ -363,7 +576,7 @@ body {
 	top: 15%;
 }
 
-.flagButtonContainer {
+.linkButtonContainer {
 	position: absolute;
 	height: 25%;
 	width:100%;
@@ -407,7 +620,7 @@ body {
 	width: 100%;
 	text-align: center;
 	font-size: 1.5em;
-	color: 747474;
+	color: #747474;
 }
 
 .postActionContainer {
@@ -430,7 +643,7 @@ body {
 }
 
 .postActionContainer:hover {
-	color: 1f268b;
+	color: #1f268b;
 	font-size: 1.08em;
 }
 
@@ -527,7 +740,7 @@ body {
 	height:100%;
 }
 
-.commentFlagButtonContainer {
+.commentLinkButtonContainer {
 	position:relative;
 	float:left;
 	width:25%;
@@ -548,5 +761,5 @@ body {
 	top: 50%;
 	transform: translateY(-50%);
 	text-align:center;
-	color: 747474;
+	color: #747474;
 }

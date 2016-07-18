@@ -1,0 +1,35 @@
+https://asciinema.org/a/6hmhuxjg1nc4fuj3eeqf4dj14
+
+$ sudo apt install vim cpanminus postgresql postgresql-client postgresql-client-common postgresql-common postgresql-doc postgresql-server-dev-9.5
+
+$ sudo vim /etc/postgresql/9.5/mainpostgresql.conf
+	#------------------------------------------------------------------------------
+	# CONNECTIONS AND AUTHENTICATION
+	#------------------------------------------------------------------------------
+	
+	# - Connection Settings -
+	
+	listen_addresses = 'localhost'          # what IP address(es) to listen on;
+
+$ sudo vim pg_hba.conf
+	# TYPE  DATABASE        USER            ADDRESS                 METHOD
+	
+	# "local" is for Unix domain socket connections only
+	local   all             all                	 		md5
+
+$ sudo /etc/init.d/postgresql restart
+$ cpanm Mojolicious DBD::Pg Mojo::Pg UUID::Tiny Mojolicious::Plugin::OAuth2 Gravatar::Url Mojolicious::Plugin::JSUrlFor Mojolicious::Plugin::AssetPack Mojolicious::Plugin::Sendgrid
+
+$ sudo -u postgres createuser ama
+$ sudo -u postgres creatdb -O ama ama
+$ sudo -u postgres psql ama
+	ama=# \password ama
+	ama=# \q
+$ psql -U ama ama
+	ama=# \q
+
+$ git clone https://github.com/KeystoneIT/Ama.git
+$ cd Ama
+$ cp ama-sample.conf ama.conf
+$ vim ama.conf
+$ morbo script/ama

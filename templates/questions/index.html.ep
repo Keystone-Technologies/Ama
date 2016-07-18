@@ -1,21 +1,20 @@
+<!DOCTYPE HTML>
 <html>
 <head>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 	<script src="/js/scripts.js"></script>
 	<link rel="stylesheet" media="screen and (max-device-width: 800px)" href="/css/style.css">
 	<link rel="stylesheet" media="screen and (min-device-width: 800px)" href="/css/desktop.css">
+	<% my $user = $c->model->oauth2->find($c->session('id')); %>
 </head>
 <title>Ask Me Anything</title>
+<script type="text/javascript">
+        if (window.location.protocol != "https:") {
+            window.location.href = "https:" + window.location.href.substring(window.location.protocol.length);
+        }
+</script>
 
 <script>
-function ConfirmDelete()
-    {
-      var x = confirm("Are you sure you want to delete?");
-      if (x)
-          return true;
-      else
-        return false;
-    }
 $(document).ready(function() {
 	//extracts html from page and stores it in global variables
 	HTMLforPost = $(".singlePost").html();
@@ -25,16 +24,48 @@ $(document).ready(function() {
     
     //hides all containers that are needed to be hidden
 	$(".newQuestionContainer").hide();
+	$(".feedbackContainer").hide();
 	$(".singleComment").remove();
 	$(".singlePost").remove();
 	$(".sortMenuContainer").hide();
 	$(".backgroundCover").hide();
 	$(".searchBar").hide();
+	$(".replyMenuContainer").hide();
+	$(".privacyPolicyContainer").hide();
+	$(".feedbackMenuContainer").hide();
 	
     setCurrentUser("<%=session 'username'%>");
+    setAdmin("<%=session 'admin'%>");
+    setVoteFloor("<%= $self->config->{vote_floor}%>");
+    
+    % if ($c->session('id')){
+		loggedIn = true;
+	%}
+	
+	if(!getAdmin()) {
+		$("#adminButtonContainer").remove();
+	}
+	
+	if(!loggedIn) {
+		$("#accountOptionsTitle").hide();
+		$("#adminButtonContainer").remove();
+		$("#logoutContainer").remove();
+	}
     
     //this is where it should set the last viewed options, something like that with cookies
-    changeQuestions();
+    reloadQuestions();
+    
+    //determines if the user is on mobile or desktop based on what css file is loaded
+    //  on the desktop css, overflow is set
+    //  on mobile it is not
+    //  device type is set to desktop automatically so we only need to check if it is mobile
+    if($('body').css('overflow') != 'scroll'){
+    	deviceType = 'mobile';
+    }
+    
+    if(deviceType == 'mobile') {
+    	$(".accountMenuContainer").hide();
+    }
     
     $(window).resize(function() {
     	resizePosts();
@@ -45,55 +76,148 @@ $(document).ready(function() {
     	}
     });
     
-    $(window).scroll(function() {
-		if(deviceType == "mobile") {
-			if($(window).scrollTop() > 500 && $(".newQuestionContainer").css('display') != 'none') {
-				$(".padding").css('height','200px');
-				$(".filterContainer").css({"position":"fixed", "top":"100"});
-			}
-			else if($(window).scrollTop() > 100 && $(".newQuestionContainer").css('display') == 'none') {
-				$(".padding").css('height','200px');
-				$(".filterContainer").css({"position":"fixed", "top":"100"});
-			}
-			else {
-				$(".padding").css('height','100px');
-				$(".filterContainer").css({"position":"relative", "top":"0"});
-			}
-		}
-	});
+    var scrolled = false;   //did the user recently scroll
+    var lastTop = 0;        //last top of view window in pixels
     
+    $(window).scroll(function(event){
+	    scrolled = true;
+	});
+
+	setInterval(function() {
+	    if (scrolled && deviceType == 'mobile') {
+	        var top = $(this).scrollTop();
+	        
+	        //if the use scrolls own, hide the header and move all fixed elements beneath it upwards
+	        // also makes sure that they are not too close to the top for the header to be hidden
+	        if(lastTop < top && top > 90) {
+	    	 	$(".header").css('top', '-100px');
+	        	$(".filterContainer").css('top', '0');
+	        	$(".newQuestionContainer").css('top', '100px');
+	        }
+	        //if the user scrolls up, reveal the header and move the filter container down 
+	        else {
+	        	$(".header").css('top', '0');
+	        	$(".filterContainer").css('top', '100px');
+	        	$(".newQuestionContainer").css('top', '200px');
+	        }
+	        
+	        lastTop = top;
+	        scrolled = false;
+	    }
+	}, 100);  //this number is the number of ms before checking if the user scrolled. The higher this number is, the slower the site will run
+
+	setInterval(function(){
+		//makes footer stick to bottom if not enough quesitons are showing
+        //  otherwise it goes to very bottom of page
+        if($("body").height() > $(window).height() - $(".footer").height())
+            $(".footer").css('position', 'relative');
+        else
+            $(".footer").css('position', 'absolute');
+	}, 100)
+
+	//Whenever someone makes a change to one of the time inputs on the time menu
+	//  this function is called and it changes the link appropriately
+	$(".replyMenuTimeInput").bind('input propertychange', function() {
+    	setReplyMenuTimes($("#replyMenuLinkTextarea").val());
+	});
 });
 </script>
 
 <body>
-	<div class="header">
-		<div class="logoContainer"> 
-			<img class="logoImg" src="/img/logo.png" alt="LOGO">
+	<div class="header" >
+		<div class="headerImgContainer menuButtonContainer">
+			<img class="containedImg" src="/img/menubutton.png" alt="menu" onclick="showSortMenu()">
 		</div>
-		<div class="version">
-			v<%=$self->version%>
+
+		<div class="headerImgContainer searchButtonContainer">
+			<img class="containedImg" src="/img/searchbutton.png" alt="search" onclick="toggleSearchBar()">
 		</div>
-		<div class="youtube">
-			<a href="https://www.youtube.com/channel/UCwSuyK7EsrNN02Z92bI34gA/feed" target="_blank">
-				<img class="youtubeImg" src="/img/youtubehover.png" alt="YOUTUBE">
-			</a>
+
+		<div class="headerImgContainer newQuestionButtonContainer">
+			<img class="containedImg" src="/img/newQuestion.png" alt='new question' onclick="toggleQuestionForm()">
+		</div>
+
+		<div class="headerImgContainer accountButtonContainer"
+		onmouseenter="if(deviceType != 'mobile') $('.accountMenuContainer').css({top:'75px'})"
+		onclick="showAccountMenu()">
+
+			
+			% if ($c->session->{admin}){
+				<img class="adminImg" src="/img/badge.png" alt="admin" title="You have admin privilages">
+				<div class="name" ><%= $user->{first_name}%></div>
+			%}
+			% elsif ($c->session('id')){
+				<div class="name"><%= $user->{first_name}%></div>
+			%}
+			
+			
+			 
+
+			<% my $avatar_url; %>
+			% if ($c->session('id')){
+				<% $avatar_url = $self->gravatar->url({email => $self->session->{email} , rating => 'pg'}); %>
+			%}
+			% else {
+				<% $avatar_url = "/img/account.png"; %>
+			%}
+
+			% if ($c->config->{oauth2}){
+				<img class="containedImg" src= <%= $avatar_url %> alt="account">
+			%}
+		</div>
+		<div class="filterName">
+			filter
 		</div>
 	</div>
 	
-	<div class="padding"></div>
+	% if ($c->config->{oauth2}){
+	<div class="accountMenuContainer" 
+	onmouseenter="if(deviceType != 'mobile') $(this).css({top:'75px'})" 
+	onmouseleave="if(deviceType != 'mobile') $(this).css('top', '-' + ($(this).height() - 75) + 'px');">
+		<div class="title" id="accountOptionsTitle">
+			Account Options
+		</div>
+		<div class="option" id="adminButtonContainer" onclick="document.location = '/admin'">
+			Admin
+		</div>
+		<div class="option" id="logoutContainer" onclick="document.location='/logout'">
+			Logout
+		</div>
+		<div class ="title" id="signInTitle">
+			Sign In
+		</div>
+		
+		<div class="signInContainer" id="signInContainer">
+			<div class= "signInOption" onclick="document.location = '/account/google'">
+				<img class="containedImg" src="/img/google.png">oogle
+			</div>
+			<div class="signInOption" onclick="document.location = '/account/facebook'">
+				<img class="containedImg" src="/img/facebook.png">acebook
+			</div>
+		</div>
+	</div>
+	%}
 	
-	<div class="newQuestion" onclick="toggleQuestionForm()">
-		Ask A Question
+	<div class="searchBar">
+		<textarea rows="1" placeholder="search" class="searchTextArea" id="searchTextarea" required></textarea>
+		<button class="searchButton" onclick="search()">search</button>
 	</div>
 	
 	<div class="newQuestionContainer">
 		<br><label for='question' class="newPostTitle">New Question</label><br>
-		<textarea placeholder= "Enter question here" class="newPostTextarea" id="newQuestionTextarea" required></textarea><br>
-		<button class='postButton' onclick="submitQuestion()">Create </button>
+		<textarea placeholder= "Enter Question" class="newPostTextarea" id="newQuestionTextarea" rows=3 required></textarea><br>
+		<button class='postButton' onclick="submitQuestion()">Submit</button>
 	</div>
 	
 	<div class="backgroundCover" onclick="closeMenu('none')">
-	 
+	
+	</div>
+	
+	<div class="feedbackMenuContainer">
+		<div class="feedbackTitle">Submit Feedback</div>
+		<textarea class="feedbackTextarea" placeholder="feedback"></textarea>
+		<button class="feedbackButton" onclick="submitFeedback()">Submit</button>
+		<button class="feedbackButton" onclick="closeMenu('none')">Cancel</button>
 	</div>
 	
 	<div class="sortMenuContainer">
@@ -107,7 +231,6 @@ $(document).ready(function() {
 			</div><div class="sortMenuOption" id="creator_my" onclick="changeFilter('creator', 'my')">
 			mine</div>
 		</div>
-		
 		<div class="sortMenuOptionsContainer">
 			<div class="sortMenuOption" id="answered_1" onclick="changeFilter('answered', 1)">
 				answered
@@ -142,28 +265,58 @@ $(document).ready(function() {
 				Cancel
 			</div>
 		</div><div class="sortMenuButton">
-			<div class="sortMenuButtonText" onclick="closeMenu('save');changeQuestions()">
+			<div class="sortMenuButtonText" onclick="closeMenu('save')">
 				Apply
 			</div>
 		</div>
 		
 	</div>
 	
-	<div class="filterContainer">
-		<div class="sortMenuButtonContainer">
-			<img class="containedImg" src="/img/menubutton.png" alt="menu" onclick="showSortMenu()">
+	<div class="replyMenuContainer">
+		<div class="replyMenuTitle">
+			ATTENTION
 		</div>
-		<div class="filterName">
-			filter
+		<div class="replyMenuDescription">
+			A youtube link has been detected in your reply. Please check the information below:
 		</div>
-		<div class="searchButtonContainer">
-			<img class="containedImg" src="/img/searchbutton.png" alt="search" onclick="toggleSearchBar()">
+		<div class="replyMenuLinkContainer">
+			Link:</br><textarea class="replyMenuTextarea" id="replyMenuLinkTextarea" rows=3 placeholder="link goes here"></textarea>
+		</div>
+		<div class="replyMenuStartingTimeContainer">
+			Starting Time:</br>
+			<input class="replyMenuTimeInput" onclick="$(this).select();" id="replyMenuTimeHr" type="number" placeholder="0" rows=1></input> hr
+			<input class="replyMenuTimeInput" onclick="$(this).select();" id="replyMenuTimeMin" type="number" placeholder="0" rows=1></input> min
+			<input class="replyMenuTimeInput" onclick="$(this).select();" id="replyMenuTimeS" type="number" placeholder="0" rows=1></input> s
+		</div>
+		<div class="replyMenuSecondDescription">
+			The link will be removed from your reply and mapped to a button.
+		</div>
+		<div class="replyMenuButtonsContainer">
+			<div class="replyMenuButton" onclick="readyToSubmit.resolve('')">leave it in</div><div class="replyMenuButton" onclick="readyToSubmit.resolve(' save ')">add button</div>
 		</div>
 	</div>
 	
-	<div class="searchBar">
-		<textarea rows="1" placeholder="search" class="searchTextArea" id="searchTextarea" required></textarea>
-		<button class="searchButton" onclick="search()">search</button>
+	<div class="privacyPolicyContainer">
+		<div class="privacyTitle">
+			Privacy Policy
+		</div>
+		<div class="privacyContent">
+			AMA uses "cookies" to enhance User experience. 
+			User's web browser places cookies on their hard drive to remember what questions\votes\replies belong to that computer. 
+			Users are still completely anonymous as the cookie stored is never associated with a name or an ip. 
+			A User may choose to set their web browser to refuse cookies, or to alert when cookies are being sent. 
+			If cookies are disabled, note that some parts of the AMA site may not function properly. 
+			For example, the user would no longer be able to check which questions he/she asked.
+			<br><br>AMA also gives the user the option to enable tracking with a google or facebook account, allowing the program to track their questions\votes\replies over multiple devices. 
+			When the user has tracking enabled, the user is still entirely anonymous to all other users. 
+			However, it is possible for site moderators to find specific people through the database if inappropriate behavior is displayed. 
+			Be aware that the user loses an element of anonymity when tracked, but only to site moderators.
+			<br><br>If you have any questions about the privacy of this app, feel free to submit a new question with AMA, or submit feedback with your question.
+			
+		</div>
+		<button class="closePrivacyButton" onclick="closeMenu('none')">
+			Close
+		</button>
 	</div>
 	
 	<div class="content">
@@ -174,121 +327,162 @@ $(document).ready(function() {
 		show more
 	</div>
 	
+	<footer class="footer">
+		<div class="logoContainer"> 
+			<img class="containedImg" src="/img/logo.png" alt="LOGO">
+		</div>
+		<a href="https://www.youtube.com/channel/UCwSuyK7EsrNN02Z92bI34gA/feed" target="_blank">
+			<div class="youtubeContainer">
+				<img src="/img/lightYoutube.png" alt="youtube" class="inline containedImg" > KSTN
+			</div>
+		</a>
+		<div class="privacyPolicyButtonContainer linkContainer" onclick="showPrivacyPolicy()">
+			Privacy Policy
+		</div>
+		<a href="https://www.keystone-technologies.com/" target="_blank">
+			<div class="websiteContainer linkContainer">
+				Company Website
+			</div>
+		</a>
+		
+		<div class="feedbackButtonContainer linkContainer" onclick="showFeedbackMenu();">
+			Submit Feedback
+		</div>
+		
+		<div class="version">
+			v<%=$self->version%>
+		</div>
+	</footer>
+	
+	<!-- All html under here is extracted by the js, parsed and used for comments and questions, then reinserted into content div -->
+
 	<div class="singlePost">
-		<div class= "postContainer" id="postContainer_ID">
-			<div class="voteInfoContainer" id="voteInfoContainer_ID">
+		<div class= "postContainer" id="postContainer_TYPEID">
+			<div class="voteInfoContainer" id="voteInfoContainer_TYPEID">
 				<div class="upvoteContainer">
 					<img class="containedImg" src="/img/smalluparrow.png" alt="uparrow"
-					id="upvote_ID"
-					onmouseenter="changeVoteImg(ID, 'in', 'up')"
-					onmouseleave="changeVoteImg(ID, 'out', 'up')"
-					onclick="vote(ID, 'up')">
+					id="upvote_TYPEID"
+					title="Vote Up"
+					onmouseenter="changeVoteImg('TYPE', ID, 'in', 'up')"
+					onmouseleave="changeVoteImg('TYPE', ID, 'out', 'up')"
+					onclick="vote('TYPE', ID, 'up')">
 				</div>
-				<div class="voteContainer" id="voteContainer_ID">
+				<div class="voteContainer" id="voteContainer_TYPEID">
 					VOTES
 				</div>
 				<div class="downvoteContainer">
 					<img class="containedImg" src="/img/smalldownarrow.png" alt="downarrow"
-					id="downvote_ID"
-					onmouseenter="changeVoteImg(ID, 'in', 'down')"
-					onmouseleave="changeVoteImg(ID, 'out', 'down')"
-					onclick="vote(ID, 'down')">
+					id="downvote_TYPEID"
+					title="Vote Down"
+					onmouseenter="changeVoteImg('TYPE', ID, 'in', 'down')"
+					onmouseleave="changeVoteImg('TYPE', ID, 'out', 'down')"
+					onclick="vote('TYPE', ID, 'down')">
+				</div>
+				<div class="linkButtonContainer" id="linkButtonContainer_TYPEID">
+					<a href="LINK" target='_blank'>
+					<img class= "containedImg" src="/img/youtubebutton.png" alt="youtube" 
+					title="Go To Video"
+					onmouseenter="this.src='/img/youtubebuttonhover.png'" 
+					onmouseleave="this.src='/img/youtubebutton.png'" >
+					</a>
 				</div>
 			</div>
-			
-			<div class="buttonContainer" id="buttonContainer_ID">
-				<div class="deleteButtonContainer" id="deleteButtonContainer_ID">
+			<div class="buttonContainer" id="buttonContainer_TYPEID">
+				<div class="deleteButtonContainer" id="deleteButtonContainer_TYPEID">
 					<img class= "containedImg" src="/img/trash.png" alt="delete" 
+					title="Delete Question"
 					onmouseenter="this.src='/img/opentrash.png'" 
-					onmouseleave="this.src='/img/trash.png'" onclick="if( ConfirmDelete() == true){deletePost(ID)}"                                      
-					type="submit" name="actiondelete" value="1">
-
+					onmouseleave="this.src='/img/trash.png'" 
+					onclick="deletePost('TYPE', ID)">
 				</div>
-
 			</div>
 			
-			<div class="postTextAndInfoContainer" id="postTextAndInfoContainer_ID">
-				<div class="postTextContainer" id="postTextContainer_ID">
-					<div class="postText" id="textContainer_ID">
+			<div class="postTextAndInfoContainer" id="postTextAndInfoContainer_TYPEID">
+				<div class="postTextContainer" id="postTextContainer_TYPEID">
+					<div class="postText" id="textContainer_TYPEID">
 					    TEXT
 					</div>
 				</div>
 				<div class="postInfoContainer">
-					<div class="postActionContainer" id="showCommentsButton_ID" onclick="toggleComments(ID)">
+					<div class="postActionContainer" id="showCommentsButton_TYPEID" onclick="toggleComments(ID)">
 						show comments<br>(NUMCOMMENTS)
 					</div>
-					<div class="postActionContainer" id="replyButton_ID" onclick="toggleReplyForm(ID)">
+					<div class="postActionContainer" id="replyButton_TYPEID" onclick="toggleReplyForm(ID)">
 						reply
 					</div>
-					<div class="timeAskedContainer" id="timeAskedContainer_ID">
+					<div class="timeAskedContainer" id="timeAskedContainer_TYPEID">
 						TIMEASKED
 					</div>
 				</div>
 			</div>
 		</div>
 		
-		<div class="replyContainer" id="replyContainer_ID">
+		<div class="replyContainer" id="replyContainer_TYPEID">
             <label class='newPostTitle' for='comment'>Reply</label>
-            <br><textarea class = "newPostTextArea" id="newPostTextArea_ID" placeholder= "Enter reply here"></textarea><br>
-            <button class="postButton" onclick="sendReply(ID)">Post</button>
+            <br><textarea class = "newPostTextarea" id="newPostTextArea_TYPEID" placeholder= "Enter reply here"></textarea><br>
+            <button class="postButton" onclick="readyReply(ID)">Post</button>
 		</div>
 			
-		<div class="commentsContainer" id="commentsContainer_ID">
+		<div class="commentsContainer" id="commentsContainer_TYPEID">
 		</div>
 	</div>
 	
 	<div class="singleComment">
-		<div class="commentContainer" id="commentContainer_ID">
-			<div class="commentVoteInfoContainer" id="voteInfoContainer_ID">
+		<div class="commentContainer" id="commentContainer_TYPEID">
+			<div class="commentVoteInfoContainer" id="voteInfoContainer_TYPEID">
 				<div class="commentUpvoteContainer">
 					<img class="containedImg" src="/img/smalluparrow.png" alt="uparrow"
-					id="upvote_ID"
-					onmouseenter="changeVoteImg('ID', 'in', 'up')"
-					onmouseleave="changeVoteImg('ID', 'out', 'up')"
-					onclick="vote('ID', 'up')">
+					id="upvote_TYPEID"
+					title="Vote Up"
+					onmouseenter="changeVoteImg('TYPE', ID, 'in', 'up')"
+					onmouseleave="changeVoteImg('TYPE', ID, 'out', 'up')"
+					onclick="vote('TYPE', ID, 'up')">
 				</div>
-				<div class="commentVoteContainer" id="voteContainer_ID">
+				<div class="commentVoteContainer" id="voteContainer_TYPEID">
 					VOTES
 				</div>
 				<div class="commentDownvoteContainer">
 					<img class="containedImg" src="/img/smalldownarrow.png" alt="downarrow"
-					id="downvote_ID"
-					onmouseenter="changeVoteImg('ID', 'in', 'down')"
-					onmouseleave="changeVoteImg('ID', 'out', 'down')"
-					onclick="vote('ID', 'down')">
+					id="downvote_TYPEID"
+					title="Vote Down"
+					onmouseenter="changeVoteImg('TYPE', ID, 'in', 'down')"
+					onmouseleave="changeVoteImg('TYPE', ID, 'out', 'down')"
+					onclick="vote('TYPE', ID, 'down')">
 				</div>
 			</div>
 			
-			<div class="commentPostTextAndInfoContainer" id="postTextAndInfoContainer_ID">
-				<div class="commentPostTextContainer" id="postTextContainer_ID">
-					<div class="commentPostText" id="textContainer_ID">
+			<div class="commentPostTextAndInfoContainer" id="postTextAndInfoContainer_TYPEID">
+				<div class="commentPostTextContainer" id="postTextContainer_TYPEID">
+					<div class="commentPostText" id="textContainer_TYPEID">
 					    TEXT
 					</div>
 				</div>
 					
 				<div class="commentPostInfoContainer">
-					<div class="commentDeleteButtonContainer" id="deleteButtonContainer_ID">
+					<div class="commentDeleteButtonContainer" id="deleteButtonContainer_TYPEID">
 						<img class= "containedImg" src="/img/trash.png" alt="delete" 
+						title="Delete Comment"
 						onmouseenter="this.src='/img/opentrash.png'" 
-						onmouseleave="this.src='/img/trash.png'" onclick="if( ConfirmDelete() == true){deletePost('ID')}"
-                        type="submit" name="actiondelete" value="1">
-
+						onmouseleave="this.src='/img/trash.png'" 
+						onclick="deletePost('TYPE', ID)">
 					</div>
 						
-					<div class="commentFlagButtonContainer">
-						<img class= "containedImg" src="/img/flag.png" alt="Flag" 
-						id="flagImg_ID"
-						onmouseenter="changeFlag('ID', 'in')" 
-						onmouseleave="changeFlag('ID', 'out')"
-						onclick="sendFlagReport('ID')">
+					<div class="commentLinkButtonContainer" id="linkButtonContainer_TYPEID">
+						<a href="LINK" target='_blank'>
+						<img class= "containedImg" src="/img/youtubebutton.png" alt="youtube link" 
+						title="Go To Video"
+						onmouseenter="this.src='/img/youtubebuttonhover.png'"
+						onmouseleave="this.src='/img/youtubebutton.png'">
+						</a>
 					</div>
 						
-					<div class="commentAnswerButtonContainer" id="answerButtonContainer_ID">
+					<div class="commentAnswerButtonContainer" id="answerButtonContainer_TYPEID">
 						<img class="containedImg" src="/img/checkmark.png" alt="Checkmark"
-						id="answerImg_ID"
-						onmouseenter="changeCheckMark('ID', 'in')"
-						onmouseleave="changeCheckMark('ID', 'out')"
-						onclick="markAnswer('ID')">
+						id="answerImg_TYPEID"
+						title="Mark As Answered"
+						onmouseenter="changeCheckMark(ID, 'in')"
+						onmouseleave="changeCheckMark(ID, 'out')"
+						onclick="markAnswer(ID)">
 					</div>
 						
 					<div class="commentTimeAskedContainer">
