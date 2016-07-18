@@ -14,7 +14,6 @@ sub store {
   } elsif ( $#_ == 0 ) {
     my ($provider_id) = @_;
     my $r = $self->pg->db->query('select id from providers where provider_id = ?', $provider_id)->hash;
-    
     return ref $r ? $r->{id} : uuid_to_string(create_uuid(UUID_V4));
   } elsif ( $#_ > 1 ) {
     my ($id, $provider, $json, $mapped) = @_;

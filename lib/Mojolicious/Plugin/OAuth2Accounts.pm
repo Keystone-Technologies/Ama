@@ -83,7 +83,6 @@ sub register {
     return $c->redirect_to('connectprovider', {provider => $c->param('provider')}) ; #removed "unless $c->session('id')"
     $c->redirect_to($config->{on_success});
   })->name('account');
-  
 
   $app->routes->get("/mocked/me" => sub {
     my $c = shift;
