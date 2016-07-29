@@ -213,6 +213,10 @@ body {
 	z-index:2;
 	border: 5px solid black;
 	box-sizing: border-box;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-direction: column;
 }
 
 .sortMenuTitle {
@@ -223,10 +227,17 @@ body {
 	font-weight: bold;
 }
 
+.sortMenuTitleSmall {
+	position:relative;
+	top:3%;
+	text-align: center;
+	font-size: 3em;
+	font-weight: bold;
+}
+
 .sortMenuOptionsContainer {
 	position: relative;
 	top: 3%;
-	height: 15%;
 	width: 100%;
 	border-bottom: 2px solid black;
 }

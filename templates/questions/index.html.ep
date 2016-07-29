@@ -36,7 +36,6 @@ $(document).ready(function() {
 	
     setCurrentUser("<%=session 'username'%>");
     setAdmin("<%=session 'admin'%>");
-    setVoteFloor("<%= $self->config->{vote_floor}%>");
     
     % if ($c->session('id')){
 		loggedIn = true;
@@ -222,7 +221,7 @@ $(document).ready(function() {
 	
 	<div class="sortMenuContainer">
 		<div class="sortMenuTitle">
-			Sort Options
+			Filter Options
 		</div>
 		
 		<div class="sortMenuOptionsContainer">
@@ -238,19 +237,26 @@ $(document).ready(function() {
 			unanswered</div>
 		</div>
 		
-		<div class= "sortMenuTitle">
-			votes
+		<div class="sortMenuTitleSmall">
+			Show Hidden Questions
 		</div>
 		
 		<div class="sortMenuOptionsContainer">
+			<div class="sortMenuOption" id="hidden_0" onclick="changeFilter('hidden', 0)">
+				yes
+			</div><div class="sortMenuOption" id="hidden_1" onclick="changeFilter('hidden', 1)">
+			no</div>
+		</div>
+		
+		<div class="sortMenuTitle">
+			Sort By
+		</div>
+		
+		<div class="sortMenuOptionsContainer" style="border:none;">
 			<div class="sortMenuOption" id="votes_desc" onclick="changeFilter('orderby', 'votes');changeFilter('direction', 'desc')">
 				popular
 			</div><div class="sortMenuOption" id="votes_asc" onclick="changeFilter('orderby', 'votes');changeFilter('direction', 'asc')">
 			unpopular</div>
-		</div>
-		
-		<div class= "sortMenuTitle">
-			date
 		</div>
 		
 		<div class="sortMenuOptionsContainer">
