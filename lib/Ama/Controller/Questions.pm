@@ -38,7 +38,8 @@ sub getQuestions {
   my $direction = $self->param('direction');
   my $limit = $self->param('limit');
   my $keyword = $self->param('keyword');
-  $self->stash(questions => $self->questions->getQuestions($creator, $answered, $orderby, $direction, $limit, $keyword));
+  my $vote_floor = $self->param('vote_floor');
+  $self->stash(questions => $self->questions->getQuestions($creator, $answered, $orderby, $direction, $limit, $keyword, $vote_floor));
   $self->respond_to(
     json=> {json => $self->stash('questions')},
     any => {},

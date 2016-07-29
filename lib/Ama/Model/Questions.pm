@@ -1,6 +1,8 @@
 package Ama::Model::Questions;
 use Mojo::Base -base;
 
+has 'vote_floor';
+
 use Ama::Model::Votes;
 has 'pg';
 has 'username';
@@ -68,7 +70,7 @@ sub all {
 ], $self->username)->hashes->to_array }
 
 sub getQuestions {
-  my ($self, $creator, $answered, $orderby, $direction, $limit, $keyword) = @_;
+  my ($self, $creator, $answered, $orderby, $direction, $limit, $keyword, $vote_floor) = @_;
   my $sql = 
   'select '.
     'question_id, '.
@@ -84,7 +86,9 @@ sub getQuestions {
   'from '.
     'questions '.
   'where ';
-  
+  if($vote_floor == 1){
+    $sql = $sql . "votes('questions',questions.question_id) > " . $self->vote_floor . " and ";
+  }
   if($creator eq 'my') {
     $sql = $sql . "username = '" . $self->username . "' and ";
   }

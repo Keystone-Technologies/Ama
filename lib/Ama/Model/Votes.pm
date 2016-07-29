@@ -22,9 +22,9 @@ sub cast {
   
   my $votes = eval {$self->pg->db->query('select votes(?, ?) as votes', $entry_type, $entry_id)->hash->{votes}}; #count number of entry's votes
   
-  if ($votes <= $self->vote_floor){ #if votes have fallen beneath the set value of vote_floor (in config)
-    _remove($self, $entry_type, $entry_id); #remove entry
-  }
+  # if ($votes <= $self->vote_floor){ #if votes have fallen beneath the set value of vote_floor (in config)
+  #   _remove($self, $entry_type, $entry_id); #remove entry
+  # }
   $@ ? {error => $@} : $results;
 }
 
@@ -42,10 +42,10 @@ sub _remove {
   my $sql;
   my $results = eval { 
       if ($entry_type eq 'questions'){ #if it's a question
-        $sql = 'delete from questions where question_id = ?' #delete it from questions table
+        $sql = 'delete from questions where question_id = ?' #hide it from questions table
       }
       if ($entry_type eq 'comments'){ #if it's a comment
-        $sql = 'delete from comments where comment_id = ?' #delete it from comments table
+        $sql = 'delete from comments where comment_id = ?' #hide it from comments table
       }
       $self->pg->db->query($sql,  $entry_id);
     }; 

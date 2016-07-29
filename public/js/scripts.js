@@ -112,6 +112,7 @@ filters["orderby"] = "votes";           //can be 'votes' or 'date'
 filters["direction"] = "desc";          //can be 'asc' or 'desc' for oldest to newest or most vote to least votes... etc
 filters["keyword"] = "none";            //keyword that will be used in a search
 filters["limit"] = defaultLimit;        //number of questions to display at on time
+filters["vote_floor"] = "1";
 
 function getFilter(type) {
     return filters[type];
@@ -559,33 +560,7 @@ function vote(type, id, dir) {
         changeVoteImg(type, id, 'out', opp);  //changes the opposite vote image incase that was the last vote
         changeVoteImg(type, id, 'out', dir);
     
-    if (data.votes == vote_floor) {
-        
-         if(type == "question") {
-                    
-                    //necessary to reset min-height so the hide function works
-                    //  if you wanted to remove the animations, take out ALL code beneath
-                    //  to the next else statement EXCEPT the ones that end in .remove
-                    $("#postContainer_" + type + id).css('height', $("#postContainer_" + type + id).css('min-height'));
-                    $("#postContainer_" + type + id).css('min-height', '0px');
-                    $("#postContainer_" + type + id).hide(2000, function() {
-                        $("#postContainer_" + type + id).remove();
-                    });
-                    $("#commentsContainer_" + type + id).hide(2000, function() {
-                        $("#commentsContainer_" + type + id).remove();
-                    });
-                    $("#replyContainer_" + type + id).hide(2000, function() {
-                        $("#replyContainer_" + type + id).remove();
-                    });
-                }
-                else {
-                    //deletes the comment from the questions storage and hides it then removes
-                    getQuestionById(getCommentById(id).getQuestionId()).deleteComment(id);
-                    $("#commentContainer_" + type + id).hide(2000, function() {
-                        $("#commentContainer_" + type + id).remove();
-                    }
-                )}
-    }
+    
     }, 'json');
 }
 
@@ -726,10 +701,11 @@ function reloadQuestions() {
     var direction = getFilter('direction');
     var limit = getFilter('limit');
     var keyword = getFilter('keyword');
+    var vote_floor = getFilter('vote_floor');
     
     clearQuestions(); //removes all questions from the screen
     
-    $.get("/questions/" + creator + "/" + answered + "/" + orderby + "/" + direction + "/" + limit + "/" + keyword, function(data){
+    $.get("/questions/" + creator + "/" + answered + "/" + orderby + "/" + direction + "/" + limit + "/" + keyword + "/" + vote_floor, function(data){
         $.each(data, function(i, v){
             //last two parameters set to null because last two are only used in comments
         	var question = new Post(v.question_id, v.question.replace(/\n/g, '</br>'), 
