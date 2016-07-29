@@ -705,10 +705,12 @@ function markAnswer(id) {
         //if the server sends back data with an id, it succesfully recorded and marked it as answered
         if(data.question_id) {
             //reloads the questions with the newest answer on top
-            setFilter('creator', 'all');
+            //remove this comment to change what questions are shown after a user marks on as answered
+            /*setFilter('creator', 'all');
             setFilter('answered', !question.isAnswered() | 0);
             setFilter('orderby', 'created');
             setFilter('direction', 'desc');
+            */
             reloadQuestions();
         }
     });
