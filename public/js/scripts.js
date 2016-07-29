@@ -273,7 +273,8 @@ function initializeContent() {
             questionHTML = questionHTML.replace(/VOTES/g, question.getVotes());
             questionHTML = questionHTML.replace(/TEXT/g, question.getText());
             questionHTML = questionHTML.replace(/NUMCOMMENTS/g, question.getCommentCount());
-            questionHTML = questionHTML.replace(/TIMEASKED/g, question.getTimeCreated());
+            var date = new Date(question.getTimeCreated());
+            questionHTML = questionHTML.replace(/TIMEASKED/g, (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear() + ' ' + date.getHours() + ":" + date.getMinutes());
             questionHTML = questionHTML.replace(/LINK/g, question.getLink());
             contentHTML += questionHTML;  //adds the html for one new question filled with infoto content
         }

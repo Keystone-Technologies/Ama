@@ -73,7 +73,7 @@ sub getQuestions {
   'select '.
     'question_id, '.
     'question, '.
-    "to_char(questions.created, 'MM/DD/YYYY HH12:MI:SS') as created, ".
+    'created, ' .
     'username, '.
     '(select video_link from comments where comment_id = (select comment_id from answers where question_id = questions.question_id)) as video_link, ' .
     "votes('questions',questions.question_id) votes, ".
