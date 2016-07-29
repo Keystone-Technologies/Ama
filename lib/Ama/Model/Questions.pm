@@ -70,7 +70,7 @@ sub all {
 ], $self->username)->hashes->to_array }
 
 sub getQuestions {
-  my ($self, $creator, $answered, $orderby, $direction, $limit, $keyword, $hidden) = @_;
+  my ($self, $creator, $answered, $orderby, $direction, $limit, $keyword, $unpopular) = @_;
   my $sql = 
   'select '.
     'question_id, '.
@@ -86,7 +86,7 @@ sub getQuestions {
   'from '.
     'questions '.
   'where ';
-  if($hidden == 1){
+  if($unpopular == 1){
     $sql = $sql . "votes('questions',questions.question_id) > " . $self->vote_floor . " and ";
   }
   if($creator eq 'my') {

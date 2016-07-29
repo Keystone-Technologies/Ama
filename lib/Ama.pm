@@ -110,7 +110,7 @@ sub startup {
   $r->put('/questions/:question_id')->to('questions#update')->name('update_question'); # Update DB and redirect to show_question
   $r->delete('/questions/:question_id')->to('questions#remove')->name('remove_question'); # Delete from DB and redirect to questions
   $r->delete('/removeAll')->to('questions#removeAll')->name('removeAll'); # Delete every question
-  $r->get('/questions/:creator/:answered/:orderby/:direction/:limit/:keyword/:hidden')->to('questions#getQuestions')->name('get_answered');
+  $r->get('/questions/:creator/:answered/:orderby/:direction/:limit/:keyword/:unpopular')->to('questions#getQuestions')->name('get_answered');
 
   $r->get('/questions/:question_id/comments')->to('comments#index')->name('comments');
   $r->get('/questions/:question_id/comment/create')->to('comments#create')->name('create_comment');

@@ -238,13 +238,13 @@ $(document).ready(function() {
 		</div>
 		
 		<div class="sortMenuTitleSmall">
-			Show Hidden Questions
+			Show Unpopular Questions
 		</div>
 		
 		<div class="sortMenuOptionsContainer">
-			<div class="sortMenuOption" id="hidden_0" onclick="changeFilter('hidden', 0)">
+			<div class="sortMenuOption" id="unpopular_0" onclick="changeFilter('unpopular', 0)">
 				yes
-			</div><div class="sortMenuOption" id="hidden_1" onclick="changeFilter('hidden', 1)">
+			</div><div class="sortMenuOption" id="unpopular_1" onclick="changeFilter('unpopular', 1)">
 			no</div>
 		</div>
 		

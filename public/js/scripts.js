@@ -111,7 +111,7 @@ filters["orderby"] = "votes";           //can be 'votes' or 'date'
 filters["direction"] = "desc";          //can be 'asc' or 'desc' for oldest to newest or most vote to least votes... etc
 filters["keyword"] = "none";            //keyword that will be used in a search
 filters["limit"] = defaultLimit;        //number of questions to display at on time
-filters["hidden"] = "1";
+filters["unpopular"] = "1";
 
 function getFilter(type) {
     return filters[type];
@@ -696,11 +696,11 @@ function reloadQuestions() {
     var direction = getFilter('direction');
     var limit = getFilter('limit');
     var keyword = getFilter('keyword');
-    var hidden = getFilter('hidden');
+    var unpopular = getFilter('unpopular');
     
     clearQuestions(); //removes all questions from the screen
     
-    $.get("/questions/" + creator + "/" + answered + "/" + orderby + "/" + direction + "/" + limit + "/" + keyword + "/" + hidden, function(data){
+    $.get("/questions/" + creator + "/" + answered + "/" + orderby + "/" + direction + "/" + limit + "/" + keyword + "/" + unpopular, function(data){
         $.each(data, function(i, v){
             //last two parameters set to null because last two are only used in comments
         	var question = new Post(v.question_id, v.question.replace(/\n/g, '</br>'), 
@@ -1039,7 +1039,7 @@ function setFilterButtonColors() {
     $("#creator_" + getFilter('creator')).css("color", "#1f268b");     //id ex 'creator_mine' or 'creator_all'
     $("#answered_" + getFilter('answered')).css("color", "#1f268b");   //id ex 'answered_1' (1 for answered questions only 0 for unanaswered only)
     $("#" + getFilter('orderby') + "_" +  getFilter('direction')).css("color", "#1f268b");  //id ex 'votes_asc' or 'date_desc'
-    $("#hidden_" + getFilter('hidden')).css('color', "#1f268b");
+    $("#unpopular_" + getFilter('unpopular')).css('color', "#1f268b");
 }
 
 //increases the limit on the amount of shown questions, reloads ALL questions with a larger limit
