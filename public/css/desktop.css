@@ -254,14 +254,14 @@ a {
 .sortMenuContainer {
 	background-color:white;
 	position:fixed;
-	left:50%;
-	top:25%;
-	margin-left: -200px;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
 	width:50%;
 	height:50%;
-	max-width:400px;
-	min-height: 300px;
-	max-height: 320px;
+	max-width:300px;
+	min-height: 400px;
+	max-height: 420px;
 	z-index:3;
 	border: 5px solid black;
 	box-sizing: border-box;
@@ -272,6 +272,14 @@ a {
 	top:3%;
 	text-align: center;
 	font-size: 2em;
+	font-weight: bold;
+}
+
+.sortMenuTitleSmall {
+	position:relative;
+	top:3%;
+	text-align: center;
+	font-size: 1em;
 	font-weight: bold;
 }
 

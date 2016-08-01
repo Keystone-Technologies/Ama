@@ -100,7 +100,6 @@ var deviceType = "desktop";             //Initially assumes mobile and is change
 var defaultLimit = 15;                  //default limit on number of questions to display
 var openMenu = "none";                  //currently opened menu (ex. 'sort', 'search', etc...) used in close menu function
 var acceptableLinkCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz.:/?=_";  //characters that are allowed in a video link
-var vote_floor = '';                    //stores minimum number of votes needed for a question to be deleted
 var loggedIn = false;;                           //whether or not the user is logged in
 
 //filter settings
@@ -112,6 +111,7 @@ filters["orderby"] = "votes";           //can be 'votes' or 'date'
 filters["direction"] = "desc";          //can be 'asc' or 'desc' for oldest to newest or most vote to least votes... etc
 filters["keyword"] = "none";            //keyword that will be used in a search
 filters["limit"] = defaultLimit;        //number of questions to display at on time
+filters["unpopular"] = "1";
 
 function getFilter(type) {
     return filters[type];
@@ -119,10 +119,6 @@ function getFilter(type) {
 
 function setFilter(type, value) {
     filters[type] = value;
-}
-
-function setVoteFloor(min_votes) {
-    vote_floor = min_votes;
 }
 
 //sets the username based on what the server gives us
@@ -559,33 +555,7 @@ function vote(type, id, dir) {
         changeVoteImg(type, id, 'out', opp);  //changes the opposite vote image incase that was the last vote
         changeVoteImg(type, id, 'out', dir);
     
-    if (data.votes == vote_floor) {
-        
-         if(type == "question") {
-                    
-                    //necessary to reset min-height so the hide function works
-                    //  if you wanted to remove the animations, take out ALL code beneath
-                    //  to the next else statement EXCEPT the ones that end in .remove
-                    $("#postContainer_" + type + id).css('height', $("#postContainer_" + type + id).css('min-height'));
-                    $("#postContainer_" + type + id).css('min-height', '0px');
-                    $("#postContainer_" + type + id).hide(2000, function() {
-                        $("#postContainer_" + type + id).remove();
-                    });
-                    $("#commentsContainer_" + type + id).hide(2000, function() {
-                        $("#commentsContainer_" + type + id).remove();
-                    });
-                    $("#replyContainer_" + type + id).hide(2000, function() {
-                        $("#replyContainer_" + type + id).remove();
-                    });
-                }
-                else {
-                    //deletes the comment from the questions storage and hides it then removes
-                    getQuestionById(getCommentById(id).getQuestionId()).deleteComment(id);
-                    $("#commentContainer_" + type + id).hide(2000, function() {
-                        $("#commentContainer_" + type + id).remove();
-                    }
-                )}
-    }
+    
     }, 'json');
 }
 
@@ -720,16 +690,25 @@ function markAnswer(id) {
 function reloadQuestions() {
     //See the list of global variables(close to the top, underneath Post object)(maybe around line 100 unless more lines are added) 
     //  to learn what each filter does
-    var creator = getFilter('creator');
-    var answered = getFilter('answered');
-    var orderby = getFilter('orderby');
-    var direction = getFilter('direction');
-    var limit = getFilter('limit');
-    var keyword = getFilter('keyword');
+    
+    var question = {};
+    
+    question.creator = getFilter('creator');
+    question.answered = getFilter('answered');
+    question.orderby = getFilter('orderby');
+    question.direction = getFilter('direction');
+    question.limit = getFilter('limit');
+    question.keyword = getFilter('keyword');
+    question.unpopular = getFilter('unpopular');
     
     clearQuestions(); //removes all questions from the screen
     
-    $.get("/questions/" + creator + "/" + answered + "/" + orderby + "/" + direction + "/" + limit + "/" + keyword, function(data){
+    $.ajax({
+        url : "/questions/sorted",
+        type: "GET",
+        dataType : "json",
+        data : question
+    }).done(function(data){
         $.each(data, function(i, v){
             //last two parameters set to null because last two are only used in comments
         	var question = new Post(v.question_id, v.question.replace(/\n/g, '</br>'), 
@@ -737,7 +716,7 @@ function reloadQuestions() {
         	                        v.my_vote, v.video_link, v.comment_count, v.answered, null, null);
         	addQuestion(question);
         });
-    }, 'json').done(function() {
+    }).done(function() {
     	initializeContent();
     	
     	if(getQuestionCount() < getFilter('limit'))
@@ -749,14 +728,14 @@ function reloadQuestions() {
         //  it is seen at the top of all the questions
         var filter = "";
         
-        filter += creator + " ";   //creator would be 'my' or 'all'
+        filter += question.creator + " ";   //creator would be 'my' or 'all'
         
-        if(answered == 0)
+        if(question.answered == 0)
             filter += "un"
         filter += "answered questions by "
          
-        if(orderby == "votes") {
-            if(direction == "asc")
+        if(question.orderby == "votes") {
+            if(question.direction == "asc")
                 filter += "least ";
             else
                 filter += "most ";
@@ -765,16 +744,16 @@ function reloadQuestions() {
         }
         //if it is not ordered by votes, it is ordered by date
         else {
-            if(direction == "asc")
+            if(question.direction == "asc")
                 filter += "oldest";
             else 
                 filter += "newest";
         }
         
         //if the user has a search in place, it adds what they search for and a clear button
-        if(keyword != 'none') {
+        if(question.keyword != 'none') {
                 filter += "</br>";
-            filter += "search: " + keyword;
+            filter += "search: " + question.keyword;
             filter += "<img class='clearButton headerImg' onclick='setFilter(\"keyword\", \"none\");setFilter(\"limit\", 15);reloadQuestions()' src='/img/clearSearchButton.png'>";
         }
         
@@ -1068,6 +1047,7 @@ function setFilterButtonColors() {
     $("#creator_" + getFilter('creator')).css("color", "#1f268b");     //id ex 'creator_mine' or 'creator_all'
     $("#answered_" + getFilter('answered')).css("color", "#1f268b");   //id ex 'answered_1' (1 for answered questions only 0 for unanaswered only)
     $("#" + getFilter('orderby') + "_" +  getFilter('direction')).css("color", "#1f268b");  //id ex 'votes_asc' or 'date_desc'
+    $("#unpopular_" + getFilter('unpopular')).css('color', "#1f268b");
 }
 
 //increases the limit on the amount of shown questions, reloads ALL questions with a larger limit
