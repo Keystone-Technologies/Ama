@@ -690,17 +690,25 @@ function markAnswer(id) {
 function reloadQuestions() {
     //See the list of global variables(close to the top, underneath Post object)(maybe around line 100 unless more lines are added) 
     //  to learn what each filter does
-    var creator = getFilter('creator');
-    var answered = getFilter('answered');
-    var orderby = getFilter('orderby');
-    var direction = getFilter('direction');
-    var limit = getFilter('limit');
-    var keyword = getFilter('keyword');
-    var unpopular = getFilter('unpopular');
+    
+    var question = {};
+    
+    question.creator = getFilter('creator');
+    question.answered = getFilter('answered');
+    question.orderby = getFilter('orderby');
+    question.direction = getFilter('direction');
+    question.limit = getFilter('limit');
+    question.keyword = getFilter('keyword');
+    question.unpopular = getFilter('unpopular');
     
     clearQuestions(); //removes all questions from the screen
     
-    $.get("/questions/" + creator + "/" + answered + "/" + orderby + "/" + direction + "/" + limit + "/" + keyword + "/" + unpopular, function(data){
+    $.ajax({
+        url : "/questions/sorted",
+        type: "GET",
+        dataType : "json",
+        data : question
+    }).done(function(data){
         $.each(data, function(i, v){
             //last two parameters set to null because last two are only used in comments
         	var question = new Post(v.question_id, v.question.replace(/\n/g, '</br>'), 
@@ -708,7 +716,7 @@ function reloadQuestions() {
         	                        v.my_vote, v.video_link, v.comment_count, v.answered, null, null);
         	addQuestion(question);
         });
-    }, 'json').done(function() {
+    }).done(function() {
     	initializeContent();
     	
     	if(getQuestionCount() < getFilter('limit'))
@@ -720,14 +728,14 @@ function reloadQuestions() {
         //  it is seen at the top of all the questions
         var filter = "";
         
-        filter += creator + " ";   //creator would be 'my' or 'all'
+        filter += question.creator + " ";   //creator would be 'my' or 'all'
         
-        if(answered == 0)
+        if(question.answered == 0)
             filter += "un"
         filter += "answered questions by "
          
-        if(orderby == "votes") {
-            if(direction == "asc")
+        if(question.orderby == "votes") {
+            if(question.direction == "asc")
                 filter += "least ";
             else
                 filter += "most ";
@@ -736,16 +744,16 @@ function reloadQuestions() {
         }
         //if it is not ordered by votes, it is ordered by date
         else {
-            if(direction == "asc")
+            if(question.direction == "asc")
                 filter += "oldest";
             else 
                 filter += "newest";
         }
         
         //if the user has a search in place, it adds what they search for and a clear button
-        if(keyword != 'none') {
+        if(question.keyword != 'none') {
                 filter += "</br>";
-            filter += "search: " + keyword;
+            filter += "search: " + question.keyword;
             filter += "<img class='clearButton headerImg' onclick='setFilter(\"keyword\", \"none\");setFilter(\"limit\", 15);reloadQuestions()' src='/img/clearSearchButton.png'>";
         }
         
