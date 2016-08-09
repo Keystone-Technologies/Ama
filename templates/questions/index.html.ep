@@ -177,9 +177,11 @@ $(document).ready(function() {
 		<div class="title" id="accountOptionsTitle">
 			Account Options
 		</div>
+		% if ($c->session->{admin}){
 		<div class="option" id="adminButtonContainer" onclick="document.location = '/admin'">
 			Admin
 		</div>
+		%}
 		<div class="option" id="logoutContainer" onclick="document.location='/logout'">
 			Logout
 		</div>
@@ -188,12 +190,16 @@ $(document).ready(function() {
 		</div>
 		
 		<div class="signInContainer" id="signInContainer">
+			% if ($c->config->{oauth2}{google}){
 			<div class= "signInOption" onclick="document.location = '/account/google'">
 				<img class="containedImg" src="/img/google.png">oogle
 			</div>
+			%}
+			% if ($c->config->{oauth2}{facebook}){
 			<div class="signInOption" onclick="document.location = '/account/facebook'">
 				<img class="containedImg" src="/img/facebook.png">acebook
 			</div>
+			%}
 		</div>
 	</div>
 	%}
@@ -213,13 +219,14 @@ $(document).ready(function() {
 	
 	</div>
 	
+	% if ($c->config->{sendgrid}){
 	<div class="feedbackMenuContainer">
 		<div class="feedbackTitle">Submit Feedback</div>
 		<textarea class="feedbackTextarea" placeholder="feedback"></textarea>
 		<button class="feedbackButton" onclick="submitFeedback()">Submit</button>
 		<button class="feedbackButton" onclick="closeMenu('none')">Cancel</button>
 	</div>
-	
+	%}
 	<div class="sortMenuContainer">
 		<div class="sortMenuTitle">
 			Sort Options
@@ -344,11 +351,11 @@ $(document).ready(function() {
 				Company Website
 			</div>
 		</a>
-		
+		% if ($c->config->{sendgrid}){
 		<div class="feedbackButtonContainer linkContainer" onclick="showFeedbackMenu();">
 			Submit Feedback
 		</div>
-		
+		%}
 		<div class="version">
 			v<%=$self->version%>
 		</div>
