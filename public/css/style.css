@@ -49,6 +49,14 @@ body {
 }
 
 /**********************account menu ****************************/
+
+
+.name {
+	visibility : hidden;
+	display: none;
+}
+
+
 .accountMenuContainer {
 	position: fixed;
 	display: flex;
