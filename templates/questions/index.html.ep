@@ -36,7 +36,6 @@ $(document).ready(function() {
 	
     setCurrentUser("<%=session 'username'%>");
     setAdmin("<%=session 'admin'%>");
-    setVoteFloor("<%= $self->config->{vote_floor}%>");
     
     % if ($c->session('id')){
 		loggedIn = true;
@@ -177,9 +176,11 @@ $(document).ready(function() {
 		<div class="title" id="accountOptionsTitle">
 			Account Options
 		</div>
+		% if ($c->session->{admin}){
 		<div class="option" id="adminButtonContainer" onclick="document.location = '/admin'">
 			Admin
 		</div>
+		%}
 		<div class="option" id="logoutContainer" onclick="document.location='/logout'">
 			Logout
 		</div>
@@ -188,12 +189,16 @@ $(document).ready(function() {
 		</div>
 		
 		<div class="signInContainer" id="signInContainer">
+			% if ($c->config->{oauth2}{google}){
 			<div class= "signInOption" onclick="document.location = '/account/google'">
 				<img class="containedImg" src="/img/google.png">oogle
 			</div>
+			%}
+			% if ($c->config->{oauth2}{facebook}){
 			<div class="signInOption" onclick="document.location = '/account/facebook'">
 				<img class="containedImg" src="/img/facebook.png">acebook
 			</div>
+			%}
 		</div>
 	</div>
 	%}
@@ -213,16 +218,17 @@ $(document).ready(function() {
 	
 	</div>
 	
+	% if ($c->config->{sendgrid}){
 	<div class="feedbackMenuContainer">
 		<div class="feedbackTitle">Submit Feedback</div>
 		<textarea class="feedbackTextarea" placeholder="feedback"></textarea>
 		<button class="feedbackButton" onclick="submitFeedback()">Submit</button>
 		<button class="feedbackButton" onclick="closeMenu('none')">Cancel</button>
 	</div>
-	
+	%}
 	<div class="sortMenuContainer">
 		<div class="sortMenuTitle">
-			Sort Options
+			Filter Options
 		</div>
 		
 		<div class="sortMenuOptionsContainer">
@@ -238,19 +244,26 @@ $(document).ready(function() {
 			unanswered</div>
 		</div>
 		
-		<div class= "sortMenuTitle">
-			votes
+		<div class="sortMenuTitleSmall">
+			Show Unpopular Questions
 		</div>
 		
 		<div class="sortMenuOptionsContainer">
+			<div class="sortMenuOption" id="unpopular_0" onclick="changeFilter('unpopular', 0)">
+				yes
+			</div><div class="sortMenuOption" id="unpopular_1" onclick="changeFilter('unpopular', 1)">
+			no</div>
+		</div>
+		
+		<div class="sortMenuTitle">
+			Sort By
+		</div>
+		
+		<div class="sortMenuOptionsContainer" style="border:none;">
 			<div class="sortMenuOption" id="votes_desc" onclick="changeFilter('orderby', 'votes');changeFilter('direction', 'desc')">
 				popular
 			</div><div class="sortMenuOption" id="votes_asc" onclick="changeFilter('orderby', 'votes');changeFilter('direction', 'asc')">
 			unpopular</div>
-		</div>
-		
-		<div class= "sortMenuTitle">
-			date
 		</div>
 		
 		<div class="sortMenuOptionsContainer">
@@ -344,11 +357,11 @@ $(document).ready(function() {
 				Company Website
 			</div>
 		</a>
-		
+		% if ($c->config->{sendgrid}){
 		<div class="feedbackButtonContainer linkContainer" onclick="showFeedbackMenu();">
 			Submit Feedback
 		</div>
-		
+		%}
 		<div class="version">
 			v<%=$self->version%>
 		</div>
