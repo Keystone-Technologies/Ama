@@ -63,6 +63,7 @@ sub startup {
     $c->answers->admin($c->session->{admin}); # sends the admin info to the model (lib/Ama/Model/Answers.pm)
     $c->votes->username($c->session->{username});
     $c->votes->vote_floor($self->config('vote_floor'));
+    $c->questions->vote_floor($self->config('vote_floor'));
 
     return $next->();
   });
@@ -104,12 +105,13 @@ sub startup {
   $r->get('/questions')->to('questions#index')->name('questions'); # Display all questions
   $r->get('/questions/create')->to('questions#create')->name('create_question'); # Display empty form
   $r->post('/questions')->to('questions#store')->name('store_question'); # Insert into DB and redirect to show_question
+  $r->get('/questions/sorted')->to('questions#getQuestions')->name('get_answered');
   $r->get('/questions/:question_id')->to('questions#show')->name('show_question'); # Display specific question
   $r->get('/questions/:question_id/edit')->to('questions#edit')->name('edit_question'); # Display filled-out form
   $r->put('/questions/:question_id')->to('questions#update')->name('update_question'); # Update DB and redirect to show_question
   $r->delete('/questions/:question_id')->to('questions#remove')->name('remove_question'); # Delete from DB and redirect to questions
   $r->delete('/removeAll')->to('questions#removeAll')->name('removeAll'); # Delete every question
-  $r->get('/questions/:creator/:answered/:orderby/:direction/:limit/:keyword')->to('questions#getQuestions')->name('get_answered');
+  
 
   $r->get('/questions/:question_id/comments')->to('comments#index')->name('comments');
   $r->get('/questions/:question_id/comment/create')->to('comments#create')->name('create_comment');
@@ -128,7 +130,12 @@ sub startup {
   $api->post('/:entry_type/vote/:entry_id/:vote', [vote => [qw(up down)]])->to('votes#cast')->name('cast_vote');
   $api->delete('/:entry_type/vote/:entry_id')->to('votes#uncast')->name('uncast_vote');
 
-  $api->post('/feedback')->to('feedback#submit')->name('submit_feedback');
+  if ( $self->config->{sendgrid}->{to} && $self->config->{sendgrid}->{from} ){
+    $api->post('/feedback')->to('feedback#submit')->name('submit_feedback');
+  }else{
+    warn "check to or from address of sendgrid in ama.conf";
+  }
+  
 }
 
 1;
