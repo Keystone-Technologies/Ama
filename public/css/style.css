@@ -33,6 +33,11 @@ body {
 	height: 100px;
 }
 
+.adminImg {
+	height: 40px;
+	width: 40px;
+}
+
 /*****filter container *****/
 
 .filterName {
@@ -49,6 +54,14 @@ body {
 }
 
 /**********************account menu ****************************/
+
+
+.name {
+	visibility : hidden;
+	display: none;
+}
+
+
 .accountMenuContainer {
 	position: fixed;
 	display: flex;

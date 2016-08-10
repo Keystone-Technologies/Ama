@@ -35,7 +35,7 @@ sub startup {
     my ($next, $c, $action, $last) = @_;
     $c->session->{username} ||= time;
     $c->session->{username} = $c->session('id') if $c->session('id');
-    my $admin = 0; # by default the user is not an admin
+    my $admin = $c->config->{oauth2} ? 0 : 1; # by default the user is not an admin (unless no oauth2 in config)
 
     if ($c->session('id') ) { # if the user has logged in with OAuth
       if ( defined $self->pg->db->query('select id from users where id = ?', $c->session->{username})->hash ) {
