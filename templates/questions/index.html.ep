@@ -350,10 +350,11 @@ $(document).ready(function() {
 				Company Website
 			</div>
 		</a>
-		
-		<div class="feedbackButtonContainer linkContainer" onclick="showFeedbackMenu();">
-			Submit Feedback
-		</div>
+		% if ( $c->config->{sendgrid}->{to} && $c->config->{sendgrid}->{from} ){
+			<div class="feedbackButtonContainer linkContainer" onclick="showFeedbackMenu();">
+				Submit Feedback
+			</div>
+		%}	
 		
 		<div class="version">
 			v<%=$self->version%>

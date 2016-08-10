@@ -130,7 +130,12 @@ sub startup {
   $api->post('/:entry_type/vote/:entry_id/:vote', [vote => [qw(up down)]])->to('votes#cast')->name('cast_vote');
   $api->delete('/:entry_type/vote/:entry_id')->to('votes#uncast')->name('uncast_vote');
 
-  $api->post('/feedback')->to('feedback#submit')->name('submit_feedback');
+  if ( $self->config->{sendgrid}->{to} && $self->config->{sendgrid}->{from} ){
+    $api->post('/feedback')->to('feedback#submit')->name('submit_feedback');
+  }else{
+    warn "check to or from address of sendgrid in ama.conf";
+  }
+  
 }
 
 1;
