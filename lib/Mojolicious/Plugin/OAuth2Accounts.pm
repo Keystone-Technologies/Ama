@@ -108,7 +108,7 @@ sub register {
           $c->$cb(undef, $token->{$provider}); 
         } else {
           my $args = {redirect_uri => $c->url_for('connectprovider', {provider => $provider})->userinfo(undef)->to_abs, %$args};
-          $args->{redirect_uri} =~ s/^http/https/;
+          $args->{redirect_uri} =~ s/^http:/https:/;
           $c->oauth2->get_token($provider => $args, $delay->begin);
         }
       },
