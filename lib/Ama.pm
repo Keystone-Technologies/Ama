@@ -79,13 +79,15 @@ sub startup {
   });
 
   # Migrate to latest version if necessary
-  my $path = $self->home->rel_file('migrations/ama.sql');
+  my $path = $self->home->child('migrations', 'ama.sql');
   $self->pg->migrations->name('ama')->from_file($path)->migrate;
 
   # Assets
   $self->plugin('JSUrlFor' => {route => '/js/url_for.js'});
-  $self->plugin('AssetPack');
-  $self->asset('ama.js' => 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js');
+  $self->plugin('AssetPack' => {
+    pipes => [qw(Css JavaScript Combine)]
+  });
+  $self->asset->process('ama.js' => ('https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js'));
 
   # Controller
   my $r = $self->routes;
