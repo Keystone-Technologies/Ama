@@ -70,13 +70,13 @@ sub startup {
   
   $self->plugin("Gravatar");
   $self->plugin('Sendgrid' =>{config => $self->config->{sendgrid}});
-  $self->plugin("OAuth2Accounts" => {
-    on_logout => '/',
-    on_success => 'questions',
-    on_error => 'questions',
-    on_connect => sub { shift->model->oauth2->store(@_) },
-    providers => $config->{oauth2},
-  });
+  #$self->plugin("OAuth2Accounts" => {
+  #  on_logout => '/',
+  #  on_success => 'questions',
+  #  on_error => 'questions',
+  #  on_connect => sub { shift->model->oauth2->store(@_) },
+  #  providers => $config->{oauth2},
+  #});
 
   # Migrate to latest version if necessary
   my $path = $self->home->child('migrations', 'ama.sql');

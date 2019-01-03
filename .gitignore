@@ -1,2 +1,5 @@
+assets
 public/packed
 ama.conf
+*~
+tmp
